@@ -1,0 +1,15 @@
+{
+  "originHash" : "c9aac3208edc3a1c93979a997dc71c857a322e63b58fd070c802839d9074054d",
+  "pins" : [
+    {
+      "identity" : "superbox64kit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SuperBox64/SuperBox64Kit",
+      "state" : {
+        "branch" : "embedded",
+        "revision" : "e460d977263b0706b991d49c4e8d2f6640d98e02"
+      }
+    }
+  ],
+  "version" : 3
+}
