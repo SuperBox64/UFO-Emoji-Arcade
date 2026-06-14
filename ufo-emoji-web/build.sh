@@ -123,10 +123,18 @@ build_assets() {
     for s in fire wah2 murrmurr boomFire1 boomFire2 Explosion1 extralife doublelaser; do
       [ -f "$GAME/GameSounds/${s}.m4a" ] && ffmpeg -y -i "$GAME/GameSounds/${s}.m4a" "$OUT/sfx/${s}.wav" >/dev/null 2>&1 || true
     done
-    # Background music: WASM/Web Audio plays it quieter than the iOS AVAudioPlayer,
-    # so boost +8dB for this game's web build ONLY (the Apple asset is untouched).
+    # Background music: WASM/Web Audio plays it MUCH quieter than the iOS
+    # AVAudioPlayer, so re-master LOUD for this game's web build ONLY (the Apple
+    # asset is untouched). loudnorm (EBU R128) normalizes to a loud target
+    # (I=-9 LUFS, close to a modern music master) with a -1dBTP true-peak ceiling,
+    # then +3dB makeup is brick-wall limited so it lands hot without clipping —
+    # noticeably louder than the old flat +8dB and consistent regardless of the
+    # source level.
     if [ -f "$GAME/GameMusic/music1.mp3" ]; then
-      ffmpeg -y -i "$GAME/GameMusic/music1.mp3" -filter:a "volume=8dB" -c:a libmp3lame -q:a 4 "$OUT/sfx/music1.mp3" >/dev/null 2>&1 \
+      ffmpeg -y -i "$GAME/GameMusic/music1.mp3" \
+        -filter:a "loudnorm=I=-9:TP=-1.0:LRA=11,volume=3dB,alimiter=limit=0.97" \
+        -c:a libmp3lame -q:a 2 "$OUT/sfx/music1.mp3" >/dev/null 2>&1 \
+        || ffmpeg -y -i "$GAME/GameMusic/music1.mp3" -filter:a "volume=12dB,alimiter=limit=0.97" -c:a libmp3lame -q:a 2 "$OUT/sfx/music1.mp3" >/dev/null 2>&1 \
         || cp "$GAME/GameMusic/music1.mp3" "$OUT/sfx/music1.mp3" 2>/dev/null || true
     fi
   fi
