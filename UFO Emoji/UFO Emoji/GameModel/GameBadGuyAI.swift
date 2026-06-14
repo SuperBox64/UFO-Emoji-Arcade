@@ -3,7 +3,7 @@
 //  UFO Emoji
 //
 //  Created by Todd on 5/20/19, Updated Oct 15, 2024.
-//  Copyright (c) 2024 Todd Bruss. All rights reserved.
+//  Copyright (c) 2026 Todd Bruss. All rights reserved.
 //
 
 import SpriteKit

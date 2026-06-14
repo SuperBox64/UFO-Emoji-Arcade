@@ -1,7 +1,7 @@
 //
 //  GTFlightYoke ]|[ the Ultimate Precision Touch Screen Gaming Flight Stick
 //
-//  by GoodTime aka Todd Bruss (c) 2015 - 2024
+//  by GoodTime aka Todd Bruss (c) 2015 - 2026
 //
 
 import SpriteKit
