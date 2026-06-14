@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" width="32" height="32" viewBox="0 0 32 32">
+<defs>
+<clipPath id="clip_1">
+<path transform="matrix(1,0,0,-1,0,32)" d="M0 0H32V32H0Z"/>
+</clipPath>
+<mask id="mask_2">
+<g transform="matrix(1.1034483,0,0,1.1034483,0,0)">
+<image id="image_3" width="29" height="29" xlink:href="data:image/png;base64,
+iVBORw0KGgoAAAANSUhEUgAAAB0AAAAdCAAAAABz+DjTAAAACXBIWXMAAA7EAAAO
+xAGVKw4bAAABI0lEQVR4nGNgwAMY8UmiARYtVyMOHHL2y9//////2/ZgZkw5zsX/
+YeCgJKqUJI/q1f8I8MqOUQkuZ7r36/b7/5HBp9p/ZzIgkiJP/mOAf/////EDe2or
+piQYvBEEyvrikPz/vwYoOw2n7BWg7Emcsn9FGBg/4JT9b8vA9w+3bBCDAB7ZUAae
+v7hl/RjYf+KW9WJgeI9b1pKB4SFuWV0GhhO4ZcUZGLbjlPzNzsCwBafsD1YGhnPY
+pUDBIMnA9PH//ztnMCSf9gEJOwYhoKJ9QjvQJC+rJQLJCAYDILmJgcG2c/t9SKj9
+e75vsh8zQwSQWQCO/HmQJKS3GWjOGWdIDnADincx5AHJSbD0px1vCcsddkDxpQxz
+fv361Y4l7RsDxU8AAK88Phoh11tVAAAAAElFTkSuQmCC"/>
+</g>
+</mask>
+</defs>
+<g>
+<g clip-path="url(#clip_1)">
+<g mask="url(#mask_2)">
+<g transform="matrix(1.1034483,0,0,1.1034483,0,0)">
+<image id="image_4" width="29" height="29" xlink:href="data:image/png;base64,
+iVBORw0KGgoAAAANSUhEUgAAAB0AAAAdCAIAAADZ8fBYAAAACXBIWXMAAA7EAAAO
+xAGVKw4bAAAH2UlEQVR4nLXVaVDT6RkA8HzqtDP90PHDrl+cut26uu7q1iptV7vT
+XXc51Kjc9y0qiAooVwJIDs6QkBAghJA75CIh5jD5J+QkByFcCVdOIFxiQMYLFI/d
+sX9aZzqzO0532tnnw/Pl/76//zPP+7zzQt7+EvHiBeQXcd++/Vnu8ycbqx7L3Ojd
+pWnd04fL/6/7w/dvgi6NkZZ/rzlcg4vSEaADrWeUmHAtKWPWzHn98vn/4m4/XtfT
+CpXN4bq2i4OkBAs5xUZJs3anDpIS9cRooCVSRUzeXPX+XHdrfWHn6cba3JgCF6vG
+nTW0x1m60+y03BHmlVFW/gjr6jD9kpWSbuxI0LRCpY2Rc+OqH968evbA/173UXBi
+jFW6oO+wUq6J0OEq7Dl9e4KVkulg5k9wi12C0klhGZgneMUjrAJbT7axI0mNOy9C
+fm1lVwYA3BinfGVE8mP3xeO1aTFiYZAy04/St6bJm85o2+IHyZnDzIIJful0f7Vb
+ivDIUW4ZckZS4xSUO1iF5u5sHTHxHuacHA0dZ5fed3CmRIjQjP4/7vdvXk/LMTMK
+3Jye5FbhpwWVYtQ5fUe6mZI3zCpy9cHdsjqfChNQY/0AxqOonxRXOzglFuoVQ2eG
+AhOjw6UumqlOwR2vrntWggJLfOcujKlcfYignTfEKH/gFA22ZQmQF3QdmYauPAvt
++iivYlqK9gHYOQ3eD+BmZfXjfJiNftNIvqzrzFLiEgVVZ5cGuyfuYoI29kQfemlY
+9M71m5gOHgL82/QAJWjo4FZGSRrjlfh0ZWuGui1bTy4Y7q2YvFvnVmCmpQ0OHtxI
+KVQTc5X4DBU+/R42ubv49IyoOuRW2TnVrntEt6L5nesDCGMSrIVZveHTTgvh+Pyv
+gI7LVj5ySNRs4dcZmbCBrkJjT9EQp3KQdktDKjAwKiw8NPjVJkRru290Fp3W4zND
+U3eHepFL4xIHG7a1sQB5tfVoztAV8mjc2u77ozwDIYuJzPAaaWPydiO3UcuqH+Rj
+RuREM6caIF7R00rHFO1mQYuOXa/jNDikbW49VceAsSuignqi10ALudXLo8JHQSfk
++ebyvImyETCtu1XLFooOm2LmNy/ae71GulmE47WWGXobhyUEp6prTIZ3AV2gZeI1
+97fDNKx6j4G2MMTxGqn9yHiPDB2alm0EDPcnpQ9casj2w6U5fed6wPjAJQoaSWZC
+ml3QtDHZDx5gRlLMpdwcdsstF0ByG6jeQYbbSJtUkwdYdRehZ7LSU2eNdHDl3CBT
+g0mZFtfcH+Wu+7Sr4+JdF6zXp8I+mJKu2Jl+oMVMzLD1oh675UPyzr179x44cKAo
+N3rextqYkT6ZU2965MHhXiKyYN++ffv37+9sLHniVfgMdC021cktC5q6QCdooa79
+y13xyhvAQQnq22elKGNrio3b8Myn1InwH330hyNHjpTkxa2N858FFK9XBrbnlesu
+IRF17eDBg4cPH8Yhb2wHANDVtKSNMG74VS0rNgY4i+uzRsjLrc0pce2sotmvwTkF
+MC0m0S7CvVhQh2ZkX3xxJCwsjIopXnfynnolb5aB7YB03cU3ChpB9NixYzYleWdx
+IGBiAC3ZNvLlWQnSC+C9Suxm0LU7ZwJ0Kqcm3kguFiJTxFUXLNz6nUXNyxWtXoLv
+bLi5Nt47C+BnAULIyfNo22eB1lUHq49cJaQidlYGXi1r/YYeTsUFKTpB25ona86R
+YnLmJy27bk9lDAseQyiMqEgMa8w6xa6Onje07SwCO4uq7YB8dZTj0ZGaCqJH5cTq
+9PCAqSdopW355TtB1cslzaq95x4usynnFDL9S+zV07SyCz1l0NCib9dlILNIxRH1
+OV9dP38UlnScCT+n68iyUK8GTe1PvbKHU+KFIXZwmOu3csActLNDTuFTj+y+g2Zj
+FOo7s/sb4lCZfy2Efl6d+pe269+2XT8dWp7fdVnoHBYcis4+mRd+qDTuKK08Uo5J
+BPCpNlbRurMPHAbwmvjNzDkrG8w+E91vZoD0uKgGwKcpsEl8xPmqlON5EQfLE/5M
+KY3qvh25thTYdamwi9w70fU5p/IiDl0980lH0T/4CKi4PsZEu7k6wkWVZ//u1786
+9MGewx/u+fSDPR/+9jfpcd+tjvIcgqr+hlgB8jy9Mrw4+rOsbz6GJZ2gV5zl1kYv
++lyQzdAKvRLKrjoPupcjP7107hgq+3jXra/plRGqjnyPvic4wutGXMv602fxf/x9
+6uFPMIUpfjvHa+gxMMoZsEjy7W9w+X/LjTwEy4XCk8N6ys7wkbFTQ2rIyrybVXUB
+7APolib/fXHOV5nzLTz587rcE/Q7CRZBs12Cm9FRFscE44r2+WGu18xw3MVbhBh+
+U27DpbCa1KOlyWFOh5XTVrvrlkYJkLFmGQ3isqp670QzYdC67JNNRYlgW16/emlS
+9RFqLtdePUuC5wiwJQAVYRG2DEvwNhFWw0CJCGU9tVeQ+VBsRaZSQHm+9QzcJSQ3
+wJNOdN+KBOvVCQiQiUEZHxFLKz+LzjrZXJz005fVPW7n4eBC3C15V5WYUMZqKHbZ
+9G9ev/rRMgvQB08K6yqO4CNiVHQURMPFClFxlNtRoIspSX7fux2YGrMDYveo9afi
+v8MKuslh7Te+49VGS4jFEDYqG+xIV0kkKvNL0p0r73P/a1jVoqrksLbC0701F2lV
+sf8EQvjqUeMevbQAAAAASUVORK5CYII="/>
+</g>
+</g>
+</g>
+</g>
+</svg>

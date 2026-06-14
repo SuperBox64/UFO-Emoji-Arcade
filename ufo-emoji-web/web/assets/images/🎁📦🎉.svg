@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" width="32" height="32" viewBox="0 0 32 32">
+<defs>
+<clipPath id="clip_1">
+<path transform="matrix(1,0,0,-1,0,32)" d="M0 0H32V32H0Z"/>
+</clipPath>
+<mask id="mask_2">
+<g transform="matrix(1.1034483,0,0,1.1034483,0,0)">
+<image id="image_3" width="29" height="29" xlink:href="data:image/png;base64,
+iVBORw0KGgoAAAANSUhEUgAAAB0AAAAdCAAAAABz+DjTAAAACXBIWXMAAA7EAAAO
+xAGVKw4bAAAB3UlEQVR4nGNg0KxkAAO/o04MqKBVicHplBqEHf/ph7ddOxOEk5IC
+JI7OZjgXDVVZrnzzyd5fumA2+4MjQLLyDsPC2/MaJFl0GRz+lPv9j7aCKtUXEuZg
+6L/KwNZ46UfSxK/mnpGMbF/K4HZm7F5y5qkfA4N4SwmTzcaZ/38s1zk1mcGEEyii
+yMBQvwfsAsn9ckCS8f7///9/vlyg/mUmA8OVs5Wscl/jQLK8U0qKStzt/4PBVdUu
+JQamrx3CBZGTS+G2rNoKkf3/yR3I+zCFgUFIjxUmyf/wL1T2/48iRoY765HDhHHN
+sf8IMIlhWheyrHrLBiTZ/0s4GBikPAv6l27fCpbm/YYs+39d+/V/QOrPx2tg2fT/
+aODGzFQbGU5GoBTXdrXT6LINcFtdfzf/Q5f97Q2X1q1Fl/z//52wjARU+jym7P/Z
+3xZCJLUxDP7//2/cPCcGKx2gbD+G3J/l+iB/vgdqZ3uDLrlDC2JoAD8Dgyeq1L8d
+9nqglCZZLwhSMRdF8pQtA8ujm8zARPjfFpTAXiHJnQgApQh7kMmMTswgwxFytwIY
+keKGzRRILIfJXUtgQ444hg1fpRkYrkHknqWwMKCCoCY+BoY8UFg8KuRlwAoY4y7t
+j2fHLscAAKy0jbTe6NuOAAAAAElFTkSuQmCC"/>
+</g>
+</mask>
+</defs>
+<g>
+<g clip-path="url(#clip_1)">
+<g mask="url(#mask_2)">
+<g transform="matrix(1.1034483,0,0,1.1034483,0,0)">
+<image id="image_4" width="29" height="29" xlink:href="data:image/png;base64,
+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
+/ckjAAAAAElFTkSuQmCC"/>
+</g>
+</g>
+</g>
+</g>
+</svg>

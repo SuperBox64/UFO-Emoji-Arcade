@@ -89,6 +89,12 @@ build_assets() {
     GameGrass.spriteatlas GameWater.spriteatlas GameMenu.spriteatlas GameEffects.spriteatlas
     Backgrounds.spriteatlas GameHUD.spriteatlas GameGUI.spriteatlas GameDirt.spriteatlas
     GameStones.spriteatlas GameStraw GameGold
+    # Placeholder atlases: the angular tile-definition NAMES (grass2-btm-right,
+    # grass2-topleft, grass2-left, …) live here. The game reads centerTexture.size()
+    # from these bare names to build the trapezoid polygon bodies (then renders the
+    # numbered art). Apple bundles them; skipping them made size() return 0 so the
+    # angular bodies collapsed. Export them so the names resolve to their real size.
+    GameGrass_placeholders.spriteatlas GameStrawGold_placeholders Game_placeholders
   )
   if command -v mutool >/dev/null 2>&1; then
     for atlas in "${REAL_ATLASES[@]}"; do

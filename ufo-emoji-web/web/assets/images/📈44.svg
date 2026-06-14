@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" width="32" height="32" viewBox="0 0 32 32">
+<defs>
+<clipPath id="clip_1">
+<path transform="matrix(1,0,0,-1,0,32)" d="M0 0H32V32H0Z"/>
+</clipPath>
+<clipPath id="clip_2">
+<path transform="matrix(1,0,0,-1,0,32)" d="M0 0H32V32H0Z"/>
+</clipPath>
+<clipPath id="clip_3">
+<path transform="matrix(1,0,0,-1,0,32)" d="M0 0H32V32H0Z"/>
+</clipPath>
+<clipPath id="clip_4">
+<path transform="matrix(1,0,0,-1,0,32)" d="M0 0H32V32H0Z"/>
+</clipPath>
+<clipPath id="clip_5">
+<path transform="matrix(1,0,0,-1,0,32)" d="M14 6H26V26H14Z"/>
+</clipPath>
+<clipPath id="clip_6">
+<path transform="matrix(1,0,0,-1,0,32)" d="M14.5847 6.968H25.8625V25.2451H14.5847Z"/>
+</clipPath>
+<clipPath id="clip_7">
+<path transform="matrix(1,0,0,-1,0,32)" d="M0 0H32V32H0Z"/>
+</clipPath>
+<clipPath id="clip_8">
+<path transform="matrix(1,0,0,-1,0,32)" d="M3 3H13V17H3Z"/>
+</clipPath>
+<clipPath id="clip_9">
+<path transform="matrix(1,0,0,-1,0,32)" d="M3.22884 3.20851H12.8699V16.0536H3.22884Z"/>
+</clipPath>
+</defs>
+<g>
+<g clip-path="url(#clip_1)">
+<g opacity=".4">
+<g clip-path="url(#clip_2)">
+<g clip-path="url(#clip_3)">
+<path transform="matrix(1,0,0,-1,0,32)" d="M0 0H32V32H0Z" fill="#ffff00"/>
+</g>
+</g>
+</g>
+</g>
+<g clip-path="url(#clip_4)">
+<g opacity=".5">
+<g clip-path="url(#clip_5)">
+<g clip-path="url(#clip_6)">
+<path transform="matrix(1,0,0,-1,0,32)" d="M20.0034 13.3008V21.0788L17.9884 13.3008ZM24.5644 25.2448V13.3008H25.8624V10.1858H24.5644V6.9678H20.0034V10.1858H14.5844V13.3008L18.5244 25.2448Z"/>
+</g>
+</g>
+</g>
+</g>
+<g clip-path="url(#clip_7)">
+<g opacity=".75">
+<g clip-path="url(#clip_8)">
+<g clip-path="url(#clip_9)">
+<path transform="matrix(1,0,0,-1,0,32)" d="M8.416 9.5264V11.4714L6.908 9.0194ZM12.87 8.3574C12.87 8.1494 12.668 7.9714 12.264 7.8214 11.86 7.7554 11.404 7.6744 10.897 7.5824V4.2834C10.897 4.2454 10.906 4.1884 10.925 4.1144 10.943 4.0394 10.948 3.9734 10.939 3.9174 10.92 3.7194 10.829 3.5474 10.664 3.4024 10.499 3.2554 10.342 3.1934 10.192 3.2124 9.619 3.2874 8.979 3.7334 8.275 4.5514 8.2 4.6454 8.171 4.8094 8.19 5.0454 8.19 5.0914 8.223 5.1474 8.289 5.2134 8.354 5.2794 8.388 5.3404 8.388 5.3964V7.2434C7.608 6.9904 7.02 6.8064 6.626 6.6944 5.921 6.4974 5.437 6.3874 5.174 6.3694 4.949 6.3494 4.596 6.5104 4.117 6.8484 3.694 7.1494 3.421 7.3894 3.299 7.5674 3.252 7.6334 3.229 7.7034 3.229 7.7794 3.229 7.8914 3.333 8.0934 3.539 8.3844 3.643 8.4784 3.788 8.6384 3.976 8.8644 3.995 8.8824 4.723 10.0394 6.161 12.3324 7.57 14.5784 8.326 15.7284 8.43 15.7844 8.74 15.9724 8.971 16.0624 9.121 16.0524 9.337 16.0444 9.722 15.8424 10.276 15.4544 10.831 15.0644 11.127 14.7754 11.165 14.5874 11.193 14.4834 11.099 14.2824 10.883 13.9804V10.1464C11.202 10.2034 11.371 10.2314 11.39 10.2314 11.502 10.2314 11.601 10.1984 11.686 10.1324 11.855 9.9824 12.095 9.6704 12.405 9.1964 12.715 8.7204 12.87 8.4414 12.87 8.3574"/>
+</g>
+</g>
+</g>
+</g>
+</g>
+</svg>

@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" width="32" height="32" viewBox="0 0 32 32">
+<defs>
+<clipPath id="clip_1">
+<path transform="matrix(1,0,0,-1,0,32)" d="M0 0H32V32H0Z"/>
+</clipPath>
+<mask id="mask_2">
+<g transform="matrix(1.1034483,0,0,1.1034483,0,0)">
+<image id="image_3" width="29" height="29" xlink:href="data:image/png;base64,
+iVBORw0KGgoAAAANSUhEUgAAAB0AAAAdCAAAAABz+DjTAAAACXBIWXMAAA7EAAAO
+xAGVKw4bAAABB0lEQVR4nGNgwAMY8UlSBXBXc0NZvBmYshP+X9cFM/Rv/fNFl1T8
+/f//x2AgI/jj//9X0J068z8Q/JsmN+8fiOGOKqn28z8Y/IVQa1EkWY/9RwE/5JBl
+i0DGrvgNlnl9B0hMQJLU/QQUWMUQ9QdIvTMOBpKfhOGS/PeA/A8yDAxp//5/MWNg
+eQHk5sNlq4C8b04gVukTZyA5Eci/ygST7QTysiFMsEeNQdb7w2TDnp+pQvH/QaDs
+BWb0AIMBO1CQ+OGSZdgBlD2OM+YtQJpDcWpeBJR9zIdLVugdULoRp+Z8UICp4JJl
+uQCUPsaES1rnK1BaF6fZqV//38CTnAUTDXFLEgXw5hUA8nGm7lF1d+4AAAAASUVO
+RK5CYII="/>
+</g>
+</mask>
+</defs>
+<g>
+<g clip-path="url(#clip_1)">
+<g mask="url(#mask_2)">
+<g transform="matrix(1.1034483,0,0,1.1034483,0,0)">
+<image id="image_4" width="29" height="29" xlink:href="data:image/png;base64,
+iVBORw0KGgoAAAANSUhEUgAAAB0AAAAdCAIAAADZ8fBYAAAACXBIWXMAAA7EAAAO
+xAGVKw4bAAACRUlEQVR4nNWU3U5TQRDH/0VuJDSGKJoot3pJeAWj8RV8Di/00kv8
+SDQQIoXypUirYEFEKFYLVRHb2lLSiPFldmbc2Z7KOS0F7MeFyS8ne2Z3f7N7dvag
+CLSdAwDSGf47L90+AnMH5l5j7p4MzGQds6DUVRPrNeMwz4LYSPwcvb9ipmCixwEz
+XQsl+/j3LS7foESfiThXhQho5TyXb/LP67R4huzIxsDMBFkAF67JryE5GOLSIG30
+69KsdDpEyYu8P2jj2pW5ZObq5voAzRxi3yl5VvYHpOzBpQHavkDL3fS537YP44XL
+9Cowt4agNAbe7ZFSWEq9Uqo0wrIX5oI+vfheTyVIyW6aPY1Xjwvyo0uKXZIP8S44
+H9K2D86FOAspuPZOiF6e5LUfkRLgb5Ccwp/ASXAKzuKhmWz8owsWbVbQKhot2ZOa
+5+A0xHrt5G3wuyrW/t1uQlPyB/Cmi2SqmTKgF8d4o+A1iB39BbzldG99OJFnrLAJ
+yTtvVnd5tFcLds4NTbs9WlGijuUgK+CvTp3TKVpYdZcAFNUyVt0a+A349enY0C8m
+WU1AcScJAjPRFPN6DLKj8Lq7/cEBvmv6T+idrh5JGjRfOwBmrFmm9AztqciW5tC/
+kq8XZqRZRkELEKtO6efWuvL1wjxpgRE9allXeEkz/e2CedwSFNHKk1WtKFtXGnyk
+wAy3xgMtf7GrtmUeh3nqxVv2DuuuOQZZgiyC7C/hoQIabQeTulix98Xe3jEFPN4m
+JlTKEe/VvXeAznnvd4Q/aE38wpSAvsEAAAAASUVORK5CYII="/>
+</g>
+</g>
+</g>
+</g>
+</svg>

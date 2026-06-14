@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" width="32" height="32" viewBox="0 0 32 32">
+<defs>
+<clipPath id="clip_1">
+<path transform="matrix(1,0,0,-1,0,32)" d="M0 0H32V32H0Z"/>
+</clipPath>
+<clipPath id="clip_2">
+<path transform="matrix(1,0,0,-1,0,32)" d="M0 0H32V32H0Z"/>
+</clipPath>
+<clipPath id="clip_3">
+<path transform="matrix(1,0,0,-1,0,32)" d="M0 0H32V32H0Z"/>
+</clipPath>
+<clipPath id="clip_4">
+<path transform="matrix(1,0,0,-1,0,32)" d="M0 0H32V32H0Z"/>
+</clipPath>
+<clipPath id="clip_5">
+<path transform="matrix(1,0,0,-1,0,32)" d="M0 0H32V32H0Z"/>
+</clipPath>
+<clipPath id="clip_6">
+<path transform="matrix(1,0,0,-1,0,32)" d="M0 0H32V32H0Z"/>
+</clipPath>
+<clipPath id="clip_7">
+<path transform="matrix(1,0,0,-1,0,32)" d="M14 6H26V26H14Z"/>
+</clipPath>
+<clipPath id="clip_8">
+<path transform="matrix(1,0,0,-1,0,32)" d="M14.5847 6.968H25.8625V25.2451H14.5847Z"/>
+</clipPath>
+<clipPath id="clip_9">
+<path transform="matrix(1,0,0,-1,0,32)" d="M0 0H32V32H0Z"/>
+</clipPath>
+<clipPath id="clip_10">
+<path transform="matrix(1,0,0,-1,0,32)" d="M3 5H8V18H3Z"/>
+</clipPath>
+<clipPath id="clip_11">
+<path transform="matrix(1,0,0,-1,0,32)" d="M3.44872 5.13661H7.59248V17.564202H3.44872Z"/>
+</clipPath>
+</defs>
+<g>
+<g clip-path="url(#clip_1)">
+<g>
+<g clip-path="url(#clip_2)">
+<g clip-path="url(#clip_3)">
+<g style="mix-blend-mode:color">
+<g clip-path="url(#clip_4)">
+<g clip-path="url(#clip_5)">
+<path transform="matrix(1,0,0,-1,0,32)" d="M0 0H32V32H0Z" fill="#ffff00"/>
+</g>
+</g>
+</g>
+</g>
+<g clip-path="url(#clip_6)">
+<g opacity=".5">
+<g clip-path="url(#clip_7)">
+<g clip-path="url(#clip_8)">
+<path transform="matrix(1,0,0,-1,0,32)" d="M20.0034 13.3008V21.0788L17.9884 13.3008ZM24.5644 25.2448V13.3008H25.8624V10.1858H24.5644V6.9678H20.0034V10.1858H14.5844V13.3008L18.5244 25.2448Z"/>
+</g>
+</g>
+</g>
+</g>
+<g clip-path="url(#clip_9)">
+<g opacity=".75">
+<g clip-path="url(#clip_10)">
+<g clip-path="url(#clip_11)">
+<path transform="matrix(1,0,0,-1,0,32)" d="M7.5923 6.0381C7.5923 5.8001 7.5223 5.5881 7.3813 5.4021 7.2403 5.2171 7.0613 5.1281 6.8453 5.1381 6.6953 5.1471 6.3283 5.3501 5.7463 5.7451 5.1633 6.1411 4.8673 6.4131 4.8583 6.5651 4.8583 6.6321 4.8723 6.7211 4.9003 6.8311 4.9283 6.9401 4.9433 7.0221 4.9433 7.0811V13.0801C4.9433 13.2981 4.7313 13.4551 4.3083 13.5511 3.8383 13.6641 3.5703 13.8221 3.5053 14.0221 3.4673 14.1271 3.4483 14.2261 3.4483 14.3221 3.4483 14.5311 3.5513 14.7791 3.7583 15.0651 4.0403 15.4541 4.2103 15.7081 4.2663 15.8211 4.3793 16.1921 4.4913 16.5641 4.6043 16.9351 4.7633 17.3541 5.0413 17.5641 5.4363 17.5641 5.8403 17.5641 6.2443 17.4391 6.6483 17.1931 7.0993 16.9171 7.3243 16.6021 7.3243 16.2511V6.7811C7.3243 6.6851 7.3693 6.5631 7.4593 6.4161 7.5483 6.2681 7.5923 6.1421 7.5923 6.0381"/>
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+</svg>

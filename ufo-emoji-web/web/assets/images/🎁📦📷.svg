@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" width="32" height="32" viewBox="0 0 32 32">
+<defs>
+<clipPath id="clip_1">
+<path transform="matrix(1,0,0,-1,0,32)" d="M0 0H32V32H0Z"/>
+</clipPath>
+<mask id="mask_2">
+<g transform="matrix(1.1034483,0,0,1.1034483,0,0)">
+<image id="image_3" width="29" height="29" xlink:href="data:image/png;base64,
+iVBORw0KGgoAAAANSUhEUgAAAB0AAAAdCAAAAABz+DjTAAAACXBIWXMAAA7EAAAO
+xAGVKw4bAAAAjUlEQVR4nGNgwAMY8UlSDhgjG5rL1JEEmDzDwnzZQCzR8JjC/0Bw
+PiE2BgjiEpKSU/JBAiVxUQoMZf9xg0kMNXhkpzPU4pGdQZFsHQWy9XhkZzJMxSO7
+imEnHtmjDHvwyB5n2IdH9gRe2ZMM+/HIniIguxevvWvwyO5lMF66fQd2sH2VK21T
+LB6AN68AACJtBhFV94a1AAAAAElFTkSuQmCC"/>
+</g>
+</mask>
+</defs>
+<g>
+<g clip-path="url(#clip_1)">
+<g mask="url(#mask_2)">
+<g transform="matrix(1.1034483,0,0,1.1034483,0,0)">
+<image id="image_4" width="29" height="29" xlink:href="data:image/png;base64,
+iVBORw0KGgoAAAANSUhEUgAAAB0AAAAdCAIAAADZ8fBYAAAACXBIWXMAAA7EAAAO
+xAGVKw4bAAAFR0lEQVR4nNWVS2zTdhzHfWfSkLYKODGkDYQEbDDGNiYum2gLTdqm
+adomzfthJ7HzcOw4tuM4cfPoI03XwpCAlldhtE0ChcJgDK0r0OeKqg2tm8aG2A7b
+pI3CrYgDYj/HLXDaThywPrKsOPn4+//5+1eQJy/iWFxEXoj3yZOX1/v48eOLV0bz
+577ID18cKI7cufvb//740aNH41Mz45PTl78anb059/Dhw2feewv3r09+e21iZuTy
+1QaTnRcllCBd3oCUbr8xNfvNjSm4JTM5A18DJqZvwnlsfBpuFUcuNxhtTDTWbEMD
+IWZ45NLo9anR65N//PkX0nvsZK5nXyabO9J/qnD2fOHsubzCmXNDZ4aB0/mimGyN
+taQBQUpFEyk+nuTiLawosTEpEks8Q0jQvGhxEfl8Aek71p9ua2vLdi48eADZZe7f
+/2dhib/vAQsXLn1Js1EgFOHIMBugGT8V9odoH1kCLkJhAD4kyLDB4iwUCsjREyeT
+ra1RMXGot3dgKD84lIfzwOAQcHpgEOg/dSrM8rKRYYN0pGQMQ96OngPp3L5AmPP4
+SDwQwoMUQVJw1psdy95MBrysEGO4aBhgeSrCASGGBUg6EqQZkJJhWdqa6/76xvR3
+87dv/fTL3Pztqzd/OHzmUpCNeXxBb0B+QMlbRI6AN53hxTgXE0EdiQICwwvwALr0
+AGXtkDRAhfcf7P3x19/HJmY+L+QP9B7cf/hgf/Hs+fHZofHvvRSPEX6vn9Sb7UXZ
+exy8aT4WZ4VlL7/kDXOl4Ax4ZSkXi/985+6V0WuZznYuEcUDuNePR0Q+82lucGz6
+8MUJG0a4iYDsLcre/mQmXQorslHFG3uaFwiVxuojqeLw8K35eTElhRhq86ZNK1a8
+Asfmt7cEGCrds39wbJYS06jXpzfZ5Lx9x07AfJW8pSHIUoaPPpsDw0JY8F64MHz0
++BEyQpVXVry6cuXrZavLylatXrOmUrXXR4cOnTzR0dNtQz1NJlsBetbZ/Vm2qyuR
+yohyQ1MxKSVIyWgiGY23cHJDoZUizQmoB+/MZpgIjZP+rdu3v/Z62Y6dn2zY+M4b
+69Z9sPNDt5+IJ3hJEswO1GTH+vqOItDKXHd3PJmOSUkApEKiBaTRuMSLCZgpGxUh
+u9lmd+OeZrPRHSA+rigvW7Vm7do3N2zY+Nb69WpNjYvwsmHKi6KQ1+J0d3V1I1bU
+k83lSi4J2lYqRpwTlsaiDBqm4fEF6nS6BoNebzW7fPiWrdu2bnv3vR3vf7Rrlyfo
+c2OuuM+v12idHsJsR9PpDGK0o+2dWQGWESsZlRcoLA96ecqwu7QNjU3NzXtUVSan
+HfMTFqfDhrogvh1z+XS6gK6xpk6H4j6TzZVMphCD1dmW7Vju79KrUyr83NuDSoRh
+xBqtVtfYoG/Umqwmq8sB2IwGVK32VFdX7q6wOFDomdHqlKQWxGCxt3Z08KVNwT41
+KhuP42Hv0XKFYbMxfpKyOVFtvdbY3BTC0aDD6qitNlWr6lVVFZV79CYrhvth1zVb
+HImEhECNW9vbuKXyChE+qsQEqdJfpWrK1sD9QchkMJrqtNqm+voatXpvlUqtqTfb
+nRju88JWlr32eDyBgL4lmSyFigChMMCQNAMLD1IKdCBEQ1jAFwyhXsKBeWwuzOJw
+WexOOFudqBPzugm/G/ejHkJvtMreCMfrDQatth4i1NXJaBQ0dbXPU6sBamo1KnU1
+rLq8onJ3eYUCXFdVqdXqarilUqnLyyuSUgKZm5ujKQpdPrCnYCWev/4vMOXLbgyj
+qdDkxMTL+3/8sngXF1+E91/6TmhZP80yKgAAAABJRU5ErkJggg=="/>
+</g>
+</g>
+</g>
+</g>
+</svg>

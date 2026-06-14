@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" width="32" height="32" viewBox="0 0 32 32">
+<defs>
+<clipPath id="clip_1">
+<path transform="matrix(1,0,0,-1,0,32)" d="M0 0H32V32H0Z"/>
+</clipPath>
+<clipPath id="clip_2">
+<path transform="matrix(1,0,0,-1,0,32)" d="M0 0H32V32H0Z"/>
+</clipPath>
+<clipPath id="clip_3">
+<path transform="matrix(1,0,0,-1,0,32)" d="M0 0H32V32H0Z"/>
+</clipPath>
+<clipPath id="clip_4">
+<path transform="matrix(1,0,0,-1,0,32)" d="M0 0H32V32H0Z"/>
+</clipPath>
+<clipPath id="clip_5">
+<path transform="matrix(1,0,0,-1,0,32)" d="M0 0H32V32H0Z"/>
+</clipPath>
+<clipPath id="clip_6">
+<path transform="matrix(1,0,0,-1,0,32)" d="M0 0H32V32H0Z"/>
+</clipPath>
+<clipPath id="clip_7">
+<path transform="matrix(1,0,0,-1,0,32)" d="M15 6H24V26H15Z"/>
+</clipPath>
+<clipPath id="clip_8">
+<path transform="matrix(1,0,0,-1,0,32)" d="M15.9039 6.86145H23.614399V25.1385H15.9039Z"/>
+</clipPath>
+<clipPath id="clip_9">
+<path transform="matrix(1,0,0,-1,0,32)" d="M0 0H32V32H0Z"/>
+</clipPath>
+<clipPath id="clip_10">
+<path transform="matrix(1,0,0,-1,0,32)" d="M5 5H10V18H5Z"/>
+</clipPath>
+<clipPath id="clip_11">
+<path transform="matrix(1,0,0,-1,0,32)" d="M5.5153 5.0242H9.65907V17.4518H5.5153Z"/>
+</clipPath>
+</defs>
+<g>
+<g clip-path="url(#clip_1)">
+<g>
+<g clip-path="url(#clip_2)">
+<g clip-path="url(#clip_3)">
+<g style="mix-blend-mode:color">
+<g clip-path="url(#clip_4)">
+<g clip-path="url(#clip_5)">
+<path transform="matrix(1,0,0,-1,0,32)" d="M0 0H32V32H0Z" fill="#ff0000"/>
+</g>
+</g>
+</g>
+</g>
+<g clip-path="url(#clip_6)">
+<g opacity=".5">
+<g clip-path="url(#clip_7)">
+<g clip-path="url(#clip_8)">
+<path transform="matrix(1,0,0,-1,0,32)" d="M23.6143 25.1387V6.8617H19.0533V16.6597C19.0533 18.0757 19.0193 18.9257 18.9523 19.2117 18.8843 19.4977 18.6973 19.7137 18.3933 19.8617 18.0883 20.0077 17.4093 20.0807 16.3553 20.0807H15.9043V22.2107C18.1093 22.6867 19.7833 23.6607 20.9273 25.1387Z" fill="#ffffff"/>
+</g>
+</g>
+</g>
+</g>
+<g clip-path="url(#clip_9)">
+<g opacity=".75">
+<g clip-path="url(#clip_10)">
+<g clip-path="url(#clip_11)">
+<path transform="matrix(1,0,0,-1,0,32)" d="M9.6592 5.9258C9.6592 5.6878 9.5882 5.4758 9.4472 5.2898 9.3072 5.1038 9.1282 5.0158 8.9122 5.0248 8.7622 5.0348 8.3952 5.2378 7.8132 5.6328 7.2302 6.0288 6.9332 6.3008 6.9242 6.4528 6.9242 6.5198 6.9392 6.6088 6.9672 6.7188 6.9952 6.8278 7.0092 6.9098 7.0092 6.9688V12.9678C7.0092 13.1858 6.7982 13.3428 6.3752 13.4388 5.9052 13.5518 5.6372 13.7098 5.5712 13.9098 5.5342 14.0148 5.5152 14.1138 5.5152 14.2098 5.5152 14.4188 5.6182 14.6668 5.8252 14.9528 6.1072 15.3418 6.2762 15.5958 6.3322 15.7088 6.4462 16.0798 6.5582 16.4518 6.6712 16.8228 6.8302 17.2418 7.1082 17.4518 7.5022 17.4518 7.9062 17.4518 8.3102 17.3268 8.7142 17.0808 9.1662 16.8048 9.3912 16.4898 9.3912 16.1388V6.6688C9.3912 6.5728 9.4362 6.4508 9.5252 6.3038 9.6142 6.1558 9.6592 6.0298 9.6592 5.9258"/>
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+</svg>
