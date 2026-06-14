@@ -162,6 +162,27 @@ json.dump(m, open(man, "w"))
 print(f"  manifest: {len(m['fonts'])} fonts, {len(m['images'])} images, {len(m['sounds'])} sounds, {len(m['texts'])} texts")
 PY
   cp "$WASMKIT/runtime.js" "$SCRIPT_DIR/web/runtime.js" 2>/dev/null || true
+
+  # Cache-bust: stamp a fresh build token into index.html so the browser never
+  # serves a stale runtime.js / .wasm / asset after a rebuild (the recurring
+  # "I fixed it but the page looks the same" trap). Appends ?v=<token> to the
+  # runtime.js <script> and sets WASMWEB.cacheBust, which runtime.js forwards to
+  # the wasm + every asset fetch. Idempotent — re-stamps each build.
+  BUILD_VERSION="$(date +%Y%m%d%H%M%S)"
+  python3 - "$SCRIPT_DIR/web/index.html" "$BUILD_VERSION" <<'PY'
+import re, sys
+path, ver = sys.argv[1], sys.argv[2]
+h = open(path).read()
+# runtime.js script src -> runtime.js?v=VER
+h = re.sub(r'src="runtime\.js(?:\?v=[^"]*)?"', f'src="runtime.js?v={ver}"', h)
+# WASMWEB.cacheBust: replace if present, else insert after wasmUrl line
+if re.search(r'cacheBust\s*:', h):
+    h = re.sub(r"cacheBust\s*:\s*'[^']*'", f"cacheBust: '{ver}'", h)
+else:
+    h = re.sub(r"(wasmUrl\s*:\s*'[^']*',)", r"\1\n      cacheBust: '" + ver + "',", h)
+open(path, "w").write(h)
+print(f"  cache-bust: v={ver}")
+PY
 }
 
 # ---- main ------------------------------------------------------------------

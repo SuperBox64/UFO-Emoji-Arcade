@@ -91,7 +91,7 @@
       ],
       "fontName" : "AmericanTypewriter",
       "fontSize" : 14,
-      "horizontalAlignment" : "left",
+      "horizontalAlignment" : "center",
       "kind" : "SKLabelNode",
       "name" : "SKLabelNode",
       "position" : [
