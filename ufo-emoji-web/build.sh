@@ -123,7 +123,12 @@ build_assets() {
     for s in fire wah2 murrmurr boomFire1 boomFire2 Explosion1 extralife doublelaser; do
       [ -f "$GAME/GameSounds/${s}.m4a" ] && ffmpeg -y -i "$GAME/GameSounds/${s}.m4a" "$OUT/sfx/${s}.wav" >/dev/null 2>&1 || true
     done
-    [ -f "$GAME/GameMusic/music1.mp3" ] && cp "$GAME/GameMusic/music1.mp3" "$OUT/sfx/music1.mp3" 2>/dev/null || true
+    # Background music: WASM/Web Audio plays it quieter than the iOS AVAudioPlayer,
+    # so boost +8dB for this game's web build ONLY (the Apple asset is untouched).
+    if [ -f "$GAME/GameMusic/music1.mp3" ]; then
+      ffmpeg -y -i "$GAME/GameMusic/music1.mp3" -filter:a "volume=8dB" -c:a libmp3lame -q:a 4 "$OUT/sfx/music1.mp3" >/dev/null 2>&1 \
+        || cp "$GAME/GameMusic/music1.mp3" "$OUT/sfx/music1.mp3" 2>/dev/null || true
+    fi
   fi
 }
 

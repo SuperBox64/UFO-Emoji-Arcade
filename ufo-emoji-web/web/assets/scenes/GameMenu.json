@@ -1,113 +1,113 @@
 {
-  "anchorPoint": [
+  "anchorPoint" : [
     0.5,
     0.5
   ],
-  "backgroundColor": [
+  "backgroundColor" : [
     0,
-    0.0784313753247261,
-    0.3137255012989044,
+    0.078431375324726105,
+    0.31372550129890442,
     1
   ],
-  "children": [
+  "children" : [
     {
-      "kind": "SKNode",
-      "name": "emoji",
-      "position": [
+      "kind" : "SKNode",
+      "name" : "emoji",
+      "position" : [
         -145,
         52
       ]
     },
     {
-      "kind": "SKNode",
-      "name": "ship",
-      "position": [
+      "kind" : "SKNode",
+      "name" : "ship",
+      "position" : [
         -145,
         -26
       ]
     },
     {
-      "kind": "SKNode",
-      "name": "level",
-      "position": [
+      "kind" : "SKNode",
+      "name" : "level",
+      "position" : [
         -145,
         -103
       ]
     },
     {
-      "kind": "SKNode",
-      "name": "music",
-      "position": [
+      "kind" : "SKNode",
+      "name" : "music",
+      "position" : [
         145,
         52
       ]
     },
     {
-      "kind": "SKNode",
-      "name": "play",
-      "position": [
+      "kind" : "SKNode",
+      "name" : "play",
+      "position" : [
         145,
         -103
       ]
     },
     {
-      "kind": "SKNode",
-      "name": "sound",
-      "position": [
+      "kind" : "SKNode",
+      "name" : "sound",
+      "position" : [
         145,
         -26
       ]
     },
     {
-      "anchorPoint": [
+      "anchorPoint" : [
         0.5,
         0.5
       ],
-      "color": [
+      "color" : [
         1,
         1,
         1,
-        1
+        0
       ],
-      "colorBlendFactor": 0,
-      "kind": "SKSpriteNode",
-      "position": [
+      "colorBlendFactor" : 0,
+      "kind" : "SKSpriteNode",
+      "position" : [
         -0.49902963638305664,
         127.40049743652344
       ],
-      "size": [
+      "size" : [
         475,
         65
       ],
-      "texture": "latestlogo"
+      "texture" : "latestlogo"
     },
     {
-      "alpha": 0.5,
-      "fontColor": [
+      "alpha" : 0.5,
+      "fontColor" : [
         1,
         1,
         1,
         1
       ],
-      "fontName": "AmericanTypewriter",
-      "fontSize": 14,
-      "horizontalAlignment": "left",
-      "kind": "SKLabelNode",
-      "name": "SKLabelNode",
-      "position": [
-        -0.9993057250976562,
+      "fontName" : "AmericanTypewriter",
+      "fontSize" : 14,
+      "horizontalAlignment" : "left",
+      "kind" : "SKLabelNode",
+      "name" : "SKLabelNode",
+      "position" : [
+        -0.99930572509765625,
         -152.92393493652344
       ],
-      "text": "\u00a9 2015 - 2024 Todd Bruss",
-      "verticalAlignment": "baseline"
+      "text" : "© 2015 - 2024 Todd Bruss",
+      "verticalAlignment" : "baseline"
     }
   ],
-  "kind": "SKScene",
-  "position": [
+  "kind" : "SKScene",
+  "position" : [
     0,
     0
   ],
-  "size": [
+  "size" : [
     612,
     340
   ]
