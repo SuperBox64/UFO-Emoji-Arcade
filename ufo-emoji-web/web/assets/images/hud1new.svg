@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" width="180" height="180" viewBox="0 0 180 180">
+<defs>
+<clipPath id="clip_1">
+<path transform="matrix(1,0,0,-1,0,180)" d="M0 0H180V180H0Z"/>
+</clipPath>
+<clipPath id="clip_2">
+<path transform="matrix(1,0,0,-1,0,180)" d="M0 0H180V180H0Z"/>
+</clipPath>
+<clipPath id="clip_3">
+<path transform="matrix(1,0,0,-1,0,180)" d="M0 0H180V180H0Z"/>
+</clipPath>
+<clipPath id="clip_4">
+<path transform="matrix(1,0,0,-1,0,180)" d="M0 0H180V180H0Z"/>
+</clipPath>
+<clipPath id="clip_5">
+<path transform="matrix(1,0,0,-1,0,180)" d="M7 7H173V173H7Z"/>
+</clipPath>
+<clipPath id="clip_6">
+<path transform="matrix(1,0,0,-1,0,180)" d="M7 7H173V173H7Z"/>
+</clipPath>
+</defs>
+<g>
+<g clip-path="url(#clip_1)">
+<g opacity=".12">
+<g clip-path="url(#clip_2)">
+<g clip-path="url(#clip_3)">
+<path transform="matrix(1,0,0,-1,0,180)" d="M178.0002 90C178.0002 138.523 138.5232 178 90.0002 178 41.4772 178 2.0002 138.523 2.0002 90 2.0002 41.477 41.4772 2 90.0002 2 138.5232 2 178.0002 41.477 178.0002 90M180.0002 90C180.0002 40.294 139.7062 0 90.0002 0 40.2942 0 .0002 40.294 .0002 90 .0002 139.706 40.2942 180 90.0002 180 139.7062 180 180.0002 139.706 180.0002 90" fill="#ffffff"/>
+</g>
+</g>
+</g>
+</g>
+<g clip-path="url(#clip_4)">
+<g opacity=".12">
+<g clip-path="url(#clip_5)">
+<g clip-path="url(#clip_6)">
+<path transform="matrix(1,0,0,-1,0,180)" d="M90.0002 147.3828C94.6982 147.3828 99.2612 146.8028 103.6332 145.7328L90.0002 172.9998 76.3662 145.7328C80.7392 146.8028 85.3022 147.3828 90.0002 147.3828" fill="#ffffff"/>
+<path transform="matrix(1,0,0,-1,0,180)" d="M173.0002 90 145.7332 103.633C146.8032 99.261 147.3832 94.698 147.3832 90 147.3832 85.302 146.8032 80.739 145.7332 76.367Z" fill="#ffffff"/>
+<path transform="matrix(1,0,0,-1,0,180)" d="M90.0002 32.6172C85.3022 32.6172 80.7392 33.1972 76.3662 34.2672L90.0002 7.0002 103.6332 34.2672C99.2612 33.1972 94.6982 32.6172 90.0002 32.6172" fill="#ffffff"/>
+<path transform="matrix(1,0,0,-1,0,180)" d="M32.6174 90C32.6174 94.698 33.1974 99.261 34.2674 103.634L7.0004 90 34.2674 76.366C33.1974 80.739 32.6174 85.302 32.6174 90" fill="#ffffff"/>
+</g>
+</g>
+</g>
+</g>
+</g>
+</svg>

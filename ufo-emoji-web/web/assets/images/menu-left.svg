@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" width="48" height="48" viewBox="0 0 48 48">
+<defs>
+<clipPath id="clip_1">
+<path transform="matrix(1,0,0,-1,0,48)" d="M0 0H48V48H0Z"/>
+</clipPath>
+<clipPath id="clip_2">
+<path transform="matrix(1,0,0,-1,0,48)" d="M0 0H48V48H0Z"/>
+</clipPath>
+<clipPath id="clip_3">
+<path transform="matrix(1,0,0,-1,0,48)" d="M0 0H48V48H0Z"/>
+</clipPath>
+<clipPath id="clip_4">
+<path transform="matrix(1,0,0,-1,0,48)" d="M0 0H48V48H0Z"/>
+</clipPath>
+<clipPath id="clip_5">
+<path transform="matrix(1,0,0,-1,0,48)" d="M8 8H40V40H8Z"/>
+</clipPath>
+<clipPath id="clip_6">
+<path transform="matrix(1,0,0,-1,0,48)" d="M8 8H40V40H8Z"/>
+</clipPath>
+</defs>
+<g>
+<g clip-path="url(#clip_1)">
+<g opacity=".5">
+<g clip-path="url(#clip_2)">
+<g clip-path="url(#clip_3)">
+<path transform="matrix(1,0,0,-1,0,48)" d="M40 0C38.777 0 37.552 .28 36.422 .845L4.422 16.845C1.712 18.2 0 20.97 0 24 0 27.03 1.712 29.8 4.422 31.155L36.422 47.155C37.552 47.72 38.777 48 40 48 41.463 48 42.921 47.599 44.206 46.805 46.564 45.348 48 42.772 48 40V8C48 5.228 46.564 2.652 44.206 1.194 42.921 .4 41.462 0 40 0" fill="#4682ff"/>
+</g>
+</g>
+</g>
+</g>
+<g clip-path="url(#clip_4)">
+<g opacity=".75">
+<g clip-path="url(#clip_5)">
+<g clip-path="url(#clip_6)">
+<path transform="matrix(1,0,0,-1,0,48)" d="M40 40 8 24 40 8Z" fill="#ffffff"/>
+</g>
+</g>
+</g>
+</g>
+</g>
+</svg>

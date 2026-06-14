@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" width="48" height="48" viewBox="0 0 48 48">
+<defs>
+<clipPath id="clip_1">
+<path transform="matrix(1,0,0,-1,0,48)" d="M0 48H48V0H0Z"/>
+</clipPath>
+<clipPath id="clip_2">
+<path transform="matrix(1,0,0,-1,0,48)" d="M0 0H48V48H0Z"/>
+</clipPath>
+<clipPath id="clip_3">
+<path transform="matrix(1,0,0,-1,0,48)" d="M8 8H40V40H8Z"/>
+</clipPath>
+</defs>
+<g>
+<g inkscape:groupmode="layer" inkscape:label="Layer 1">
+<g clip-path="url(#clip_1)">
+<g opacity=".5">
+<g clip-path="url(#clip_2)">
+<path transform="matrix(1,0,0,-1,8,0)" d="M0 0C1.223 0 2.448-.28 3.578-.845L35.578-16.845C38.288-18.2 40-20.97 40-24 40-27.03 38.288-29.801 35.577-31.155L3.578-47.155C2.448-47.72 1.223-48 0-48-1.463-48-2.921-47.599-4.206-46.805-6.564-45.348-8-42.772-8-40V-8C-8-5.228-6.564-2.652-4.206-1.194-2.921-.4-1.462 0 0 0" fill="#4682ff"/>
+</g>
+</g>
+<g opacity=".75">
+<g clip-path="url(#clip_3)">
+<path transform="matrix(1,0,0,-1,8,40)" d="M0 0 32 16 0 32Z" fill="#ffffff"/>
+</g>
+</g>
+</g>
+</g>
+</g>
+</svg>

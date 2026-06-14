@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" width="94.5" height="94.5" viewBox="0 0 94.5 94.5">
+<defs>
+<clipPath id="clip_1">
+<path transform="matrix(1,0,0,-1,0,94.5)" d="M0 0H94.5V94.5H0Z"/>
+</clipPath>
+<clipPath id="clip_2">
+<path transform="matrix(1,0,0,-1,0,94.5)" d="M0 0H95V95H0Z"/>
+</clipPath>
+<clipPath id="clip_3">
+<path transform="matrix(1,0,0,-1,0,94.5)" d="M0 0H94.5V94.5H0Z"/>
+</clipPath>
+<clipPath id="clip_4">
+<path transform="matrix(1,0,0,-1,0,94.5)" d="M0 0H94.5V94.5H0Z"/>
+</clipPath>
+<clipPath id="clip_5">
+<path transform="matrix(1,0,0,-1,0,94.5)" d="M3 3H92V92H3Z"/>
+</clipPath>
+<clipPath id="clip_6">
+<path transform="matrix(1,0,0,-1,0,94.5)" d="M3.42187 3.42163H91.07819V91.0784H3.42187Z"/>
+</clipPath>
+</defs>
+<g>
+<g clip-path="url(#clip_1)">
+<g opacity=".07">
+<g clip-path="url(#clip_2)">
+<g clip-path="url(#clip_3)">
+<path transform="matrix(1,0,0,-1,0,94.5)" d="M47.279 3.4219C23.073 3.4059 3.438 23.0149 3.422 47.2209 3.406 71.4269 23.015 91.0629 47.221 91.0779 71.426 91.0939 91.062 71.4849 91.078 47.2789 91.094 23.0729 71.485 3.4379 47.279 3.4219M47.219 94.4999C21.165 94.4829-.017 73.2729 0 47.2189 .017 21.1649 21.228-.0171 47.281-.0001 73.335 .0169 94.517 21.2279 94.5 47.2809 94.483 73.3359 73.273 94.5169 47.219 94.4999" fill="#ffffff"/>
+</g>
+</g>
+</g>
+</g>
+<g clip-path="url(#clip_4)">
+<g opacity=".15">
+<g clip-path="url(#clip_5)">
+<g clip-path="url(#clip_6)">
+<path transform="matrix(1,0,0,-1,0,94.5)" d="M47.2502 3.4214C23.0442 3.4214 3.4222 23.0444 3.4222 47.2504 3.4222 71.4554 23.0442 91.0784 47.2502 91.0784 71.4562 91.0784 91.0782 71.4554 91.0782 47.2504 91.0782 23.0444 71.4562 3.4214 47.2502 3.4214" fill="#ffffff"/>
+</g>
+</g>
+</g>
+</g>
+</g>
+</svg>

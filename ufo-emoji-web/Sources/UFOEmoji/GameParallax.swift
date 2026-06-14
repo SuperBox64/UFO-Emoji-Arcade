@@ -1,0 +1,1 @@
+../../../UFO Emoji/UFO Emoji/GameModel/GameParallax.swift

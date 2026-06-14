@@ -10,22 +10,93 @@
 //   node tools/smoketest.mjs [path-to-wasm]
 
 import fs from 'node:fs';
+import path from 'node:path';
 
 const WASM = process.argv[2] || new URL('../web/ufoemoji.wasm', import.meta.url).pathname;
 const bytes = fs.readFileSync(WASM);
 const module = new WebAssembly.Module(bytes);
 
+// ---- Real asset loading (mirrors runtime.js) -------------------------------
+// SKScene/SKReferenceNode/SKEmitterNode(fileNamed:) resolve scene JSON through
+// asset_text. Serve the actual generated assets (the manifest's `texts`) so the
+// smoke test exercises the REAL scene-graph render path, not an empty scene.
+const WEB = new URL('../web', import.meta.url).pathname;
+const ASSETS = path.join(WEB, 'assets');
+const basenameNoExt = (p) => path.basename(p).replace(/\.[^.]*$/, '');
+
+const texts = new Map();    // name -> string (scene/particle JSON)
+const soundNames = new Set();
+let imgCounter = 0, sndCounter = 0;
+const imgHandles = new Map();  // name -> handle
+const handleDims = new Map();  // handle -> {w,h}  (O(1) img_width/img_height)
+const sndHandles = new Map();
+// Default texture extent. Must be > 0: GameParallax computes
+// `interations = round(bounds.width / (texWidth*factor) / factor)` and a zero
+// width yields a division-by-zero -> Int(inf) -> a multi-billion-iteration loop.
+const DEFAULT_DIM = 64;
+
+let manifest = { fonts: [], images: [], sounds: [], texts: [] };
+try { manifest = JSON.parse(fs.readFileSync(path.join(WEB, 'manifest.json'), 'utf8')); } catch {}
+
+const registerText = (relPath) => {
+  try {
+    const s = fs.readFileSync(path.join(ASSETS, relPath), 'utf8');
+    const base = path.basename(relPath);
+    texts.set(relPath, s);
+    texts.set('assets/' + relPath, s);
+    texts.set(base, s);
+    texts.set(basenameNoExt(relPath), s);
+  } catch {}
+};
+for (const t of manifest.texts || []) registerText(t);
+
+// Image/sound presence (so asset_exists + img/snd lookups resolve to non-zero
+// handles); we don't decode pixels headlessly, but report a default size so the
+// scene graph lays out and draws (gfx_draw_image still fires).
+const registerImage = (relPath) => {
+  const names = [relPath, 'assets/' + relPath, path.basename(relPath), basenameNoExt(relPath)];
+  imgCounter += 1;
+  handleDims.set(imgCounter, { w: DEFAULT_DIM, h: DEFAULT_DIM });
+  for (const n of names) imgHandles.set(n, imgCounter);
+  return imgCounter;
+};
+for (const im of manifest.images || []) registerImage(im);
+// Resolve (and lazily register) an image handle for any requested name, so a
+// texture the game looks up by name always reports a non-zero size — the real
+// browser runtime always has real dimensions; never 0.
+const lookupOrRegisterImage = (name) => {
+  let h = imgHandles.get(name) ?? imgHandles.get(path.basename(name)) ?? imgHandles.get(basenameNoExt(name));
+  if (h === undefined) h = registerImage(name);
+  return h;
+};
+const registerSound = (relPath) => {
+  const names = [relPath, 'assets/' + relPath, path.basename(relPath), basenameNoExt(relPath)];
+  sndCounter += 1;
+  for (const n of names) { sndHandles.set(n, sndCounter); soundNames.add(n); }
+};
+for (const sd of manifest.sounds || []) registerSound(sd);
+
 // SFML key codes (the ABI's event vocabulary; matches SKInput.SKKey).
 const SF = { space: 57, left: 71, right: 72, up: 73, down: 74, one: 27 };
-const EVT = { KeyPressed: 5, KeyReleased: 6 };
+const EVT = { KeyPressed: 5, KeyReleased: 6, MouseDown: 9, MouseUp: 10, MouseMoved: 11 };
 
 let memory = null;
 const dv = () => new DataView(memory.buffer);
 const u8 = () => new Uint8Array(memory.buffer);
+const textDecoder = new TextDecoder();
+const textEncoder = new TextEncoder();
+// Read a length-counted UTF-8 string from wasm memory (the kit's withUTF8Ptr ABI
+// passes ptr + byte length, NOT a NUL-terminated string).
+const cstr = (ptr, len) => textDecoder.decode(u8().subarray(ptr, ptr + len));
 
 // Event queue consumed by evt_poll.
 const events = [];
 const key = (type, sf) => events.push({ type, a: sf, b: 0, c: 0, d: 0 });
+// Mouse down/up at a logical (y-down) screen pixel. Button 0 = left. SKView's
+// pollEvents reads type 9/10 as {a:button, b:x, c:y, d:clickCount}.
+const lastMouse = { x: 0, y: 0 };
+const mouseDown = (x, y) => { lastMouse.x = x; lastMouse.y = y; events.push({ type: EVT.MouseDown, a: 0, b: x, c: y, d: 1 }); };
+const mouseUp   = (x, y) => { lastMouse.x = x; lastMouse.y = y; events.push({ type: EVT.MouseUp,   a: 0, b: x, c: y, d: 1 }); };
 
 // Call counters so we can assert the game is actually doing work.
 const calls = Object.create(null);
@@ -41,14 +112,35 @@ const meaningful = {
   win_width:  () => 1280,
   win_height: () => 720,
   font_by_name: () => 1,            // non-zero font handle so labels bind
-  img_by_name:  () => 0,            // no image atlas; actors are text
-  img_width:  () => 0,
-  img_height: () => 0,
-  asset_exists: () => 1,
-  asset_text:  () => 0,
-  snd_by_name: () => { bump('snd_by_name'); return 1; },   // non-zero buffer handle
+  img_by_name: (ptr, len) => lookupOrRegisterImage(cstr(ptr, len)),
+  img_width:  (h) => handleDims.get(h)?.w || DEFAULT_DIM,
+  img_height: (h) => handleDims.get(h)?.h || DEFAULT_DIM,
+  asset_exists: (ptr, len) => {
+    const name = cstr(ptr, len);
+    const base = path.basename(name);
+    return (texts.has(name) || texts.has(base) || imgHandles.has(name) || imgHandles.has(base) ||
+            sndHandles.has(name) || sndHandles.has(base)) ? 1 : 0;
+  },
+  asset_text: (ptr, nlen, bufPtr, cap) => {
+    const name = cstr(ptr, nlen);
+    const s = texts.get(name) ?? texts.get(path.basename(name));
+    if (s === undefined) return -1;               // matches runtime.js "missing"
+    const enc = textEncoder.encode(s);
+    if (cap > 0 && bufPtr) {
+      const n = Math.min(enc.length, cap);
+      u8().subarray(bufPtr, bufPtr + n).set(enc.subarray(0, n));
+    }
+    return enc.length;
+  },
+  snd_by_name: (ptr, len) => {
+    bump('snd_by_name');
+    const name = cstr(ptr, len);
+    return sndHandles.get(name) || sndHandles.get(path.basename(name)) || 1;
+  },
   snd_play:    () => { bump('snd_play'); return 1; },
   snd_status:  () => 0,
+  mouse_x: () => lastMouse.x,
+  mouse_y: () => lastMouse.y,
   gp_connected: () => 0,
   gfx_clear:     () => bump('gfx_clear'),
   gfx_draw_text: () => bump('gfx_draw_text'),
@@ -111,8 +203,16 @@ try {
   const titleText = calls.gfx_draw_text | 0;
 
   phase = 'start';
-  key(EVT.KeyPressed, SF.space);    // press space -> start game
-  frames(160);                      // ready-set-go (~2s) then into play
+  // The menu starts the game on a TOUCH of the "play"/"playbutton" node (not a
+  // key). With the smoke-test viewport (1280x720 -> phone, mode 2) the menu
+  // scene is 626x352 anchored at center, and the play button sits at scene
+  // (229,-103) -> logical screen pixel (542, 279). Tap it.
+  mouseDown(542, 279);
+  mouseUp(542, 279);
+  frames(20);
+  // Menu defers the transition ~1.6s via DispatchQueue.main.asyncAfter, then
+  // StartUp's ready-set-go plays before GameScene presents (and plays music).
+  frames(200);
 
   phase = 'play';
   key(EVT.KeyPressed, SF.right);    // thrust right

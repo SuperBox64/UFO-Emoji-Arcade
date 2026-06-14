@@ -1,40 +1,33 @@
 import SpriteKit
+import UIKit
 import KitABI
 
-// Reactor-mode wasm entry. WasmKit's runtime.js calls _initialize once after
-// the asset manifest preloads, then boot() brings up the SKView and the first
-// scene (the same construction the iOS GameViewController performs), and
-// frame() advances one animation frame per requestAnimationFrame.
+// Reactor-mode wasm entry. WasmKit's runtime.js calls _initialize once after the
+// asset manifest preloads, then boot() brings up the SKView + first scene exactly
+// as the iOS GameViewController does, and frame() advances one animation frame.
 //
-// Logical canvas is 1280x720 (16:9). GameScene.scaleMode = .aspectFill matches
-// the original game's full-bleed layout across phone/tablet/desktop ratios.
+// The original boot path is GameViewController.viewDidLoad() → gameMenu(), which
+// does `self.view as? SKView`. We construct a real GameViewController, assign its
+// .view to an SKView (legal once SKView is a UIView subclass — SuperBox64Kit), and
+// drive viewDidLoad(); we also hold the SKView so frame() can tick it regardless.
 
-nonisolated(unsafe) var view: SKView? = nil
+nonisolated(unsafe) var gvc: GameViewController? = nil
+nonisolated(unsafe) var gView: SKView? = nil
 
 private func bootBody() {
+    // AppDelegate.application(_:didFinishLaunchingWithOptions:) normally does
+    // this on iOS, but AppDelegate is excluded from the wasm build (its
+    // @UIApplicationMain entry conflicts with our boot() reactor entry), so we
+    // load persisted settings here before bringing up the first scene.
+    loadSettings()
     let v = SKView()
-    v.ignoresSiblingOrder = true
-    v.showsFPS = false
-    v.shouldCullNonVisibleNodes = true
-    v.allowsTransparency = true
-    v.preferredFramesPerSecond = 60
-
-    let scene = GameScene(size: CGSize(width: 1280, height: 720))
-    scene.scaleMode = .aspectFill
-    v.presentScene(scene)
-    view = v
+    let c = GameViewController()
+    c.view = v
+    gView = v
+    gvc = c
+    c.viewDidLoad()        // → gameDelegate = self; saveSettings(); gameMenu()
 }
 
-#if hasFeature(Embedded)
-@_cdecl("boot")
-public func boot() { bootBody() }
-
-@_cdecl("frame")
-public func frame(_ dtMs: Double) { view?.tick(dtMs) }
-#else
-@_cdecl("boot")
-public func boot() { MainActor.assumeIsolated { bootBody() } }
-
-@_cdecl("frame")
-public func frame(_ dtMs: Double) { MainActor.assumeIsolated { view?.tick(dtMs) } }
-#endif
+// Single-threaded wasm, fully nonisolated stack — call directly.
+@_cdecl("boot")  public func boot() { bootBody() }
+@_cdecl("frame") public func frame(_ dtMs: Double) { gView?.tick(dtMs) }

@@ -1,0 +1,99 @@
+{
+  "emissionAngle" : 1.6821657419204712,
+  "emissionAngleRange" : 0.34999999403953552,
+  "kind" : "SKEmitterNode",
+  "numParticlesToEmit" : 0,
+  "particleAlpha" : 8.8000001907348633,
+  "particleAlphaRange" : 3.2000000476837158,
+  "particleAlphaSpeed" : 3.5499999523162842,
+  "particleBirthRate" : 312.24688720703125,
+  "particleBlendMode" : 5,
+  "particleColor" : [
+    0.30486425757408142,
+    0.13019143044948578,
+    0.023160237818956375,
+    1
+  ],
+  "particleColorAlphaRange" : 0,
+  "particleColorAlphaSpeed" : 0,
+  "particleColorBlendFactor" : 10,
+  "particleColorBlendFactorRange" : 0,
+  "particleColorBlendFactorSpeed" : 0,
+  "particleColorBlueRange" : 0,
+  "particleColorBlueSpeed" : 0,
+  "particleColorGreenRange" : 0,
+  "particleColorGreenSpeed" : 0,
+  "particleColorRedRange" : 0,
+  "particleColorRedSpeed" : 0,
+  "particleColorSequence" : {
+    "times" : [
+      0,
+      0.33566555380821228,
+      0.53703522682189941,
+      0.7669600248336792,
+      1
+    ],
+    "values" : [
+      [
+        1,
+        0.61107700890000005,
+        0.24514508930000001,
+        1
+      ],
+      [
+        1,
+        0.5,
+        0.32656232800000001,
+        1
+      ],
+      [
+        1,
+        0.79601004460000002,
+        0.84592633930000005,
+        1
+      ],
+      [
+        1,
+        0.53736049109999995,
+        0.26621093750000002,
+        1
+      ],
+      [
+        1,
+        0.53736048940000003,
+        0.26621094350000002,
+        1
+      ]
+    ]
+  },
+  "particleLifetime" : 2,
+  "particleLifetimeRange" : 1,
+  "particlePosition" : [
+    0,
+    0
+  ],
+  "particlePositionRange" : [
+    64,
+    0
+  ],
+  "particleRotation" : 0.13962633907794952,
+  "particleRotationRange" : 0,
+  "particleRotationSpeed" : 0,
+  "particleScale" : 0.5,
+  "particleScaleRange" : 0.40000000596046448,
+  "particleScaleSpeed" : -0.5,
+  "particleSize" : [
+    32,
+    32
+  ],
+  "particleSpeed" : 166.10000610351562,
+  "particleSpeedRange" : 75,
+  "particleTexture" : "👾😸🔥",
+  "particleZPosition" : 0,
+  "position" : [
+    0,
+    0
+  ],
+  "xAcceleration" : 5,
+  "yAcceleration" : -0
+}

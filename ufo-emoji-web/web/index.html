@@ -9,17 +9,18 @@
     html, body { margin: 0; height: 100%; background: #000; overflow: hidden;
       display: flex; align-items: center; justify-content: center;
       -webkit-tap-highlight-color: transparent; touch-action: none; }
-    #game { width: min(100vw, calc(100vh * 1280 / 720)); aspect-ratio: 1280 / 720;
+    /* Mode 2 (iPhone): the game renders at 626x352; CSS letterboxes to fit. */
+    #game { width: min(100vw, calc(100vh * 626 / 352)); aspect-ratio: 626 / 352;
       background: #000; object-fit: contain; outline: none; touch-action: none; }
     #game:fullscreen, #game:-webkit-full-screen { width: 100vw; height: 100vh; }
   </style>
 </head>
 <body>
-  <canvas id="game" width="1280" height="720" tabindex="0"></canvas>
+  <canvas id="game" width="626" height="352" tabindex="0"></canvas>
   <script>
     window.WASMWEB = {
-      logicalWidth: 1280,
-      logicalHeight: 720,
+      logicalWidth: 626,
+      logicalHeight: 352,
       wasmUrl: 'ufoemoji.wasm',
       assetRoot: 'assets',
       title: 'UFO EMOJI'

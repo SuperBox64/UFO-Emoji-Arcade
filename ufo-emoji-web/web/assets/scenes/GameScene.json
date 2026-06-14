@@ -1,0 +1,52 @@
+{
+  "anchorPoint" : [
+    0.5,
+    0.5
+  ],
+  "backgroundColor" : [
+    0,
+    0,
+    0,
+    1
+  ],
+  "children" : [
+    {
+      "children" : [
+        {
+          "cells" : [
+
+          ],
+          "kind" : "SKTileMapNode",
+          "name" : "Rocky",
+          "numberOfColumns" : 1,
+          "numberOfRows" : 1,
+          "position" : [
+            0.00012016295659122989,
+            0.00022506710956804454
+          ],
+          "tileSet" : "Water",
+          "tileSize" : [
+            6464,
+            352
+          ]
+        }
+      ],
+      "kind" : "SKNode",
+      "name" : "world",
+      "position" : [
+        0,
+        0
+      ]
+    }
+  ],
+  "kind" : "SKScene",
+  "name" : "Scene",
+  "position" : [
+    0,
+    0
+  ],
+  "size" : [
+    626,
+    352
+  ]
+}

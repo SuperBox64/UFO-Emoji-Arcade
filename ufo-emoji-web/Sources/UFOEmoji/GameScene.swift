@@ -1,1325 +1,2088 @@
-//
-//  GameScene.swift  —  UFO Emoji (WebAssembly edition)
-//
-//  A code-driven reimplementation of Todd Bruss' iOS SpriteKit game "UFO Emoji"
-//  for the SuperBox64 SpriteKit-on-wasm runtime. The original is built from
-//  binary .sks scenes + SKTileMapNode tilemaps (which the wasm subset doesn't
-//  load), so the side-scrolling arcade gameplay is rebuilt here in pure code,
-//  with every actor drawn as live emoji text via SKLabelNode.
-//
-//  Faithful to the original's identity: pilot an emoji flying saucer (👽🛸 /
-//  🐵🚀 / 💩🚀) through three worlds — Water World 🌊, Sand Dunes 🏜️ and Outer
-//  Space 🌌 — blasting enemy emoji, grabbing power-ups (double laser, shield,
-//  smart bomb, rapid fire, extra life), and chasing a high score across 12
-//  levels with boss fights.
-//
-//  Original game (c) 2015–2024 Todd Bruss. WASM port keeps the gameplay design.
-//
-
-import SpriteKit
-import GameController
-
-// MARK: - Tunables
-
-private let kSceneW: CGFloat = 1280
-private let kSceneH: CGFloat = 720
-private let kEmojiFont = "Apple Color Emoji"   // runtime maps to the platform emoji font
-private let kArcadeFont = "Menlo-Bold"         // HUD / banners
-
-private enum Z {
-    static let bgFar: CGFloat   = -100
-    static let bgMid: CGFloat   = -80
-    static let bgNear: CGFloat  = -60
-    static let world: CGFloat   = 0
-    static let item: CGFloat    = 10
-    static let enemy: CGFloat   = 20
-    static let bullet: CGFloat  = 30
-    static let hero: CGFloat    = 40
-    static let fx: CGFloat      = 60
-    static let hud: CGFloat     = 1000
-    static let overlay: CGFloat = 2000
-}
-
-// MARK: - Game state machine
-
-private enum Mode {
-    case title, ready, playing, levelUp, gameOver
-}
-
-// MARK: - Pilots
-
-private struct Pilot {
-    let face: String      // 👽 / 🐵 / 💩
-    let ship: String      // 🛸 / 🚀
-    let beam: String      // laser glyph
-    let name: String
-}
-
-private let kPilots: [Pilot] = [
-    Pilot(face: "👽", ship: "🛸", beam: "🟢", name: "ALIEN"),
-    Pilot(face: "🐵", ship: "🚀", beam: "🟡", name: "MONKEY"),
-    Pilot(face: "💩", ship: "🚀", beam: "🟤", name: "POO"),
-]
-
-// MARK: - World themes
-
-private struct World {
-    let name: String
-    let sky: SKColor
-    let horizon: SKColor
-    let far: [String]      // slow parallax emoji
-    let near: [String]     // ground / decoration emoji
-    let enemies: [String]  // enemy roster for this world
-    let goodies: [String]  // friendly critters that drift by for bonus points
-}
-
-private let kWorlds: [World] = [
-    // Water World  (levels 1–4)
-    World(name: "WATER WORLD",
-          sky: SKColor(red: 0.20, green: 0.55, blue: 0.95, alpha: 1),
-          horizon: SKColor(red: 0.05, green: 0.22, blue: 0.55, alpha: 1),
-          far: ["☁️", "⛅️", "☁️"],
-          near: ["🌊", "🌊", "🏝️", "🌊", "⛵️"],
-          enemies: ["🦖", "🐍", "🦅", "🦂", "🐙", "🦈"],
-          goodies: ["🐬", "🐢", "🕊", "🦆", "🦋"]),
-    // Sand Dunes  (levels 5–8)
-    World(name: "SAND DUNES",
-          sky: SKColor(red: 0.98, green: 0.78, blue: 0.40, alpha: 1),
-          horizon: SKColor(red: 0.80, green: 0.45, blue: 0.18, alpha: 1),
-          far: ["☁️", "🌤️", "☁️"],
-          near: ["🌵", "🏜️", "🌵", "🪨", "🐫"],
-          enemies: ["🦂", "🐗", "🐍", "🦅", "🦖", "👹"],
-          goodies: ["🐪", "🦔", "🦎", "🕊", "🌻"]),
-    // Outer Space  (levels 9–12)
-    World(name: "OUTER SPACE",
-          sky: SKColor(red: 0.02, green: 0.02, blue: 0.08, alpha: 1),
-          horizon: SKColor(red: 0.10, green: 0.04, blue: 0.20, alpha: 1),
-          far: ["✨", "⭐️", "🌟", "💫"],
-          near: ["🪐", "🌑", "☄️", "🛰️", "🌌"],
-          enemies: ["👾", "👽", "🤖", "🛸", "👹", "💀"],
-          goodies: ["🌟", "🚀", "🦄", "🪐", "🌈"]),
-]
-
-private func worldIndex(forLevel level: Int) -> Int {
-    switch level {
-    case ...4:  return 0
-    case 5...8: return 1
-    default:    return 2
-    }
-}
-
-// MARK: - Power-ups
-
-private enum PowerKind: CaseIterable {
-    case doubleLaser, shield, rapidFire, smartBomb, extraLife, bonus
-    var glyph: String {
-        switch self {
-        case .doubleLaser: return "🔫"
-        case .shield:      return "🛡"
-        case .rapidFire:   return "💠"
-        case .smartBomb:   return "🔱"
-        case .extraLife:   return "❣️"
-        case .bonus:       return "💎"
+ //
+ //  GameScene.swift
+ //  UFO Emoji
+ //
+ //  Created by Todd Bruss on 5/9/20, Updated Oct 15, 2024.
+ //  Copyright (c) 2024 Todd Bruss. All rights reserved.
+ //
+ 
+ import SpriteKit
+ import AVFoundation
+ 
+ class GameScene: SKScene, FlightYokeProtocol, SKPhysicsContactDelegate, AVAudioPlayerDelegate {
+    
+    //MARK: Determine if demoMode is ON/OFF
+    let demoMode = false
+     
+    //MARK: Flight Stick
+    let zero = CGFloat(0.0), dampZero = CGFloat(0.0), dampMax = CGFloat(40.0)
+    let ease = TimeInterval(0.08), shipduration = TimeInterval(0.005)
+    let shipMax = CGFloat(500.0)
+    let shipCtr = CGFloat(250.0)
+    let shipMin = CGFloat(-500.0)
+    
+    //var alternator = false
+    
+    func FlightYokePilot(velocity: CGVector?, zRotation: CGFloat?) {
+        //MARK: reference to hero's physic's body - easier
+        guard
+            let hero = hero,
+            let pb = hero.physicsBody,
+            let velocity = velocity,
+            let zRotation = zRotation
+        else { return }
+        
+        func rotateShip (_ t: TimeInterval, _ angle: CGFloat ) {
+            let rot = SKAction.rotate(toAngle: angle, duration: t)
+            rot.timingMode = .easeInEaseOut
+            hero.run(rot)
+        }
+        
+        if velocity == CGVector.zero {
+            pb.linearDamping = dampMax
+            pb.velocity = velocity
+            
+            rotateShip(ease, zRotation)
+        } else {
+            pb.linearDamping = CGFloat(dampZero)
+            pb.velocity = velocity
+            
+            //MARK: Clamp using min max
+            func clamp (_ f: CGFloat) -> CGFloat {
+                min(max(f, shipMin), shipMax)
+            }
+            
+            //MARK: Add a little extra to our ships movement
+            pb.applyImpulse(CGVector( dx: velocity.dx / shipCtr, dy: velocity.dy / shipMax))
+            
+            //MARK: make sure we don't exceed 500 - Impulse is an accelerant
+            pb.velocity.dx = clamp(pb.velocity.dx)
+            pb.velocity.dy = clamp(pb.velocity.dy)
+            
+            rotateShip(shipduration, zRotation)
         }
     }
-}
-
-// MARK: - Lightweight actor records (manual movement + AABB collision)
-
-private final class Enemy {
-    let node: SKLabelNode
-    var vx: CGFloat
-    var vy: CGFloat
-    var baseY: CGFloat
-    var phase: CGFloat
-    var wobble: CGFloat
-    var hp: Int
-    var points: Int
-    var radius: CGFloat
-    var fireCooldown: CGFloat
-    var isBoss: Bool
-    var diving: Bool = false
-    init(node: SKLabelNode, vx: CGFloat, vy: CGFloat, baseY: CGFloat, phase: CGFloat,
-         wobble: CGFloat, hp: Int, points: Int, radius: CGFloat, fireCooldown: CGFloat, isBoss: Bool) {
-        self.node = node; self.vx = vx; self.vy = vy; self.baseY = baseY
-        self.phase = phase; self.wobble = wobble; self.hp = hp; self.points = points
-        self.radius = radius; self.fireCooldown = fireCooldown; self.isBoss = isBoss
-    }
-}
-
-private final class Bullet {
-    let node: SKLabelNode
-    var vx: CGFloat
-    var vy: CGFloat
-    var radius: CGFloat
-    init(node: SKLabelNode, vx: CGFloat, vy: CGFloat, radius: CGFloat) {
-        self.node = node; self.vx = vx; self.vy = vy; self.radius = radius
-    }
-}
-
-private final class Item {
-    let node: SKLabelNode
-    let kind: PowerKind
-    var vx: CGFloat
-    var vy: CGFloat
-    var phase: CGFloat
-    init(node: SKLabelNode, kind: PowerKind, vx: CGFloat, vy: CGFloat, phase: CGFloat) {
-        self.node = node; self.kind = kind; self.vx = vx; self.vy = vy; self.phase = phase
-    }
-}
-
-private final class Drifter {            // friendly goodie critter
-    let node: SKLabelNode
-    var vx: CGFloat
-    var baseY: CGFloat
-    var phase: CGFloat
-    init(node: SKLabelNode, vx: CGFloat, baseY: CGFloat, phase: CGFloat) {
-        self.node = node; self.vx = vx; self.baseY = baseY; self.phase = phase
-    }
-}
-
-// MARK: - GameScene
-
-final class GameScene: SKScene {
-
-    // World / camera
-    private let world = SKNode()          // gameplay actors live here
-    private let hud = SKNode()            // screen-fixed HUD
-    private let overlay = SKNode()        // banners / menus
-
-    // Hero
-    private var hero = SKLabelNode()
-    private var heroFace = SKLabelNode()
-    private var heroPos = CGPoint(x: 220, y: kSceneH / 2)
-    private var heroVel = CGVector.zero
-    private let heroRadius: CGFloat = 34
-
-    // Actors
-    private var enemies: [Enemy] = []
-    private var bullets: [Bullet] = []      // hero shots
-    private var enemyShots: [Bullet] = []
-    private var items: [Item] = []
-    private var drifters: [Drifter] = []
-    private var bgLayers: [(node: SKNode, factor: CGFloat)] = []
-
-    // HUD labels
-    private var scoreLabel = SKLabelNode()
-    private var hiScoreLabel = SKLabelNode()
-    private var levelLabel = SKLabelNode()
-    private var livesLabel = SKLabelNode()
-    private var powerLabel = SKLabelNode()
-
-    // State
-    private var mode: Mode = .title
-    private var pilotIndex = 0
-    private var score = 0
-    private var hiScore = 0
-    private var level = 1
-    private var lives = 3
-    private var killsThisLevel = 0
-    private var killsNeeded = 10
-    private var nextExtraLifeAt = 5000
-
-    // Power-up timers / flags
-    private var doubleLaser = false
-    private var rapidFire = false
-    private var shieldTime: CGFloat = 0
-
-    // Firing / spawning timers
-    private var fireTimer: CGFloat = 0
-    private var spawnTimer: CGFloat = 0
-    private var drifterTimer: CGFloat = 0
-    private var bossActive = false
-
-    // Timing
-    private var lastUpdate: TimeInterval = 0
-    private var stateTimer: CGFloat = 0     // generic per-state countdown
-
-    // Input
-    private var keyLeft = false, keyRight = false, keyUp = false, keyDown = false
-    private var keyFire = false
-    private var spaceEdge = false           // for menu "press space" debouncing
-
-    // Virtual joystick (touch / mouse)
-    private var stickActive = false
-    private var stickAnchor = CGPoint.zero
-    private var stickCurrent = CGPoint.zero
-    private var touchFiring = false
-
-    // Gamepad
-    private var pad: GCExtendedGamepad?
-
-    // Background music (looping; the runtime resumes audio on first user gesture)
-    private var music: SKAudioNode?
-
-    // MARK: Lifecycle
-
-    override func didMove(to view: SKView) {
-        anchorPoint = CGPoint.zero
-        backgroundColor = kWorlds[0].sky
-
-        addChild(world)
-        addChild(hud)
-        addChild(overlay)
-        hud.zPosition = Z.hud
-        overlay.zPosition = Z.overlay
-
-        hiScore = UserDefaults.standard.integer(forKey: "ufo.hiscore")
-
-        buildHUD()
-        buildHero()
-        setupController()
-        buildBackground(for: 0)
-        startMusic()
-        showTitle()
-    }
-
-    private func startMusic() {
-        let m = SKAudioNode(fileNamed: "music.ogg")
-        m.autoplayLooped = true
-        m.volume = 0.35
-        addChild(m)
-        music = m
-    }
-
-    // MARK: Background / parallax
-
-    private func clearBackground() {
-        for layer in bgLayers { layer.node.removeFromParent() }
-        bgLayers.removeAll()
-    }
-
-    private func buildBackground(for worldIdx: Int) {
-        clearBackground()
-        let w = kWorlds[worldIdx]
-        backgroundColor = w.sky
-
-        // Sky gradient: a stack of translucent horizon bands rising from the
-        // bottom — cheap vertical gradient without a shader.
-        let grad = SKNode()
-        grad.zPosition = Z.bgFar - 1
-        let bands = 14
-        for i in 0..<bands {
-            let t = CGFloat(i) / CGFloat(bands - 1)
-            let band = SKSpriteNode(color: mix(w.sky, w.horizon, t),
-                                    size: CGSize(width: kSceneW, height: kSceneH / CGFloat(bands) + 2))
-            band.anchorPoint = CGPoint(x: 0, y: 0)
-            band.position = CGPoint(x: 0, y: kSceneH / CGFloat(bands) * CGFloat(bands - 1 - i))
-            grad.addChild(band)
+    
+    private var QuadFireBombHUD : SKReferenceNode!
+    private var AlienYokeDpdHUD : SKReferenceNode!
+    private var parallax = SKReferenceNode()
+    
+    typealias Oreo = (bombsbutton:SKSpriteNode?,firebutton:SKSpriteNode?,hero:SKSpriteNode?,canape:SKSpriteNode?,tractor:SKSpriteNode?,bombsbutton2:SKSpriteNode?,firebutton2:SKSpriteNode?)
+    
+    private weak var firstBody : SKPhysicsBody!
+    private weak var secondBody : SKPhysicsBody!
+    private weak var bombsbutton: SKSpriteNode!
+    private weak var firebutton: SKSpriteNode!
+    private weak var bombsbutton2: SKSpriteNode!
+    private weak var firebutton2: SKSpriteNode!
+    private weak var hero:SKSpriteNode!
+    private weak var canape:SKSpriteNode!
+    private weak var tractor:SKSpriteNode!
+    private weak var world: SKNode!
+    private var FlightYoke : GTFlightYoke!
+    
+    private var heroEmoji:SKLabelNode!
+    private var audioPlayer: AVAudioPlayer!
+    private var cam : SKCameraNode!
+    private var scoreLabelNode:SKLabelNode!
+    private var highScoreLabelNode:SKLabelNode!
+    private var readySetGoNode:SKLabelNode!
+    private var highScoreLabel:SKLabelNode!
+    private var livesLabel:SKLabelNode!
+    private var livesLabelNode:SKLabelNode!
+    
+    private var screenHeight : CGFloat!
+    private var score : Int!
+    private lazy var level = Int()
+    private var highscore : Int!
+    private var lives : Int!
+    private var highlevel : Int!
+    private var rockBounds : CGRect!
+    private lazy var scoreDict: [String:Int]! = [:]
+    
+    private var maxVelocity = CGFloat(0)
+    private let heroCategory:UInt32       =  1
+    private let worldCategory:UInt32      =  2
+    private let bombBoundsCategory:UInt32 =  4
+    private let badFishCategory:UInt32    =  8
+    private let badGuyCategory:UInt32     =  16
+    private let tractorCategory:UInt32    =  32
+    private let laserbeam: UInt32         =  64
+    private let wallCategory:UInt32       =  128
+    private let itemCategory:UInt32       =  256
+    private let fishCategory:UInt32       =  512
+    private let charmsCategory:UInt32     =  1024
+    private let levelupCategory:UInt32    =  2048
+    private let laserBorder:UInt32        =  4096
+    
+    //Game Projectiles
+    private var 🛥 : Bool! = true
+    private var 🍕 : CGFloat! = CGFloat(1)
+    private lazy var 👁: SKSpriteNode! = SKSpriteNode()
+    private lazy var 💣: SKSpriteNode! = SKSpriteNode()
+    private let 🦞 = SKPhysicsBody(circleOfRadius: 16)
+    private let 🧨: SKLabelNode! = SKLabelNode(fontNamed:emojifontname)
+    private var 💩 : String! = "💩"
+    private var 🚨 : String! = "fire.m4a"
+    private var 💥 : String! = "wah2.m4a"
+    private var 🌞 : UInt32! = UInt32(32)
+    private let 🍺 : CGFloat! = CGFloat(16)
+    private let 🍎 : String! = emojifontname
+    private let 🍌 : String! = "🍌"
+    private let 🦸 : String! = "laserbeam"
+    private let 🥾 : String! = "super"
+    
+    //we can swap these out if we use other emoji ships: 0 through 6
+    
+    deinit {
+        parallax.removeAllChildren()
+        parallax.removeFromParent()
+        
+        if let first = world.children.first, first.hasActions() {
+            first.removeAllActions()
+            first.removeAllChildren()
+            first.removeFromParent()
         }
-        world.addChild(grad)
-        bgLayers.append((grad, 0))
-
-        // Far layer — slow drifting clouds / stars.
-        let far = SKNode()
-        far.zPosition = Z.bgFar
-        for i in 0..<10 {
-            let g = w.far[i % w.far.count]
-            let n = makeEmoji(g, size: CGFloat.random(in: 40...72))
-            n.position = CGPoint(x: CGFloat(i) / 10 * (kSceneW + 200) + CGFloat.random(in: -40...40),
-                                 y: CGFloat.random(in: kSceneH * 0.45 ... kSceneH * 0.95))
-            n.alpha = 0.85
-            far.addChild(n)
+        
+        if let w = world {
+            w.removeAllActions()
+            w.removeAllChildren()
+            w.removeFromParent()
+            w.parent?.removeAllChildren()
+            w.parent?.removeFromParent()
         }
-        world.addChild(far)
-        bgLayers.append((far, 0.15))
-
-        // Mid layer — bigger scenery.
-        let mid = SKNode()
-        mid.zPosition = Z.bgMid
-        for i in 0..<8 {
-            let g = w.near[i % w.near.count]
-            let n = makeEmoji(g, size: CGFloat.random(in: 54...96))
-            n.position = CGPoint(x: CGFloat(i) / 8 * (kSceneW + 240) + CGFloat.random(in: -40...40),
-                                 y: CGFloat.random(in: kSceneH * 0.10 ... kSceneH * 0.40))
-            n.alpha = 0.9
-            mid.addChild(n)
+        
+        if let c = cam {
+            c.removeAllActions()
+            c.removeAllChildren()
+            c.removeFromParent()
+            c.parent?.removeAllChildren()
+            c.parent?.removeFromParent()
         }
-        world.addChild(mid)
-        bgLayers.append((mid, 0.4))
-
-        // Near ground strip scrolling fastest.
-        let near = SKNode()
-        near.zPosition = Z.bgNear
-        for i in 0..<14 {
-            let g = w.near[(i + 2) % w.near.count]
-            let n = makeEmoji(g, size: CGFloat.random(in: 46...74))
-            n.position = CGPoint(x: CGFloat(i) / 14 * (kSceneW + 200),
-                                 y: CGFloat.random(in: 24...90))
-            near.addChild(n)
+        
+        if let cm = camera {
+            cm.removeAllActions()
+            cm.removeAllChildren()
+            cm.removeFromParent()
+            cm.parent?.removeAllChildren()
+            cm.parent?.removeFromParent()
         }
-        world.addChild(near)
-        bgLayers.append((near, 0.85))
+        
+        if let scene = scene {
+            scene.removeAllActions()
+            scene.removeAllChildren()
+            scene.removeFromParent()
+            scene.parent?.removeAllChildren()
+        }
+        
+        if hasActions() {
+            removeAllActions()
+        }
+        
+        if !children.isEmpty {
+            removeAllChildren()
+        }
+        
+        removeFromParent()
+        
+        audioPlayer = nil
+        world = nil
+        cam = nil
+        QuadFireBombHUD = nil
+        AlienYokeDpdHUD = nil
+        firstBody = nil
+        secondBody = nil
+        bombsbutton = nil
+        firebutton = nil
+        bombsbutton2 = nil
+        firebutton2 = nil
+        hero = nil
+        canape = nil
+        tractor = nil
+        FlightYoke = nil
+        heroEmoji = nil
+        audioPlayer = nil
+        cam = nil
+        scoreLabelNode = nil
+        highScoreLabelNode = nil
+        highScoreLabel = nil
+        livesLabel = nil
+        livesLabelNode = nil
+        screenHeight = nil
+        score = nil
+        highscore = nil
+        lives = nil
+        highlevel = nil
+        rockBounds = nil
+        scoreDict = nil
     }
-
-    private func scrollBackground(_ dt: CGFloat) {
-        let base: CGFloat = 90
-        for layer in bgLayers where layer.factor > 0 {
-            let dx = base * layer.factor * dt
-            for child in layer.node.children {
-                child.position.x -= dx
-                if child.position.x < -120 {
-                    child.position.x += kSceneW + 220 + CGFloat.random(in: 0...120)
-                    child.position.y = layer.factor > 0.6
-                        ? CGFloat.random(in: 24...100)
-                        : CGFloat.random(in: kSceneH * 0.12 ... kSceneH * 0.95)
+    
+    func readyPlayerOne() -> Oreo? {
+        var rocket = "aliensaucer"
+        var glass = "aliencanape"
+        var offset = 0
+        var size = 24
+        
+        // alien
+        if settings.emoji == 1 {
+            rocket = "aliensaucer"
+            glass = "aliencanape"
+            offset = 10
+            size = 26
+        // monkey
+        } else if settings.emoji == 2 {
+            rocket = "monkeyrocket"
+            glass = "monkeycanape"
+            offset = 0
+            size = 32
+        // poop emoji
+        }  else if settings.emoji == 3 {
+            rocket = "poopship"
+            glass = "poopcanape"
+            offset = 0
+            size = 36
+        }
+        
+        func drawSpriteII(texture: String, name: String, category:UInt32, collision:UInt32, contact:UInt32, field:UInt32, dynamic:Bool, allowRotation:Bool, affectedGravity:Bool, zPosition:CGFloat, alpha:CGFloat, speed:CGFloat, alphaThreshold: Float) -> SKSpriteNode? {
+            
+            let sprite = SKSpriteNode(imageNamed: texture)
+            
+            sprite.texture?.preload { [ weak self ] in
+                if name == "canape" {
+                    let radius = sprite.size.width / 2 - 18
+                    sprite.physicsBody = SKPhysicsBody(circleOfRadius: CGFloat(radius))
+                    sprite.physicsBody?.restitution = 0
+                    sprite.position = CGPoint(x:sprite.position.x, y: sprite.position.y + 30)
+                } else if name == "hero" {
+                    let radius = sprite.size.width / 4 - 6
+                    sprite.physicsBody = SKPhysicsBody(circleOfRadius: CGFloat(radius))
+                    sprite.physicsBody?.restitution = 0
+                    sprite.position = CGPoint(x:sprite.position.x, y: sprite.position.y + 30)
+                } else if name == "tractorbeam" {
+                    let radius = sprite.size
+                    sprite.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: radius.width + 5, height: radius.height + 5))
+                    sprite.physicsBody?.restitution = 0
+                    sprite.position = CGPoint(x:sprite.position.x, y: sprite.position.y - 25)
                 }
+                
+                sprite.physicsBody?.categoryBitMask = category
+                sprite.physicsBody?.collisionBitMask = collision
+                sprite.physicsBody?.contactTestBitMask = contact
+                sprite.physicsBody?.fieldBitMask = field
+                sprite.physicsBody?.isDynamic = dynamic
+                sprite.physicsBody?.allowsRotation = allowRotation
+                sprite.physicsBody?.affectedByGravity = affectedGravity
+                sprite.physicsBody?.velocity = CGVector.zero
+                sprite.physicsBody?.applyImpulse(CGVector.zero)
+                sprite.name = name
+                sprite.zPosition = zPosition
+                sprite.alpha = alpha
+                sprite.speed = speed
+                sprite.zRotation = 0.0
+                sprite.isUserInteractionEnabled = false
+                self?.addChild(sprite)
+            }
+            
+            return sprite
+        }
+        
+        func drawHudII( texture: String, name: String, category:UInt32, collision:UInt32, contact:UInt32, field:UInt32, dynamic:Bool, allowRotation:Bool, affectedGravity:Bool, zPosition:CGFloat, alpha:CGFloat, speed:CGFloat, alphaThreshold: Float) -> SKSpriteNode? {
+            
+            let sprite = SKSpriteNode(imageNamed: texture)
+            let btnLoc = settings.stick ? "R" : "L"
+            
+            if name == "fire-right" || name == "hud-right" {
+                sprite.position.x = sprite.size.width / 2
+                sprite.position.y = -sprite.size.height / 2
+            }
+            
+            if name == "fire-left" || name == "hud-left" {
+                sprite.position.x = -sprite.size.width / 2
+                sprite.position.y = sprite.size.height / 2
+            }
+            
+            if name == "fire-top" || name == "hud-top" {
+                sprite.position.x = sprite.size.width / 2
+                sprite.position.y = sprite.size.height / 2
+            }
+            
+            if name == "fire-down" || name == "hud-down" {
+                sprite.position.x = -sprite.size.width / 2
+                sprite.position.y = -sprite.size.height / 2
+            }
+            
+            sprite.zPosition = 1000
+            sprite.alpha = alpha
+            sprite.name = name
+            
+            if name == "hud-right" || name == "hud-down" || name == "hud-top" || name == "hud-left" {
+                sprite.isUserInteractionEnabled = true
+            } else {
+                sprite.isUserInteractionEnabled = false
+            }
+            
+            QuadFireBombHUD.addChild(sprite)
+            
+            var xAdjust = CGFloat(1.0)
+            var yAdjust = CGFloat(1.0)
+            
+            //iPhone (convert this to an enum)
+            if settings.mode == 4 {
+                xAdjust = CGFloat(1.4)
+                yAdjust = CGFloat(1.1)
+            }
+            
+            /* move the button to where we want them */
+            if btnLoc == "L" {
+                QuadFireBombHUD.position = CGPoint(
+                    x: CGFloat(frame.size.width / -2 + (85 * xAdjust) ) ,
+                    y: CGFloat(frame.size.height / -2 + (85 * yAdjust ) )
+                )
+            } else {
+                QuadFireBombHUD.position = CGPoint(
+                    x: CGFloat(frame.size.width / 2 - (85 * xAdjust)  ) ,
+                    y: CGFloat(frame.size.height / -2 + (85 * yAdjust ) )
+                )
+            }
+            
+            if settings.mode == 1 {
+                
+                if btnLoc == "L" {
+                    QuadFireBombHUD.position = CGPoint(x: CGFloat(frame.size.width / -2 + (87 * 0.75) ) ,y:  CGFloat(frame.size.height / -2 + (87 * 0.75)) )
+                } else {
+                    QuadFireBombHUD.position = CGPoint(x: CGFloat(frame.size.width / 2 - (87 * 0.75) ) ,y:  CGFloat(frame.size.height / -2 + (87 * 0.75)) )
+                }
+                
+                QuadFireBombHUD.setScale(0.75)
+            }
+            
+            return sprite
+        }
+        
+        //drawsprites
+        hero = drawSpriteII (
+            texture: rocket,
+            name: "hero",
+            category: heroCategory,
+            collision: wallCategory,
+            contact: worldCategory + levelupCategory,
+            field: 1,
+            dynamic: true,
+            allowRotation: false,
+            affectedGravity: false,
+            zPosition: 150,
+            alpha: 1.0,
+            speed: 1,
+            alphaThreshold: 1.0
+        )
+        
+        heroEmoji = SKLabelNode(fontNamed:emojifontname) //"Apple Color Emoji"
+        heroEmoji.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.center
+        heroEmoji.verticalAlignmentMode = SKLabelVerticalAlignmentMode.center
+        heroEmoji.alpha = 1.0
+        heroEmoji.position = CGPoint(x: 0, y: offset)
+        heroEmoji.fontSize = CGFloat(size)
+        heroEmoji.zPosition = 24
+        heroEmoji.text = heroArray[settings.emoji]
+        hero.addChild(heroEmoji)
+        
+        if settings.emoji == 2 {
+            emojiAnimation(emojis:["🙈","🙊","🙉","🐵"])
+        }
+        
+        canape = drawSpriteII (
+            texture: glass,
+            name: "canape",
+            category: heroCategory,
+            collision: wallCategory,
+            contact: worldCategory,
+            field: 1,
+            dynamic: true,
+            allowRotation: false,
+            affectedGravity: false,
+            zPosition: 160,
+            alpha: 0.5,
+            speed: 1,
+            alphaThreshold: 0.0
+        )
+        
+        tractor = drawSpriteII (
+            texture: "tractorbeam",
+            name: "tractorbeam",
+            category: tractorCategory,
+            collision: 0,
+            contact: itemCategory + fishCategory,
+            field: 1,
+            dynamic: true,
+            allowRotation: false,
+            affectedGravity: false,
+            zPosition: 140,
+            alpha: 0.1,
+            speed: 1,
+            alphaThreshold: 0.0
+        )
+        
+        _ = drawHudII (
+            texture: "hud45-right",
+            name: "hud-right",
+            category: 0,
+            collision: 0,
+            contact: 0,
+            field: 0,
+            dynamic: false,
+            allowRotation: false,
+            affectedGravity: false,
+            zPosition: 11,
+            alpha: 1.0,
+            speed: 0,
+            alphaThreshold: 0
+        )
+        
+        _ = drawHudII (
+            texture: "hud45-left",
+            name: "hud-left",
+            category: 0,
+            collision: 0,
+            contact: 0,
+            field: 0,
+            dynamic: false,
+            allowRotation: false,
+            affectedGravity: false,
+            zPosition: 11,
+            alpha: 1.0,
+            speed: 0,
+            alphaThreshold: 0
+        )
+        
+        _ = drawHudII (
+            texture: "hud45-btm",
+            name: "hud-down",
+            category: 0,
+            collision: 0,
+            contact: 0,
+            field: 0,
+            dynamic: false,
+            allowRotation: false,
+            affectedGravity: false,
+            zPosition: 11,
+            alpha: 1.0,
+            speed: 0,
+            alphaThreshold: 0
+        )
+        
+        _ = drawHudII (
+            texture: "hud45-top",
+            name: "hud-top",
+            category: 0,
+            collision: 0,
+            contact: 0,
+            field: 0,
+            dynamic: false,
+            allowRotation: false,
+            affectedGravity: false,
+            zPosition: 11,
+            alpha: 1.0,
+            speed: 0,
+            alphaThreshold: 0
+        )
+        
+        firebutton = drawHudII (
+            texture: "fire45-right",
+            name: "fire-right",
+            category: 0,
+            collision: 0,
+            contact: 0,
+            field: 0,
+            dynamic: false,
+            allowRotation: false,
+            affectedGravity: false,
+            zPosition: 10,
+            alpha: 0.0001,
+            speed: 0,
+            alphaThreshold: 0
+        )
+        
+        firebutton2 = drawHudII (
+            texture: "fire45-left",
+            name: "fire-left",
+            category: 0,
+            collision: 0,
+            contact: 0,
+            field: 0,
+            dynamic: false,
+            allowRotation: false,
+            affectedGravity: false,
+            zPosition: 10,
+            alpha: 0.0001,
+            speed: 0,
+            alphaThreshold: 0
+        )
+        
+        bombsbutton2 = drawHudII (
+            texture: "fire45-top",
+            name: "fire-top",
+            category: 0,
+            collision: 0,
+            contact: 0,
+            field: 0,
+            dynamic: false,
+            allowRotation: false,
+            affectedGravity: false,
+            zPosition: 10,
+            alpha: 0.0001,
+            speed: 0,
+            alphaThreshold: 0
+        )
+        
+        bombsbutton = drawHudII (
+            texture: "fire45-btm",
+            name: "fire-down",
+            category: 0,
+            collision: 0,
+            contact: 0,
+            field: 0,
+            dynamic: false,
+            allowRotation: false,
+            affectedGravity: false,
+            zPosition: 10,
+            alpha: 0.0001,
+            speed: 0,
+            alphaThreshold: 0
+        )
+        
+        func createHeroJoint() {
+            guard
+                let bodyA = hero.physicsBody,
+                let bodyB = tractor.physicsBody,
+                let anchor = hero.position as CGPoint?
+            else { return }
+            bodyA.density = 1.0
+            let joint = SKPhysicsJointPin.joint(withBodyA: bodyA, bodyB: bodyB, anchor: anchor)
+            physicsWorld.add(joint)
+        }
+        
+        func createCanapeJoint() {
+            guard
+                let bodyA = hero.physicsBody,
+                let bodyB = canape.physicsBody,
+                let anchor = hero.position as CGPoint?
+            else { return }
+            
+            let joint = SKPhysicsJointPin.joint(withBodyA: bodyA, bodyB: bodyB, anchor: anchor)
+            joint.rotationSpeed = 1.0
+            physicsWorld.add(joint)
+        }
+        
+        func gtFlightYoke() {
+            let stick = settings.stick ? "L" : "R"
+            
+            var xAdjust = CGFloat(1.0)
+            var yAdjust = CGFloat(1.0)
+            //iPhone (convert this to an enum)
+            if settings.mode == 4 {
+                xAdjust = CGFloat(1.4)
+                yAdjust = CGFloat(1.1)
+            }
+            
+            /* move the stick to where we want it */
+            if stick == "L" {
+                FlightYoke.position = CGPoint(
+                    x: CGFloat(frame.size.width / -2 + (85 * xAdjust) ) ,
+                    y: CGFloat(frame.size.height / -2 + (85 * yAdjust ) )
+                )
+            } else {
+                FlightYoke.position = CGPoint(
+                    x: CGFloat(frame.size.width / 2 - (85 * xAdjust)  ) ,
+                    y: CGFloat(frame.size.height / -2 + (85 * yAdjust ) )
+                )
+            }
+            
+            FlightYoke.delegate = self
+            AlienYokeDpdHUD.addChild(FlightYoke)
+            
+            FlightYoke.zPosition = 1000
+            FlightYoke.name = "ArcadeJoyPad"
+            
+            if settings.mode == 1 {
+                FlightYoke.setScale(0.75)
+                
+                let offset: CGFloat = 65.25
+                let yPosition = frame.size.height / -2 + offset
+                let xPosition = stick == "L" ? frame.size.width / -2 + offset : frame.size.width / 2 - offset
+                
+                FlightYoke.position = CGPoint(x: xPosition, y: yPosition)
             }
         }
+
+        createCanapeJoint()
+        createHeroJoint()
+        gtFlightYoke()
+        
+        return (bombsbutton,firebutton,hero,canape,tractor,bombsbutton2,firebutton2)
     }
-
-    // MARK: Hero
-
-    private func buildHero() {
-        hero.removeFromParent()
-        heroFace.removeFromParent()
-        let p = kPilots[pilotIndex]
-
-        hero = makeEmoji(p.ship, size: 62)
-        hero.zPosition = Z.hero
-        hero.name = "hero"
-
-        heroFace = makeEmoji(p.face, size: 30)
-        heroFace.zPosition = Z.hero + 1
-        heroFace.position = CGPoint(x: 6, y: 2)   // riding in the saucer
-        hero.addChild(heroFace)
-
-        hero.position = heroPos
-        world.addChild(hero)
-        hero.isHidden = true
-    }
-
-    private func refreshHeroPilot() {
-        let p = kPilots[pilotIndex]
-        hero.text = p.ship
-        heroFace.text = p.face
-    }
-
-    // MARK: HUD
-
-    private func buildHUD() {
-        scoreLabel = arcadeLabel(size: 26, align: .left)
-        scoreLabel.position = CGPoint(x: 24, y: kSceneH - 40)
-        hud.addChild(scoreLabel)
-
-        hiScoreLabel = arcadeLabel(size: 20, align: .center)
-        hiScoreLabel.position = CGPoint(x: kSceneW / 2, y: kSceneH - 36)
-        hud.addChild(hiScoreLabel)
-
-        levelLabel = arcadeLabel(size: 20, align: .center)
-        levelLabel.position = CGPoint(x: kSceneW / 2, y: kSceneH - 62)
-        hud.addChild(levelLabel)
-
-        livesLabel = makeEmoji("", size: 30, align: .right)
-        livesLabel.position = CGPoint(x: kSceneW - 24, y: kSceneH - 44)
-        hud.addChild(livesLabel)
-
-        powerLabel = makeEmoji("", size: 26, align: .left)
-        powerLabel.position = CGPoint(x: 24, y: kSceneH - 74)
-        hud.addChild(powerLabel)
-
-        updateHUD()
-    }
-
-    private func updateHUD() {
-        scoreLabel.text = "SCORE \(score)"
-        hiScoreLabel.text = "HI \(max(hiScore, score))"
-        levelLabel.text = "LEVEL \(level)  ·  \(kWorlds[worldIndex(forLevel: level)].name)"
-        let face = kPilots[pilotIndex].face
-        livesLabel.text = String(repeating: face, count: max(0, min(lives, 6)))
-        var p = ""
-        if doubleLaser { p += "🔫" }
-        if rapidFire { p += "💠" }
-        if shieldTime > 0 { p += "🛡" }
-        powerLabel.text = p
-    }
-
-    // MARK: Menus / banners
-
-    private func showTitle() {
-        mode = .title
-        hero.isHidden = true
-        clearOverlay()
-
-        let title = makeEmoji("🛸 UFO EMOJI 👽", size: 64, align: .center)
-        title.position = CGPoint(x: kSceneW / 2, y: kSceneH * 0.72)
-        title.run(.repeatForever(.sequence([
-            .scale(to: 1.06, duration: 0.8),
-            .scale(to: 1.0, duration: 0.8),
-        ])))
-        overlay.addChild(title)
-
-        addOverlayText("AN EMOJI ARCADE SHOOTER", size: 22, y: kSceneH * 0.60)
-
-        let p = kPilots[pilotIndex]
-        let pilotLine = makeEmoji("PILOT:  \(p.ship)\(p.face)  \(p.name)", size: 30, align: .center)
-        pilotLine.name = "pilotLine"
-        pilotLine.position = CGPoint(x: kSceneW / 2, y: kSceneH * 0.48)
-        overlay.addChild(pilotLine)
-
-        addOverlayText("[1] [2] [3] OR TAP THE PILOT TO SWITCH", size: 16, y: kSceneH * 0.40)
-        addOverlayText("MOVE: ARROWS / WASD / DRAG   ·   FIRE: SPACE / HOLD", size: 16, y: kSceneH * 0.32)
-
-        let start = arcadeLabel(size: 26, align: .center)
-        start.text = "PRESS SPACE  ·  TAP TO START"
-        start.position = CGPoint(x: kSceneW / 2, y: kSceneH * 0.18)
-        start.run(.repeatForever(.sequence([
-            .fadeAlpha(to: 0.25, duration: 0.6),
-            .fadeAlpha(to: 1.0, duration: 0.6),
-        ])))
-        overlay.addChild(start)
-
-        updateHUD()
-    }
-
-    private func refreshPilotLine() {
-        guard let line = overlay.childNode(withName: "pilotLine") as? SKLabelNode else { return }
-        let p = kPilots[pilotIndex]
-        line.text = "PILOT:  \(p.ship)\(p.face)  \(p.name)"
-    }
-
-    private func startNewGame() {
-        score = 0
-        lives = 3
-        level = 1
-        nextExtraLifeAt = 5000
-        refreshHeroPilot()
-        beginLevel()
-    }
-
-    private func beginLevel() {
-        clearActors()
-        clearOverlay()
-        doubleLaser = false
-        rapidFire = false
-        shieldTime = 0
-        killsThisLevel = 0
-        killsNeeded = 8 + level * 2
-        bossActive = false
-        spawnTimer = 1.0
-        drifterTimer = 2.0
-        buildBackground(for: worldIndex(forLevel: level))
-        heroPos = CGPoint(x: 220, y: kSceneH / 2)
-        heroVel = .zero
-        hero.position = heroPos
-        hero.zRotation = 0
-        hero.isHidden = false
-        hero.alpha = 1
-        updateHUD()
-
-        // Ready · Set · Go traffic light (StartUp.swift homage)
-        mode = .ready
-        stateTimer = 0
-        runReadySetGo()
-    }
-
-    private func runReadySetGo() {
-        let light = makeEmoji("🔴", size: 96, align: .center)
-        light.position = CGPoint(x: kSceneW / 2, y: kSceneH / 2)
-        light.name = "rsg"
-        overlay.addChild(light)
-
-        let word = arcadeLabel(size: 34, align: .center)
-        word.text = "READY"
-        word.position = CGPoint(x: kSceneW / 2, y: kSceneH / 2 - 90)
-        word.name = "rsgWord"
-        overlay.addChild(word)
-
-        light.run(.sequence([
-            .wait(forDuration: 0.7),
-            .run { [weak self] in light.text = "🟡"; (self?.overlay.childNode(withName: "rsgWord") as? SKLabelNode)?.text = "SET" },
-            .wait(forDuration: 0.7),
-            .run { [weak self] in light.text = "🟢"; (self?.overlay.childNode(withName: "rsgWord") as? SKLabelNode)?.text = "GO!" },
-            .wait(forDuration: 0.6),
-            .run { [weak self] in
-                self?.overlay.childNode(withName: "rsg")?.removeFromParent()
-                self?.overlay.childNode(withName: "rsgWord")?.removeFromParent()
-                self?.mode = .playing
-            },
-        ]))
-    }
-
-    private func completeLevel() {
-        mode = .levelUp
-        bossActive = false
-        clearOverlay()
-        let banner = arcadeLabel(size: 48, align: .center)
-        banner.text = "LEVEL \(level) CLEAR!"
-        banner.position = CGPoint(x: kSceneW / 2, y: kSceneH / 2)
-        overlay.addChild(banner)
-        banner.run(.sequence([
-            .scale(to: 1.2, duration: 0.4),
-            .scale(to: 1.0, duration: 0.4),
-            .wait(forDuration: 0.7),
-            .run { [weak self] in
-                guard let self else { return }
-                if self.level >= 12 {
-                    self.victory()
-                } else {
-                    self.level += 1
-                    self.beginLevel()
-                }
-            },
-        ]))
-    }
-
-    private func victory() {
-        mode = .gameOver
-        clearActors()
-        clearOverlay()
-        commitHiScore()
-        addOverlayText("🏆 YOU SAVED THE GALAXY! 🏆", size: 46, y: kSceneH * 0.62)
-        addOverlayText("FINAL SCORE  \(score)", size: 30, y: kSceneH * 0.50)
-        addOverlayText("HIGH SCORE  \(hiScore)", size: 22, y: kSceneH * 0.42)
-        let again = arcadeLabel(size: 24, align: .center)
-        again.text = "PRESS SPACE  ·  TAP TO PLAY AGAIN"
-        again.position = CGPoint(x: kSceneW / 2, y: kSceneH * 0.28)
-        again.run(.repeatForever(.sequence([.fadeAlpha(to: 0.3, duration: 0.6), .fadeAlpha(to: 1, duration: 0.6)])))
-        overlay.addChild(again)
-    }
-
-    private func gameOver() {
-        mode = .gameOver
-        hero.isHidden = true
-        clearActors()
-        clearOverlay()
-        commitHiScore()
-        addOverlayText("GAME OVER", size: 64, y: kSceneH * 0.62)
-        addOverlayText("SCORE  \(score)", size: 30, y: kSceneH * 0.50)
-        addOverlayText("HIGH SCORE  \(hiScore)", size: 22, y: kSceneH * 0.42)
-        let again = arcadeLabel(size: 24, align: .center)
-        again.text = "PRESS SPACE  ·  TAP TO RESTART"
-        again.position = CGPoint(x: kSceneW / 2, y: kSceneH * 0.28)
-        again.run(.repeatForever(.sequence([.fadeAlpha(to: 0.3, duration: 0.6), .fadeAlpha(to: 1, duration: 0.6)])))
-        overlay.addChild(again)
-    }
-
-    private func commitHiScore() {
-        if score > hiScore {
-            hiScore = score
-            UserDefaults.standard.set(hiScore, forKey: "ufo.hiscore")
-        }
-    }
-
-    // MARK: Main loop
-
+    
+    //MARK: Function Update
     override func update(_ currentTime: TimeInterval) {
-        let dt: CGFloat = lastUpdate > 0 ? CGFloat(min(currentTime - lastUpdate, 1.0 / 30.0)) : 1.0 / 60.0
-        lastUpdate = currentTime
-
-        pollController()
-        scrollBackground(dt)
-
-        switch mode {
-        case .title, .gameOver:
-            break
-        case .ready:
-            // hero gently bobs while the light counts down
-            hero.position = CGPoint(x: heroPos.x, y: heroPos.y + sinApprox(CGFloat(currentTime) * 3) * 6)
-        case .playing:
-            stepPlaying(dt, time: CGFloat(currentTime))
-        case .levelUp:
-            break
-        }
-    }
-
-    private func stepPlaying(_ dt: CGFloat, time: CGFloat) {
-        moveHero(dt)
-        handleFiring(dt)
-        spawnLogic(dt)
-        moveEnemies(dt, time: time)
-        moveBullets(dt)
-        moveItems(dt)
-        moveDrifters(dt)
-        collisions()
-        if shieldTime > 0 {
-            shieldTime -= dt
-            hero.alpha = 0.55 + 0.45 * sinApprox(time * 12)
-            if shieldTime <= 0 { hero.alpha = 1; updateHUD() }
-        }
-        // Level clear condition
-        if killsThisLevel >= killsNeeded && enemies.isEmpty && !bossActive {
-            completeLevel()
-        }
-    }
-
-    // MARK: Hero movement
-
-    private func moveHero(_ dt: CGFloat) {
-        let accel: CGFloat = 2400
-        let maxSpeed: CGFloat = 520
-        let damp: CGFloat = 0.86
-
-        var ax: CGFloat = 0, ay: CGFloat = 0
-        if keyLeft  { ax -= 1 }
-        if keyRight { ax += 1 }
-        if keyUp    { ay += 1 }
-        if keyDown  { ay -= 1 }
-
-        if stickActive {
-            let dx = stickCurrent.x - stickAnchor.x
-            let dy = stickCurrent.y - stickAnchor.y
-            let mag = sqrtApprox(dx * dx + dy * dy)
-            if mag > 6 {
-                let clamped = min(mag, 90) / 90
-                ax = dx / mag * clamped
-                ay = dy / mag * clamped
-            }
-        }
-
-        if let pad {
-            let stick = pad.leftThumbstick
-            if absF(CGFloat(stick.xAxis.value)) > 0.12 { ax = CGFloat(stick.xAxis.value) }
-            if absF(CGFloat(stick.yAxis.value)) > 0.12 { ay = CGFloat(stick.yAxis.value) }
-        }
-
-        heroVel.dx += ax * accel * dt
-        heroVel.dy += ay * accel * dt
-
-        if ax == 0 { heroVel.dx *= damp }
-        if ay == 0 { heroVel.dy *= damp }
-
-        heroVel.dx = clampF(heroVel.dx, -maxSpeed, maxSpeed)
-        heroVel.dy = clampF(heroVel.dy, -maxSpeed, maxSpeed)
-
-        heroPos.x += heroVel.dx * dt
-        heroPos.y += heroVel.dy * dt
-        heroPos.x = clampF(heroPos.x, 60, kSceneW - 60)
-        heroPos.y = clampF(heroPos.y, 60, kSceneH - 60)
-        hero.position = heroPos
-
-        // Bank the ship with vertical velocity (rotateShip homage).
-        let targetRot = clampF(heroVel.dy / 1600, -0.4, 0.4)
-        hero.zRotation += (targetRot - hero.zRotation) * min(1, dt * 10)
-    }
-
-    // MARK: Firing
-
-    private func handleFiring(_ dt: CGFloat) {
-        fireTimer -= dt
-        let firing = keyFire || touchFiring || (pad?.buttonA.isPressed ?? false) || (pad?.rightTrigger.isPressed ?? false)
-        let cadence: CGFloat = rapidFire ? 0.10 : 0.22
-        if firing && fireTimer <= 0 {
-            fireBullet()
-            fireTimer = cadence
-        }
-    }
-
-    private func fireBullet() {
-        let p = kPilots[pilotIndex]
-        let speed: CGFloat = 900
-        if doubleLaser {
-            spawnBullet(at: CGPoint(x: heroPos.x + 30, y: heroPos.y + 14), vx: speed, vy: 0, glyph: p.beam)
-            spawnBullet(at: CGPoint(x: heroPos.x + 30, y: heroPos.y - 14), vx: speed, vy: 0, glyph: p.beam)
-            play("doublelaser.wav")
-        } else {
-            spawnBullet(at: CGPoint(x: heroPos.x + 30, y: heroPos.y), vx: speed, vy: 0, glyph: p.beam)
-            play("fire.wav")
-        }
-    }
-
-    private func spawnBullet(at pos: CGPoint, vx: CGFloat, vy: CGFloat, glyph: String) {
-        let n = makeEmoji(glyph, size: 22)
-        n.zPosition = Z.bullet
-        n.position = pos
-        world.addChild(n)
-        bullets.append(Bullet(node: n, vx: vx, vy: vy, radius: 12))
-    }
-
-    private func moveBullets(_ dt: CGFloat) {
-        for b in bullets {
-            b.node.position.x += b.vx * dt
-            b.node.position.y += b.vy * dt
-        }
-        bullets.removeAll { b in
-            let x = b.node.position.x
-            if x > kSceneW + 40 || x < -40 {
-                b.node.removeFromParent(); return true
-            }
-            return false
-        }
-
-        for s in enemyShots {
-            s.node.position.x += s.vx * dt
-            s.node.position.y += s.vy * dt
-        }
-        enemyShots.removeAll { s in
-            let x = s.node.position.x, y = s.node.position.y
-            if x < -40 || x > kSceneW + 40 || y < -40 || y > kSceneH + 40 {
-                s.node.removeFromParent(); return true
-            }
-            return false
-        }
-    }
-
-    // MARK: Enemy spawning
-
-    private func spawnLogic(_ dt: CGFloat) {
-        // Boss every 4th level once the kill quota is met.
-        if !bossActive && killsThisLevel >= killsNeeded && level % 4 == 0 {
-            spawnBoss()
-            return
-        }
-        if bossActive { return }
-        if killsThisLevel >= killsNeeded { return }   // stop spawning; clear stragglers
-
-        spawnTimer -= dt
-        if spawnTimer <= 0 {
-            spawnEnemy()
-            let base = max(0.5, 1.6 - CGFloat(level) * 0.08)
-            spawnTimer = CGFloat.random(in: base ... base + 0.7)
-        }
-    }
-
-    private func spawnEnemy() {
-        let w = kWorlds[worldIndex(forLevel: level)]
-        let glyph = w.enemies.randomElement() ?? "🦖"
-        let y = CGFloat.random(in: 120 ... kSceneH - 120)
-        let n = makeEmoji(glyph, size: CGFloat.random(in: 46...58))
-        n.zPosition = Z.enemy
-        n.position = CGPoint(x: kSceneW + 50, y: y)
-        world.addChild(n)
-        let speed = -CGFloat.random(in: 120 ... 120 + CGFloat(level) * 14)
-        let hp = 1 + level / 5
-        let e = Enemy(node: n,
-                      vx: speed, vy: 0, baseY: y,
-                      phase: CGFloat.random(in: 0 ... 6.28),
-                      wobble: CGFloat.random(in: 30...90),
-                      hp: hp,
-                      points: Int.random(in: 5...15) * 5,
-                      radius: 30,
-                      fireCooldown: CGFloat.random(in: 1.5...3.5),
-                      isBoss: false)
-        // 1-in-3 enemies dive toward the player
-        e.diving = Int.random(in: 0..<3) == 0
-        enemies.append(e)
-    }
-
-    private func spawnBoss() {
-        bossActive = true
-        let w = kWorlds[worldIndex(forLevel: level)]
-        let glyph: String = w.enemies.last ?? "👹"
-        let n = makeEmoji(glyph, size: 140)
-        n.zPosition = Z.enemy
-        n.position = CGPoint(x: kSceneW + 120, y: kSceneH / 2)
-        world.addChild(n)
-        let crown = makeEmoji("👑", size: 54)
-        crown.position = CGPoint(x: 0, y: 80)
-        n.addChild(crown)
-        let boss = Enemy(node: n, vx: -90, vy: 120, baseY: kSceneH / 2,
-                         phase: 0, wobble: kSceneH * 0.30,
-                         hp: 40 + level * 4, points: 1000, radius: 70,
-                         fireCooldown: 1.2, isBoss: true)
-        enemies.append(boss)
-
-        let banner = arcadeLabel(size: 40, align: .center)
-        banner.text = "⚠️ BOSS ⚠️"
-        banner.position = CGPoint(x: kSceneW / 2, y: kSceneH - 120)
-        banner.run(.sequence([.wait(forDuration: 1.6), .fadeOut(withDuration: 0.5), .removeFromParent()]))
-        overlay.addChild(banner)
-    }
-
-    private func moveEnemies(_ dt: CGFloat, time: CGFloat) {
-        for e in enemies {
-            if e.isBoss {
-                // Boss eases to the right third and patrols vertically.
-                let targetX = kSceneW - 180
-                if e.node.position.x > targetX {
-                    e.node.position.x += e.vx * dt
-                } else {
-                    e.node.position.x = targetX
-                }
-                e.node.position.y += e.vy * dt
-                if e.node.position.y > kSceneH - 120 { e.vy = -absF(e.vy) }
-                if e.node.position.y < 120 { e.vy = absF(e.vy) }
-            } else {
-                e.node.position.x += e.vx * dt
-                if e.diving {
-                    // steer toward the hero's y
-                    let dy = heroPos.y - e.node.position.y
-                    e.node.position.y += clampF(dy, -140, 140) * dt
-                } else {
-                    e.phase += dt * 2
-                    e.node.position.y = e.baseY + sinApprox(e.phase) * e.wobble
-                }
-                e.node.position.y = clampF(e.node.position.y, 60, kSceneH - 60)
-            }
-
-            // Enemy fire
-            e.fireCooldown -= dt
-            if e.fireCooldown <= 0 && e.node.position.x < kSceneW - 40 && e.node.position.x > 80 {
-                enemyFire(from: e)
-                e.fireCooldown = e.isBoss ? CGFloat.random(in: 0.4...0.9) : CGFloat.random(in: 2.0...4.5)
-            }
-        }
-        // Cull off-screen-left (non-boss only); they don't count as kills.
-        enemies.removeAll { e in
-            if !e.isBoss && e.node.position.x < -80 {
-                e.node.removeFromParent(); return true
-            }
-            return false
-        }
-    }
-
-    private func enemyFire(from e: Enemy) {
-        let dx = heroPos.x - e.node.position.x
-        let dy = heroPos.y - e.node.position.y
-        let mag = max(1, sqrtApprox(dx * dx + dy * dy))
-        let speed: CGFloat = e.isBoss ? 460 : 360
-        let n = makeEmoji(e.isBoss ? "🔥" : "🟥", size: 22)
-        n.zPosition = Z.bullet
-        n.position = e.node.position
-        world.addChild(n)
-        enemyShots.append(Bullet(node: n, vx: dx / mag * speed, vy: dy / mag * speed, radius: 12))
-        if e.isBoss { play("boom.wav") }
-    }
-
-    // MARK: Items / power-ups
-
-    private func maybeDropItem(at pos: CGPoint, forceLife: Bool = false) {
-        if forceLife {
-            dropItem(.extraLife, at: pos); return
-        }
-        // ~14% drop rate
-        guard Int.random(in: 0..<100) < 14 else { return }
-        let kind = PowerKind.allCases.randomElement() ?? .bonus
-        dropItem(kind, at: pos)
-    }
-
-    private func dropItem(_ kind: PowerKind, at pos: CGPoint) {
-        let n = makeEmoji(kind.glyph, size: 40)
-        n.zPosition = Z.item
-        n.position = pos
-        n.run(.repeatForever(.sequence([.scale(to: 1.2, duration: 0.4), .scale(to: 1.0, duration: 0.4)])))
-        world.addChild(n)
-        items.append(Item(node: n, kind: kind, vx: -130, vy: 0, phase: CGFloat.random(in: 0...6.28)))
-    }
-
-    private func moveItems(_ dt: CGFloat) {
-        for it in items {
-            it.phase += dt * 3
-            it.node.position.x += it.vx * dt
-            it.node.position.y += sinApprox(it.phase) * 40 * dt
-        }
-        items.removeAll { it in
-            if it.node.position.x < -60 { it.node.removeFromParent(); return true }
-            return false
-        }
-    }
-
-    private func applyPower(_ kind: PowerKind) {
-        switch kind {
-        case .doubleLaser:
-            doubleLaser = true
-        case .rapidFire:
-            rapidFire = true
-        case .shield:
-            shieldTime = 8
-        case .extraLife:
-            lives = min(lives + 1, 9)
-            play("extralife.wav")
-        case .bonus:
-            addScore(500)
-        case .smartBomb:
-            detonateSmartBomb()
-        }
-        if kind != .extraLife { play("powerup.wav") }
-        updateHUD()
-    }
-
-    private func detonateSmartBomb() {
-        // Clear every non-boss enemy + enemy shot on screen; chip the boss.
-        for e in enemies {
-            if e.isBoss {
-                e.hp -= 12
-                if e.hp <= 0 { explode(at: e.node.position, big: true); addScore(e.points); e.node.removeFromParent() }
-            } else {
-                explode(at: e.node.position, big: false)
-                addScore(e.points)
-                killsThisLevel += 1
-                e.node.removeFromParent()
-            }
-        }
-        enemies.removeAll { $0.isBoss ? $0.hp <= 0 : true }
-        for s in enemyShots { s.node.removeFromParent() }
-        enemyShots.removeAll()
-        flashScreen(SKColor.white)
-        play("explosion.wav")
-    }
-
-    // MARK: Friendly drifters (goodies)
-
-    private func spawnDrifter() {
-        let w = kWorlds[worldIndex(forLevel: level)]
-        let glyph = w.goodies.randomElement() ?? "🦋"
-        let y = CGFloat.random(in: 140 ... kSceneH - 140)
-        let n = makeEmoji(glyph, size: 44)
-        n.zPosition = Z.item
-        n.position = CGPoint(x: kSceneW + 40, y: y)
-        world.addChild(n)
-        drifters.append(Drifter(node: n, vx: -CGFloat.random(in: 70...120), baseY: y, phase: CGFloat.random(in: 0...6.28)))
-    }
-
-    private func moveDrifters(_ dt: CGFloat) {
-        drifterTimer -= dt
-        if drifterTimer <= 0 {
-            spawnDrifter()
-            drifterTimer = CGFloat.random(in: 3.5...6.5)
-        }
-        for d in drifters {
-            d.phase += dt * 1.5
-            d.node.position.x += d.vx * dt
-            d.node.position.y = d.baseY + sinApprox(d.phase) * 50
-        }
-        drifters.removeAll { d in
-            if d.node.position.x < -60 { d.node.removeFromParent(); return true }
-            return false
-        }
-    }
-
-    // MARK: Collisions (AABB / radial)
-
-    private func killEnemy(_ e: Enemy) {
-        explode(at: e.node.position, big: e.isBoss)
-        addScore(e.points)
-        if e.isBoss {
-            bossActive = false
-            maybeDropItem(at: e.node.position, forceLife: true)   // guaranteed extra life
-        } else {
-            killsThisLevel += 1
-            maybeDropItem(at: e.node.position)
-        }
-        e.node.removeFromParent()
-    }
-
-    private func collisions() {
-        // hero bullets vs enemies (and friendly drifters for a bonus). A bullet
-        // is consumed by the first thing it hits; survivors carry on.
-        var survivingBullets: [Bullet] = []
-        survivingBullets.reserveCapacity(bullets.count)
-        for b in bullets {
-            var consumed = false
-            for e in enemies where e.hp > 0 {
-                if hit(b.node.position, b.radius, e.node.position, e.radius) {
-                    consumed = true
-                    e.hp -= 1
-                    e.node.run(.sequence([.scale(to: 1.3, duration: 0.05), .scale(to: 1.0, duration: 0.05)]))
-                    if e.hp <= 0 { killEnemy(e) }
-                    break
+        
+        guard
+            let hero = hero,
+            let pos = hero.position as CGPoint?
+        else { return }
+        
+        if self.demoMode {
+            let triggerScreenShot = Int.random(in: 1...1000)
+            
+            if triggerScreenShot == 500, let screenshot = view {
+                UIGraphicsBeginImageContextWithOptions(screenshot.bounds.size, true, 0)
+                screenshot.drawHierarchy(in: screenshot.bounds, afterScreenUpdates: true)
+                if let image = UIGraphicsGetImageFromCurrentImageContext() {
+                    UIGraphicsEndImageContext()
+                    UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
                 }
             }
-            if !consumed {
-                for d in drifters where d.node.parent != nil {
-                    if hit(b.node.position, b.radius, d.node.position, 26) {
-                        consumed = true
-                        explode(at: d.node.position, big: false)
-                        addScore(250)
-                        d.node.removeFromParent()
-                        break
+        }
+       
+        if pos.y > screenHeight && highScoreLabelNode.alpha > 0.0 {
+            
+            highScoreLabelNode.run(SKAction.fadeAlpha(to: 0.0, duration: 0.25))
+            highScoreLabel.run(SKAction.fadeAlpha(to: 0.0, duration: 0.25))
+            
+        } else if (highScoreLabelNode.alpha < 0.4) {
+            
+            highScoreLabelNode.run(SKAction.fadeAlpha(to: 0.4, duration: 0.25))
+            highScoreLabel.run(SKAction.fadeAlpha(to: 0.4, duration: 0.25))
+        }
+        
+        /**
+         used by meteorites and chopper
+         */
+        func movingObjectI() {
+            world.children.first?.enumerateChildNodes(withName: "🤯") { node, _ in
+                guard let body = node.physicsBody else { return }
+                
+                if body.isDynamic {
+                    node.name = "💰"
+                    let move = SKAction.moveTo(y: self.position.y, duration: 2.0)
+                    node.run(move)
+                }
+            }
+        }
+        
+        movingObjectI()
+    }
+    
+    override func didMove(to view: SKView) {
+        super.didMove(to: view)
+        
+        FlightYoke = GTFlightYoke()
+        FlightYoke.startup()
+        world = childNode(withName: "world")
+        
+        // This is the default of King, Queen Nationality
+        KingQueenGlobalDie = 100
+        
+        🔱 = false
+        💠 = false
+        🛡 = false
+        🕹 = false
+        doublelaser = 0
+        
+        if (settings.level >= 1 && settings.level <= maxlevel) {
+            if let soundURL: URL = Bundle.main.url(forResource: "music1", withExtension: "mp3") {
+                audioPlayer = try? AVAudioPlayer(contentsOf: soundURL)
+            }
+        }
+        
+        if settings.music {
+            audioPlayer?.numberOfLoops = 0
+            audioPlayer?.stop()
+            audioPlayer?.volume = 0.0
+        }
+        
+        cam = SKCameraNode()
+        camera = cam
+        addChild(cam)
+        cam.zPosition = 100
+        
+        AlienYokeDpdHUD = SKReferenceNode()
+        QuadFireBombHUD = SKReferenceNode()
+        
+        AlienYokeDpdHUD.name = "AlienYokeDpdHUD"
+        QuadFireBombHUD.name = "QuadFireBombHUD"
+        cam.addChild(AlienYokeDpdHUD)
+        cam.addChild(QuadFireBombHUD)
+        
+        QuadFireBombHUD.zRotation = CGFloat(Double.pi/4)
+        
+        //😸
+        doublelaser = 0
+        scoreDict[""] = 1
+        scoreDict["🐽"] = 5
+        scoreDict["🌸"] = 10
+        scoreDict["🥛"] = 15
+        scoreDict["🎁"] = 20
+        scoreDict["🤠"] = 25
+        scoreDict["🔥"] = 30
+        scoreDict["🐝"] = 35
+        scoreDict["🚔"] = 40
+        scoreDict["🏢"] = 45
+        scoreDict["👤"] = 50
+        scoreDict["🖲"] = 55
+        scoreDict["😰"] = 60 //super villians
+        scoreDict["😨"] = 70 //super villians
+        scoreDict["⭕️"] = 75 //heroes
+        scoreDict["⁉️"] = 80 //heroes not flipped
+        scoreDict["❌"] = 85 //villians
+        scoreDict["‼️"] = 90 //Hero Villians not flipped
+        scoreDict["😡"] = 100 //super villians
+        scoreDict["😸"] = 105
+        scoreDict["🤬"] = 110 //super villians
+        scoreDict["😳"] = 120 //super villians
+        scoreDict["😱"] = 130 //super villians
+        scoreDict["🤯"] = 140 // Meteor or super villian
+        scoreDict["😠"] = 150 // Meteor or super villian
+        scoreDict["💰"] = 105 //rare
+        scoreDict["💎"] = 110 //rare
+        scoreDict["👑"] = 115 //rare
+        scoreDict["❣️"] = 120 //extra life (displays him/herself in the game)
+        scoreDict["🔫"] = 130 //super rare marker for double laser beams
+        scoreDict["🔱"] = 140 //super rare trident (super bomb)
+        scoreDict["🛡"] = 150 //super rare shields (cloaked ghost, move through walls)
+        scoreDict["💠"] = 160 //super rare shields (cloaked ghost, move through walls)
+        scoreDict["🕹"] = 170 //super rare shields (cloaked ghost, move through walls)
+        scoreDict["land"] 	= 1
+        scoreDict["dirt"] 	= 1
+        scoreDict["grass"] 	= 2
+        scoreDict["desert"] = 4
+        scoreDict["sand"] 	= 4
+        scoreDict["stone"] 	= 8
+        scoreDict["gold"]   = 16
+        scoreDict["straw"]  = 16
+        
+        (level, highlevel, score, highscore, lives) = loadScores()
+        
+        var background = ""
+        
+        switch level {
+        
+        //skyMtns
+        case 1...5:
+            background = "waterWorld" //waterWorld
+        case 6...10:
+            background = "miniDesert"
+        case 11...15:
+            background = "skyMtns"
+        default :
+            ()
+        }
+        
+        settings.rapidfire = demoMode
+
+        world.isPaused = true
+        world.isHidden = true
+        
+        let gameWorld = GameWorld(world: world)
+        
+        world = gameWorld.gameLevel(filename: "level\(level)")
+        world.isPaused = false
+        world.isHidden = false
+        
+        for node in self.children {
+            if (node.name == "world") {
+                
+                //Texture Map Node Stuff goes here
+                for node in node.children {
+                    
+                    if node.name == "Rocky" {
+                        let gameBoundsNode = SKNode()
+                        
+                        gameBoundsNode.zPosition = 50
+                        rockBounds = node.frame
+                        
+                        physicsWorld.gravity = CGVector(dx: 0.0, dy: -3)
+                        physicsWorld.contactDelegate = self
+                        gameBoundsNode.physicsBody = SKPhysicsBody(edgeLoopFrom: rockBounds)
+                        
+                        gameBoundsNode.physicsBody?.categoryBitMask = wallCategory //2 + 8 + 128 + 256 + 512 + 1024
+                        gameBoundsNode.physicsBody?.collisionBitMask = 0
+                        gameBoundsNode.physicsBody?.restitution = 0.2
+                        gameBoundsNode.physicsBody?.contactTestBitMask = 0
+                        
+                        addChild(gameBoundsNode)
+                                                
+                        var bounds = CGRect.zero
+                        let extend = CGFloat(128)
+                        let half = CGFloat(2)
+                        let halfextend = extend / half
+                        //MARK: Bounds now can only go so far off screen
+                   
+                        let w = self.size.width
+                        let h = self.size.height
+                        bounds = CGRect(x: -w / half - halfextend, y: -h / half, width: w + extend, height: h + extend)
+                        
+                        let addnode = SKNode()
+                        addnode.name = "bombBounds"
+                        addnode.zPosition = -10000
+                        
+                        addnode.physicsBody = SKPhysicsBody(edgeLoopFrom: bounds)
+                        addnode.physicsBody?.categoryBitMask = bombBoundsCategory
+                        self.camera?.addChild(addnode)
+                        
+                        //update positioning
+                        let laserBoundsNode = SKNode()
+                        
+                        bounds = CGRect(x: -w / half, y: -h / half, width: w, height: h + extend)
+
+                        laserBoundsNode.physicsBody = SKPhysicsBody(edgeLoopFrom: bounds )
+                        laserBoundsNode.name = "🔲"
+                        laserBoundsNode.physicsBody?.categoryBitMask = laserBorder
+                        laserBoundsNode.physicsBody?.collisionBitMask = 0
+                        laserBoundsNode.physicsBody?.contactTestBitMask = laserbeam
+                        laserBoundsNode.physicsBody?.isDynamic = false
+                        laserBoundsNode.physicsBody?.isResting = true
+                        laserBoundsNode.isUserInteractionEnabled = false
+                        laserBoundsNode.physicsBody?.affectedByGravity = false
+                        laserBoundsNode.physicsBody?.restitution = 0
+                        laserBoundsNode.speed = -1000
+                        self.camera?.addChild(laserBoundsNode)
+                        
+                        node.removeFromParent()
                     }
                 }
             }
-            if consumed { b.node.removeFromParent() } else { survivingBullets.append(b) }
         }
-        bullets = survivingBullets
-        enemies.removeAll { $0.hp <= 0 }
-        drifters.removeAll { $0.node.parent == nil }
+        
+        let gameParallax = GameParallax(parallax: parallax, bounds: rockBounds)
+        parallax = gameParallax.setParallax(texture: SKTexture(imageNamed: background))
+        world.addChild(parallax)
+        world?.speed = 1
+        
+        guard
+            let sh = scene?.frame.size.height,
+            let sw = scene?.frame.size.width
+        else { return }
+        
+        let sceneheight = sh / 2
+        let scenewidth = sw / 2
 
-        guard !hero.isHidden else { return }
+        screenHeight = sceneheight - 64
+        
+        let indent = scenewidth - 7.5 * CGFloat(settings.mode)
+        let difference = CGFloat(20)
+        let labelheight = sceneheight - difference
+        let scoreheight = sceneheight - (difference * CGFloat(2))
+        let scoreLabel = SKLabelNode(fontNamed:"Emulogic")
+        scoreLabel.position = CGPoint( x: -indent, y: labelheight )
+        scoreLabel.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.left
+        scoreLabel.alpha = 0.4
+        scoreLabel.zPosition = 100
+        scoreLabel.text = String("🎲")
+        scoreLabel.fontSize = 14
+        cam.addChild(scoreLabel)
+        
+        scoreLabelNode = SKLabelNode(fontNamed:"Emulogic")
+        scoreLabelNode.position = CGPoint( x: -indent, y: scoreheight  )
+        scoreLabelNode.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.left
+        scoreLabelNode.alpha = 0.4
+        scoreLabelNode.zPosition = 100
+        scoreLabelNode.text = String(score)
+        scoreLabelNode.fontSize = 14
+        cam.addChild(scoreLabelNode)
+        
+        /* High Score */
+        highScoreLabel = SKLabelNode(fontNamed:"Emulogic")
+        highScoreLabel.position = CGPoint( x: 0, y: labelheight )
+        highScoreLabel.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.center
+        highScoreLabel.alpha = 0.4
+        highScoreLabel.zPosition = 100
+        highScoreLabel.text = String("💎")
+        highScoreLabel.fontSize = 14
+        highScoreLabel.name = "highScoreLabel"
+        cam.addChild(highScoreLabel)
+        
+        highScoreLabelNode = SKLabelNode(fontNamed:"Emulogic")
+        highScoreLabelNode.position = CGPoint( x: 0, y: scoreheight )
+        highScoreLabelNode.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.center
+        highScoreLabelNode.alpha = 0.4
+        highScoreLabelNode.zPosition = 100
+        highScoreLabelNode.text = String(highscore)
+        highScoreLabelNode.fontSize = 14
+        highScoreLabelNode.name = "highScoreLabelNode"
+        cam.addChild(highScoreLabelNode)
+        
+        readySetGoNode = SKLabelNode(fontNamed:emojifontname)
+        readySetGoNode.position = CGPoint( x: 0, y: 0 )
+        readySetGoNode.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.center
+        readySetGoNode.alpha = 1.0
+        readySetGoNode.zPosition = 100
+        readySetGoNode.text = String("🚥")
+        readySetGoNode.fontSize = 72
+        readySetGoNode.name = "highScoreLabelNode"
+        cam.addChild(readySetGoNode)
 
-        // hero vs items (collect)
-        items.removeAll { it in
-            if hit(heroPos, heroRadius, it.node.position, 26) {
-                applyPower(it.kind)
-                it.node.removeFromParent()
-                return true
-            }
-            return false
+        livesLabel = SKLabelNode(fontNamed:"Emulogic")
+        livesLabel.position = CGPoint( x: indent, y: labelheight )
+        livesLabel.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.right
+        livesLabel.alpha = 0.4
+        livesLabel.zPosition = 100
+        livesLabel.text = String("💛")
+        livesLabel.fontSize = 14
+        cam.addChild(livesLabel)
+        
+        livesLabelNode = SKLabelNode(fontNamed:"Emulogic")
+        livesLabelNode.position = CGPoint( x: indent, y: scoreheight )
+        livesLabelNode.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.right
+        livesLabelNode.alpha = 0.4
+        livesLabelNode.zPosition = 100
+        
+        if lives > maxlives {
+            lives = maxlives
         }
-
-        // hero vs drifters (collect bonus by flying through)
-        drifters.removeAll { d in
-            if hit(heroPos, heroRadius, d.node.position, 26) {
-                addScore(150)
-                let pop = makeEmoji("✨", size: 30)
-                pop.position = d.node.position
-                pop.zPosition = Z.fx
-                world.addChild(pop)
-                pop.run(.sequence([.group([.scale(to: 1.8, duration: 0.3), .fadeOut(withDuration: 0.3)]), .removeFromParent()]))
-                d.node.removeFromParent()
-                return true
-            }
-            return false
+        
+        if settings.emoji > 3 {
+            settings.emoji = 3
+        } else if settings.emoji < 1 {
+            settings.emoji = 1
         }
-
-        if shieldTime > 0 { return }   // invincible
-
-        // enemy shots vs hero
-        for (si, s) in enemyShots.enumerated() {
-            if hit(heroPos, heroRadius * 0.7, s.node.position, s.radius) {
-                s.node.removeFromParent()
-                enemyShots.remove(at: si)
-                heroHit()
-                return
-            }
-        }
-        // enemies vs hero
-        for e in enemies {
-            if hit(heroPos, heroRadius * 0.8, e.node.position, e.radius * 0.8) {
-                if !e.isBoss {
-                    explode(at: e.node.position, big: false)
-                    e.node.removeFromParent()
-                    enemies.removeAll { $0 === e }
-                }
-                heroHit()
-                return
-            }
-        }
-    }
-
-    private func heroHit() {
-        play("hit.wav")
-        explode(at: heroPos, big: true)
-        flashScreen(SKColor(red: 1, green: 0.2, blue: 0.2, alpha: 0.5))
-        lives -= 1
-        doubleLaser = false
-        rapidFire = false
-        updateHUD()
-        if lives <= 0 {
-            gameOver()
+                
+        livesLabelNode.text = String(repeating: heroArray[settings.emoji], count: lives)
+        livesLabelNode.fontSize = 14
+        cam.addChild(livesLabelNode)
+        
+        if settings.music {
+            self.audioPlayer?.numberOfLoops = -1
+            self.audioPlayer?.play()
+            self.audioPlayer?.volume = 1.0
         } else {
-            // brief respawn invincibility
-            shieldTime = 2.5
-            heroPos = CGPoint(x: 220, y: kSceneH / 2)
-            heroVel = .zero
-            hero.position = heroPos
+            self.audioPlayer?.numberOfLoops = 0
+            self.audioPlayer?.stop()
+            self.audioPlayer?.volume = 0.0
+        }
+        
+        if settings.rapidfire {
+            
+            let autofire = SKAction.sequence(
+                [ SKAction.run { [self] in
+                              
+                    switch UIApplication.shared.applicationState {
+                    case .background, .inactive:
+                        ()
+                    case .active:
+
+                        guard
+                            let hero = hero,
+                            let heroVelocity = hero.physicsBody?.velocity,
+                            let heroRotation = hero.zRotation as CGFloat?,
+                            let heroPosition = hero.position as CGPoint?
+                        else
+                        { return }
+                        
+                        func fireaway() {
+                            let fire = Int.random(in: 1...8)
+                            switch fire {
+                            
+                            case 1,2,3,4:
+                                
+                                if heroVelocity.dx > 0 {
+                                    laserbeak(superhero: (heroPosition, heroRotation, heroVelocity), reverse: false)
+                                } else if  heroVelocity.dx < 0 {
+                                    laserbeak(superhero: (heroPosition, heroRotation, heroVelocity), reverse: true)
+                                }
+                                
+                            case 5,6:
+                                
+                                if heroVelocity.dy < 0  {
+                                    bombaway(superhero: (heroPosition, heroRotation, heroVelocity), reverse: false)
+                                } else if heroVelocity.dy > 0 {
+                                    bombaway(superhero: (heroPosition, heroRotation, heroVelocity), reverse: true)
+                                }
+                                
+                            default:
+                                ()
+                            }
+                        }
+                        
+                        func autoFire() {
+                            if !🕹 {
+                                fireaway()
+                            }
+                        }
+                        
+                        autoFire()
+                    default:
+                        break
+                    }
+                },
+                
+                SKAction.wait(forDuration: 0.1)
+                
+                ]
+            )
+            self.run( SKAction.repeatForever(autofire) )
+        }
+        
+        let fadeOut = SKAction.fadeOut(withDuration: 0.3)
+        let fadeIn = SKAction.fadeIn(withDuration: 0.3)
+        let waitA = SKAction.wait(forDuration: 1.0)
+        let waitB = SKAction.wait(forDuration: 1.3)
+
+        readySetGoNode.run(SKAction.sequence([waitA,fadeOut]))
+    
+        let actionJackson = SKAction.run { [self] in
+            guard let gamestartup = readyPlayerOne() else { return }
+            
+            hero = gamestartup.hero
+            canape = gamestartup.canape
+            tractor = gamestartup.tractor
+            tractor.addGlow()
+            bombsbutton = gamestartup.bombsbutton
+            firebutton = gamestartup.firebutton
+            bombsbutton2 = gamestartup.bombsbutton2
+            firebutton2 = gamestartup.firebutton2
+            
+        }
+        
+        let sequence = SKAction.sequence([waitB,fadeIn,actionJackson]);
+        self.run( sequence )
+    }
+    
+    override func didSimulatePhysics() {
+        
+        guard
+            let h = hero,
+            let c = canape
+        else
+        { return }
+        
+        //camera node x position = hero's
+        cam.position.x = h.position.x
+        
+        //canape and hero have the same rotation
+        c.zRotation = h.zRotation
+        
+        // adds depth to the scene
+        // by moving the backgorund slower
+        parallax.position.x = cam.position.x * 0.334
+    }
+    
+    
+    public func emojiAnimation(emojis:Array<String>) {
+        guard
+            let hero = hero
+        else { return }
+        
+        guard
+            let emojiNode = hero.children.first as? SKLabelNode
+        else { return }
+
+        let wait = SKAction.wait(forDuration: 1.0)
+        let sizeA = SKAction.run {
+            emojiNode.fontSize = 34
+            emojiNode.position.y = -1
+        }
+        
+        let sizeB = SKAction.run {
+            emojiNode.fontSize = 32
+            emojiNode.position.y = 0
+        }
+    
+        var animationSeqArr = [SKAction]()
+        
+        for x in 0..<emojis.count {
+            let emoji = SKAction.run() { [weak emojiNode] in emojiNode?.text = emojis[x] }
+            
+            animationSeqArr.append(wait)
+            if x < emojis.count - 1 {
+                animationSeqArr.append(sizeA)
+            } else {
+                animationSeqArr.append(sizeB)
+            }
+            animationSeqArr.append(emoji)
+        }
+        
+        hero.run(SKAction.repeatForever( SKAction.sequence( animationSeqArr ) ))
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard
+            let hero = self.hero,
+            let heroVelocity = hero.physicsBody?.velocity,
+            let heroRotation = hero.zRotation as CGFloat?,
+            let heroPosition = hero.position as CGPoint?,
+            let firebutton = self.firebutton,
+            let firebutton2 = self.firebutton2,
+            let bombsbutton = self.bombsbutton,
+            let bombsbutton2 = self.bombsbutton2
+        else { return }
+        
+        super.touchesBegan(touches as Set<UITouch>, with: event)
+        
+        for touch in touches {
+            let location: CGPoint = touch.location(in: self)
+            let touchedNode = atPoint(location)
+            
+            if let name = touchedNode.name {
+                
+                if name == "fire-right" || 🕹 {
+                    laserbeak(superhero: (heroPosition, heroRotation, heroVelocity), reverse: false)
+                    firebomb(firebomb: firebutton)
+                }
+                
+                if name == "fire-left"  || 🕹 {
+                    laserbeak(superhero: (heroPosition, heroRotation, heroVelocity), reverse: true)
+                    firebomb(firebomb: firebutton2)
+                }
+                
+                if name == "fire-down"  || 🕹 {
+                    bombaway(superhero: (heroPosition, heroRotation, heroVelocity), reverse: false)
+                    firebomb(firebomb: bombsbutton)
+                }
+                
+                if name == "fire-top"  || 🕹 {
+                    bombaway(superhero: (heroPosition, heroRotation, heroVelocity), reverse: true)
+                    firebomb(firebomb: bombsbutton2)
+                }
+            }
         }
     }
-
-    // MARK: Scoring
-
-    private func addScore(_ pts: Int) {
-        score += pts
-        if score >= nextExtraLifeAt {
-            lives = min(lives + 1, 9)
-            nextExtraLifeAt += 5000
-            play("extralife.wav")
+    
+    //To Do: Move this to GameHits
+    func tractorBeamedThisItem(prize:SKSpriteNode?) {
+        
+        guard
+            let prize = prize,
+            let body = prize.physicsBody,
+            prize.name != "🌠"
+        else { return }
+        
+        // send the collisions to neverLand
+        // this way the score cannot be counted twice or more
+        // any prize or coin can get sucked up
+        body.contactTestBitMask = 0
+        body.categoryBitMask = 0 // will disable contact
+        body.collisionBitMask = 0
+        body.isResting = true
+        body.isDynamic = false
+        body.mass = 1
+        prize.speed = 0.5
+        
+        let move = SKAction.moveBy(x: 0, y: 48, duration: 0.2)
+        let fade = SKAction.fadeOut(withDuration: TimeInterval(0.2))
+        let scale = SKAction.scale(to: 0.25, duration:TimeInterval(0.2))
+        
+        let extraPoints = tallyPoints(name: prize.name!)
+        updateScore(extraPoints:extraPoints * 2)
+        prize.name = "🌠"; // will disable contact
+        let removeFromParent = SKAction.removeFromParent()
+        prize.physicsBody?.isDynamic = false
+        prize.run(SKAction.sequence([move]))
+        prize.run(SKAction.sequence([fade]))
+        prize.run(SKAction.sequence([scale,removeFromParent]))
+    }
+    
+    func blueZ (pos: CGPoint) {
+        if let smoke = SKEmitterNode(fileNamed: "blueParticle") {
+            let fadeToZero = SKAction.fadeAlpha(to: 0.0, duration:TimeInterval(2.0))
+            let removeFromParent = SKAction.removeFromParent()
+            let destroyVaporDelay = SKAction.wait(forDuration: 2.0)
+            smoke.run(SKAction.sequence([destroyVaporDelay,fadeToZero,removeFromParent]))
+            smoke.position = pos
+            smoke.alpha = 0.5
+            smoke.speed = 5
+            smoke.zPosition = 150
+            addChild(smoke)
         }
-        if score > hiScore { hiScore = score }
-        updateHUD()
+        
+        if settings.sound {
+            let explosion: SKAction = SKAction.playSoundFileNamed("murrmurr.m4a", waitForCompletion: false)
+            run(explosion)
+        }
+    }
+    
+    func smokeM (pos: CGPoint) {
+        
+        if let smoke = SKEmitterNode(fileNamed: "smokeParticle") {
+            let fadeToZero = SKAction.fadeAlpha(to: 0.0, duration:TimeInterval(2.0))
+            let removeFromParent = SKAction.removeFromParent()
+            let destroyVaporDelay = SKAction.wait(forDuration: 2.0)
+            smoke.run(SKAction.sequence([destroyVaporDelay,fadeToZero,removeFromParent]))
+            smoke.position = pos
+            smoke.speed = 5
+            smoke.zPosition = 150
+            addChild(smoke)
+        }
+        
+        if settings.sound {
+            let explosion: SKAction = SKAction.playSoundFileNamed("boomFire2.m4a", waitForCompletion: false)
+            run(explosion)
+        }
+    }
+    
+    func magicParticle (pos: CGPoint) {
+        guard let smoke = SKEmitterNode(fileNamed: "magicParticle") else { return }
+        
+        let fadeToZero = SKAction.fadeAlpha(to: 0.0, duration:TimeInterval(2.0))
+        let removeFromParent = SKAction.removeFromParent()
+        let destroyVaporDelay = SKAction.wait(forDuration: 2.0)
+        smoke.run(SKAction.sequence([destroyVaporDelay,fadeToZero,removeFromParent]))
+        smoke.position = pos
+        smoke.speed = 5
+        smoke.zPosition = 150
+        addChild(smoke)
+        
+        if settings.sound {
+            let explosion: SKAction = SKAction.playSoundFileNamed("boomFire2.m4a", waitForCompletion: false)
+            run(explosion)
+        }
+    }
+    
+    
+    func stoneVersusLaser(secondBody: SKPhysicsBody?, contactPoint: CGPoint? ) {
+        guard
+            let secondBody = secondBody,
+            let contactPoint = contactPoint
+        else { return }
+        
+        blueZ(pos:contactPoint)
+        remove(body:secondBody)
+    }
+    
+    func worldVersusLaser(firstBody: SKPhysicsBody?, secondBody: SKPhysicsBody?) {
+        guard
+            let firstBody = firstBody,
+            let secondBody = secondBody
+        else { return }
+        
+        if let firstNode = firstBody.node, let secondNode = secondBody.node, let firstParent = firstNode.parent, let secondParent = secondNode.parent {
+            let firstBodyPos = firstNode.scene?.convert(firstNode.position, from: firstParent)
+            let secondBodyPos = secondNode.scene?.convert(secondNode.position, from: secondParent)
+            
+            if firstBody.node != nil {
+                firstBody.isDynamic = true
+                
+                firstBody.linearDamping = CGFloat(50.0) // was 52
+                
+                guard
+                    let x1 = firstBodyPos?.x,
+                    let x2 = secondBodyPos?.x,
+                    let y1 = firstBodyPos?.y,
+                    let y2 = secondBodyPos?.y
+                else { return }
+                
+                var pos = CGFloat(-1)
+                if Double(x1) > Double(x2) {
+                    pos = CGFloat(1)
+                } else if Double(x1) == Double(x2){
+                    pos = 0
+                }
+                
+                var turn = CGFloat(-1)
+                
+                if Double(y1) > Double(y2) {
+                    turn = CGFloat(1)
+                } else if Double(y1) == Double(y2) {
+                    turn = 0
+                }
+                
+                firstBody.applyImpulse(CGVector(dx: 10 * pos, dy: 0))
+                firstBody.angularVelocity = 15 * pos * turn
+                firstBody.applyTorque(3 * -pos * turn)
+                remove(body:secondBody)
+            }
+        }
+    }
+    
+    func laserVersusFloater(firstBody:SKPhysicsBody?,secondBody:SKPhysicsBody?) {
+        guard
+            let firstBody,
+            let secondBody
+        else { return }
+        
+        if let firstNode = firstBody.node, let secondNode = secondBody.node, let firstParent = firstNode.parent, let secondParent = secondNode.parent {
+            let firstBodyPos = firstNode.scene?.convert(firstNode.position, from: firstParent)
+            let secondBodyPos = secondNode.scene?.convert(secondNode.position, from: secondParent)
+            
+            if secondBody.node != nil {
+                secondBody.isDynamic = true
+                
+                secondBody.linearDamping = 50
+                secondBody.node?.setScale(1.15)
+                
+                guard
+                    let x1 = firstBodyPos?.x,
+                    let x2 = secondBodyPos?.x,
+                    let y1 = firstBodyPos?.y,
+                    let y2 = secondBodyPos?.y
+                else { return }
+                
+                var pos = CGFloat(-1)
+                
+                if Double(x1) > Double(x2) {
+                    pos = CGFloat(1)
+                } else if Double(x1) == Double(x2) {
+                    pos = 0
+                }
+                
+                var turn = CGFloat(-1)
+                
+                if Double(y1) > Double(y2) {
+                    turn = CGFloat(1)
+                } else if Double(y1) == Double(y2) {
+                    turn = 0
+                }
+                
+                secondBody.applyImpulse(CGVector(dx: 10 * pos, dy: 0))
+                secondBody.angularVelocity = 15 * pos * turn
+                secondBody.applyTorque(3 * -pos * turn)
+                remove(body:firstBody)
+            }
+        }
+    }
+    
+    func baddiePointsHelper(firstBody:SKPhysicsBody?, secondBody:SKPhysicsBody?, contactPoint: CGPoint?) {
+        
+        guard
+            let firstBody,
+            let secondBody,
+            let contactPoint
+        else { return }
+        
+        guard
+            let fbname = firstBody.node?.name
+        else { return }
+        
+        if !fbname.isEmpty {
+            let extraPoints = tallyPoints(name: fbname)
+            updateScore(extraPoints:extraPoints )
+        }
+        
+        smokeM(pos: contactPoint)
+        remove(body: firstBody)
+        remove(body: secondBody)
     }
 
-    // MARK: FX
+    func remove(body:SKPhysicsBody?) {
+        guard
+            let b = body,
+            let node = b.node as? SKSpriteNode
+        else { return }
+        
+        node.run( SKAction.removeFromParent() )
+    }
+    
+    // Here we are super careful not cause a crash
+    func removeNode(node:SKSpriteNode?) {
+        guard let n = node else { return }
+        
+        let r = SKAction.removeFromParent()
+        n.run(r)
+    }
 
-    private func explode(at pos: CGPoint, big: Bool) {
-        play(big ? "explosion.wav" : "boom.wav")
-        let burst = makeEmoji("💥", size: big ? 90 : 54)
-        burst.position = pos
-        burst.zPosition = Z.fx
-        world.addChild(burst)
-        burst.run(.sequence([
-            .group([.scale(to: big ? 2.0 : 1.4, duration: 0.28), .fadeOut(withDuration: 0.28)]),
-            .removeFromParent(),
-        ]))
-        // a few sparks
-        for _ in 0..<(big ? 6 : 3) {
-            let s = makeEmoji(["✨", "⭐️", "💫"].randomElement()!, size: CGFloat.random(in: 18...30))
-            s.position = pos
-            s.zPosition = Z.fx
-            world.addChild(s)
-            let dx = CGFloat.random(in: -70...70), dy = CGFloat.random(in: -70...70)
-            s.run(.sequence([
-                .group([.move(by: CGVector(dx: dx, dy: dy), duration: 0.4), .fadeOut(withDuration: 0.4)]),
-                .removeFromParent(),
+    func goodiePointsHelper(firstBody:SKPhysicsBody?, secondBody:SKPhysicsBody?, contactPoint: CGPoint?) {
+        
+        guard
+            let firstBody,
+            let secondBody,
+            let contactPoint
+        else { return }
+        
+        guard
+            let sbnn = secondBody.node?.name
+        else { return }
+        
+        if !sbnn.isEmpty {
+            let extraPoints = tallyPoints(name: sbnn)
+            updateScore(extraPoints:extraPoints )
+        }
+        
+        magicParticle(pos: contactPoint)
+        remove(body: firstBody)
+        remove(body: secondBody)
+    }
+    
+    func levelUpHelper() {
+        level += 1
+        
+        if highlevel > maxlevel {
+            highlevel = maxlevel
+        }
+        
+        if level > highlevel {
+            highlevel = level
+        }
+        
+        if level > maxlevel {
+            level = 1
+        }
+        
+        world?.speed = 0
+        tractor.speed = 0
+        
+        if settings.music {
+            audioPlayer?.numberOfLoops = 0
+            audioPlayer?.stop()
+            audioPlayer?.volume = 0.0
+        }
+    }
+    
+    //MARK: digBeginContact
+    func didBegin(_ contact: SKPhysicsContact) {
+        guard
+            contact.bodyA.categoryBitMask != 0,
+            contact.bodyB.categoryBitMask != 0,
+            contact.bodyA.node?.parent != nil,
+            contact.bodyB.node?.parent != nil,
+            contact.bodyA.node != nil,
+            contact.bodyB.node != nil,
+            contact.bodyA.node?.name != nil,
+            contact.bodyB.node?.name != nil
+        else { return }
+        
+        if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
+            firstBody = contact.bodyA
+            secondBody = contact.bodyB
+        } else {
+            secondBody = contact.bodyA
+            firstBody = contact.bodyB
+        }
+        
+        let catMask = firstBody.categoryBitMask | secondBody.categoryBitMask
+        
+        switch catMask {
+        case laserbeam | laserBorder :
+            
+            if let x = firstBody.node?.name {
+                if x == "🚩" || x == "💠" {
+                    remove(body:firstBody)
+                }
+            }
+            
+        case worldCategory | laserbeam :
+            
+            if firstBody.node?.name == "stone" {
+                
+                if !firstBody.isDynamic && (secondBody.node?.name == "🔱" || secondBody.node?.name == "💠") {
+                    worldVersusLaser(firstBody: firstBody, secondBody: secondBody)
+                } else if firstBody.isDynamic && (secondBody.node?.name == "🔱" || secondBody.node?.name == "💠") {
+                    baddiePointsHelper(firstBody: firstBody, secondBody: secondBody, contactPoint: contact.contactPoint)
+                } else {
+                    stoneVersusLaser(secondBody: secondBody, contactPoint: contact.contactPoint)
+                }
+                
+            } else {
+                
+                if !firstBody.isDynamic {
+                    worldVersusLaser(firstBody: firstBody, secondBody: secondBody)
+                } else if firstBody.isDynamic {
+                    baddiePointsHelper(firstBody: firstBody, secondBody: secondBody, contactPoint: contact.contactPoint)
+                } else {
+                    worldVersusLaser(firstBody: firstBody, secondBody: secondBody)
+                }
+            }
+            
+        case badFishCategory | laserbeam :
+            
+            if firstBody.isDynamic {
+                baddiePointsHelper(firstBody: firstBody, secondBody: secondBody, contactPoint: contact.contactPoint)
+            } else {
+                worldVersusLaser(firstBody: firstBody, secondBody: secondBody)
+            }
+            
+        case badGuyCategory | laserbeam :
+            
+            baddiePointsHelper(firstBody: firstBody, secondBody: secondBody, contactPoint: contact.contactPoint)
+            
+        case laserbeam | itemCategory :
+            
+            if secondBody.isDynamic {
+                goodiePointsHelper(firstBody: firstBody, secondBody: secondBody, contactPoint: contact.contactPoint)
+                
+            } else {
+                laserVersusFloater(firstBody: firstBody, secondBody: secondBody)
+            }
+            
+        case laserbeam | fishCategory :
+            
+            if secondBody.isDynamic  {
+                goodiePointsHelper(firstBody: firstBody, secondBody: secondBody, contactPoint: contact.contactPoint)
+            } else {
+                laserVersusFloater(firstBody: firstBody, secondBody: secondBody)
+            }
+            
+        case laserbeam | charmsCategory :
+            
+            goodiePointsHelper(firstBody: firstBody, secondBody: secondBody, contactPoint: contact.contactPoint)
+            
+        case tractorCategory | itemCategory, tractorCategory | charmsCategory, tractorCategory | fishCategory :
+            
+            if let prize = secondBody.node as? SKSpriteNode {
+                tractorBeamedThisItem(prize: prize)
+            }
+            
+        case heroCategory | levelupCategory :
+            
+            levelUpHelper()
+            
+            if secondBody.node?.name == "🌀" {
+                if level > 0 && level < 4 {
+                    level = 5
+                }
+            }
+            
+            saveScores(level: level, highlevel: highlevel, score: score, hscore: highscore, lives: lives)
+            
+            hero.physicsBody?.velocity = CGVector.zero
+            hero.physicsBody?.applyImpulse(CGVector.zero)
+            
+            let easeOut: SKAction = SKAction.move(to: CGPoint.zero, duration: 0.0)
+            easeOut.timingMode = SKActionTimingMode.easeOut
+            FlightYoke.run(easeOut)
+            FlightYokePilot(velocity: CGVector.zero, zRotation: 0.0)
+            
+            removeHero()
+            removeGUI()
+            
+            //Loads the LevelUp Scene
+            func starPlayrOneLevelUpX(world:SKNode?, hero: SKSpriteNode?, tractor: SKSpriteNode?) {
+                
+                guard
+                    let world = world,
+                    let hero = hero,
+                    let tractor = tractor
+                else { return }
+                
+                hero.physicsBody?.velocity = CGVector.zero
+                hero.physicsBody?.applyImpulse(CGVector.zero)
+                hero.speed = 0
+                hero.removeFromParent()
+                tractor.removeFromParent()
+                world.speed = 0
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { [weak self] in
+                    guard let self = self else { return }
+                    let levelup = LevelUp( size: self.size )
+                    levelup.runner()
+                    self.size = setSceneSizeForGame()
+                    levelup.scaleMode = .aspectFill
+                    
+                    self.view?.backgroundColor = .black
+                    
+                    self.view?.isMultipleTouchEnabled = true
+                    self.view?.allowsTransparency = false
+                    self.view?.isAsynchronous = true
+                    self.view?.isOpaque = true
+                    self.view?.clipsToBounds = true
+                    self.view?.ignoresSiblingOrder = true
+                    
+                    self.view?.showsFPS = showsFPS
+                    self.view?.showsNodeCount = showsNodeCount
+                    self.view?.showsPhysics = showsPhysics
+                    self.view?.showsFields = showsFields
+                    self.view?.showsDrawCount = showsDrawCount
+                    self.view?.showsQuadCount = showsQuadCount
+                    
+                    self.view?.shouldCullNonVisibleNodes = true
+                    self.view?.preferredFramesPerSecond = 61
+                    
+                    self.view?.presentScene(levelup)
+                }
+            }
+            
+            starPlayrOneLevelUpX(world:world, hero: hero, tractor: tractor)
+            
+        case heroCategory | worldCategory, heroCategory | badGuyCategory, heroCategory | badFishCategory :
+            
+            if ( 🛡 ) {
+                return
+            }
+            
+            stopIt(secondBody: secondBody, contactPoint: contact.contactPoint)
+        default :
+            return
+            
+        }
+    }
+    
+    var runForestRun = true
+    
+    func stopIt(secondBody: SKPhysicsBody, contactPoint: CGPoint) {
+        Explosion()
+        removeHero()
+        removeGUI()
+        
+        //save first
+        saveScores(level: level, highlevel: highlevel, score: score, hscore: highscore, lives: lives)
+        
+        if let world = world, world.speed == 1 && runForestRun {
+            world.speed /= 2
+            runForestRun = false
+            remove(body:secondBody)
+            LostLife(contactPoint: contactPoint)
+            saveScores(level: level, highlevel: highlevel, score: score, hscore: highscore, lives: lives)
+            
+            let wait = SKAction.wait(forDuration: 1.5)
+            let run = SKAction.run { [ weak self ] in
+                guard let self = self else { return }
+                self.lives <= 0 ? self.EndGame() : self.RestartLevel()
+            }
+            
+            world.run( SKAction.sequence([wait,run]))
+        }
+    }
+    
+    func removeHero() {
+        removeNode(node: canape)
+        removeNode(node: tractor)
+        removeNode(node: hero)
+    }
+    
+    func removeGUI() {
+        FlightYoke.alpha = 0 // turn off, update offscreen
+        QuadFireBombHUD.alpha = 0
+        QuadFireBombHUD.speed = 10
+        FlightYoke.recenter()
+        FlightYoke.stickMoved(location: CGPoint.zero)
+        
+        let wait = SKAction.wait(forDuration: 1.0)
+        let run = SKAction.run { [ weak self ] in
+            guard let self = self else { return }
+            self.QuadFireBombHUD.removeAllChildren()
+            self.AlienYokeDpdHUD.removeAllChildren()
+            self.QuadFireBombHUD.alpha = 1
+            self.FlightYoke.alpha = 1 //turn back on before shutdown
+            self.FlightYoke.shutdown()
+            self.QuadFireBombHUD.speed = 0
+        }
+        
+        world.run( SKAction.sequence([wait,run]))
+    }
+    
+    func LostLife(contactPoint: CGPoint) {
+        smokeM(pos: contactPoint)
+        
+        if settings.music {
+            audioPlayer?.numberOfLoops = 0
+            audioPlayer?.stop()
+            audioPlayer?.volume = 0.0
+        }
+        
+        lives -= 1
+        
+        if lives >= 0 {
+            livesLabelNode.text = String(repeating: heroArray[settings.emoji], count: lives)
+        }
+        
+        saveScores(level: level, highlevel: highlevel, score: score, hscore: highscore, lives: lives)
+    }
+    
+    func EndGame() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in
+            guard let self = self else { return }
+            
+            let gameOverScene = GameOver( size: self.size )
+            gameOverScene.runner()
+            self.size = setSceneSizeForGame()
+            gameOverScene.scaleMode = .aspectFill
+            
+            self.view?.backgroundColor = .black
+            self.view?.isMultipleTouchEnabled = true
+            self.view?.allowsTransparency = false
+            self.view?.isAsynchronous = true
+            self.view?.isOpaque = true
+            self.view?.clipsToBounds = true
+            self.view?.ignoresSiblingOrder = true
+            self.view?.showsFPS = showsFPS
+            self.view?.showsNodeCount = showsNodeCount
+            self.view?.showsPhysics = showsPhysics
+            self.view?.showsFields = showsFields
+            self.view?.showsDrawCount = showsDrawCount
+            self.view?.showsQuadCount = showsQuadCount
+            self.view?.shouldCullNonVisibleNodes = true
+            self.view?.preferredFramesPerSecond = 61
+            self.view?.presentScene(gameOverScene)
+        }
+    }
+    
+    func Explosion() {
+        guard let hero = hero else { return }
+        
+        if let explosion = SKEmitterNode(fileNamed: "fireParticle.sks") {
+            explosion.alpha = 0.5
+            explosion.zPosition = 175
+            explosion.position = hero.position
+            addChild(explosion)
+            
+            explosion.run(SKAction.sequence([
+                SKAction.scale(to: -1.5, duration: 0.5),
+            ]))
+            
+            explosion.run(SKAction.sequence([
+                SKAction.scale(to: 0.5, duration: 0.5),
+                SKAction.fadeAlpha(to: 0, duration: 0.5),
+                SKAction.wait(forDuration: 1.5),
+                SKAction.run { [weak explosion ] in
+                    guard let explosion = explosion else { return }
+                    explosion.removeFromParent()
+                }
             ]))
         }
     }
-
-    private func flashScreen(_ color: SKColor) {
-        let flash = SKSpriteNode(color: color, size: CGSize(width: kSceneW, height: kSceneH))
-        flash.anchorPoint = CGPoint(x: 0, y: 0)
-        flash.position = .zero
-        flash.zPosition = Z.overlay - 1
-        hud.addChild(flash)
-        flash.run(.sequence([.fadeOut(withDuration: 0.3), .removeFromParent()]))
-    }
-
-    // MARK: Cleanup helpers
-
-    private func clearActors() {
-        for e in enemies { e.node.removeFromParent() }
-        for b in bullets { b.node.removeFromParent() }
-        for s in enemyShots { s.node.removeFromParent() }
-        for it in items { it.node.removeFromParent() }
-        for d in drifters { d.node.removeFromParent() }
-        enemies.removeAll(); bullets.removeAll(); enemyShots.removeAll()
-        items.removeAll(); drifters.removeAll()
-    }
-
-    private func clearOverlay() {
-        overlay.removeAllChildren()
-    }
-
-    // MARK: Input — keyboard (macOS virtual key codes, as delivered by the runtime)
-
-    override func keyDown(with event: NSEvent) {
-        switch event.keyCode {
-        case 123, 0:  keyLeft = true              // ← / A
-        case 124, 2:  keyRight = true             // → / D
-        case 126, 13: keyUp = true                // ↑ / W
-        case 125, 1:  keyDown = true              // ↓ / S
-        case 49:                                  // space
-            keyFire = true
-            handleConfirm()
-        case 18:  selectPilot(0)                  // 1
-        case 19:  selectPilot(1)                  // 2
-        case 20:  selectPilot(2)                  // 3
-        default: break
+    
+    func RestartLevel() {
+        removeHero()
+        world.speed = 1
+        
+        let runResetWorld = SKAction.run() { [ weak self ] in
+            guard
+                let self = self,
+                let world = self.world
+            else { return }
+            
+            let resetWorld = SKAction.moveTo(x: world.position.x, duration: 0.5)
+            world.run(resetWorld)
+            world.speed = 1
         }
-    }
-
-    override func keyUp(with event: NSEvent) {
-        switch event.keyCode {
-        case 123, 0:  keyLeft = false
-        case 124, 2:  keyRight = false
-        case 126, 13: keyUp = false
-        case 125, 1:  keyDown = false
-        case 49:      keyFire = false
-        default: break
-        }
-    }
-
-    private func selectPilot(_ i: Int) {
-        guard mode == .title, i >= 0, i < kPilots.count else { return }
-        pilotIndex = i
-        refreshPilotLine()
-        updateHUD()
-    }
-
-    private func handleConfirm() {
-        switch mode {
-        case .title:    startNewGame()
-        case .gameOver: showTitle()
-        default: break
-        }
-    }
-
-    // MARK: Input — touch / mouse (virtual flight yoke + fire)
-
-    override func touchBegan(finger: Int, at p: CGPoint) { pointerDown(p) }
-    override func touchMoved(finger: Int, at p: CGPoint) { pointerMove(p) }
-    override func touchEnded(finger: Int, at p: CGPoint) { pointerUp(p) }
-
-    override func mouseDown(with event: NSEvent) { pointerDown(event.location(in: self)) }
-    override func mouseDragged(with event: NSEvent) { pointerMove(event.location(in: self)) }
-    override func mouseUp(with event: NSEvent) { pointerUp(event.location(in: self)) }
-
-    private func pointerDown(_ p: CGPoint) {
-        switch mode {
-        case .title:
-            // Tapping the pilot line cycles pilots; anywhere else starts.
-            if p.y > kSceneH * 0.42 && p.y < kSceneH * 0.54 {
-                selectPilot((pilotIndex + 1) % kPilots.count)
-            } else {
-                startNewGame()
+        
+        let runWorld = SKAction.run() {  [ weak self ] in
+            guard
+                let self = self,
+                let world = self.world,
+                let gamestartup = self.readyPlayerOne()
+            else { return }
+            
+            self.hero = gamestartup.hero
+            self.canape = gamestartup.canape
+            self.tractor = gamestartup.tractor
+            
+            if settings.emoji == 2 {
+                emojiAnimation(emojis:["🙈","🙊","🙉","🐵"])
             }
-        case .gameOver:
-            showTitle()
-        case .playing:
-            stickActive = true
-            stickAnchor = p
-            stickCurrent = p
-            touchFiring = true
-        default:
-            break
+            
+            self.bombsbutton  =  gamestartup.bombsbutton
+            self.firebutton   = gamestartup.firebutton
+            self.bombsbutton2 = gamestartup.bombsbutton2
+            self.firebutton2  = gamestartup.firebutton2
+            
+            if settings.music {
+                self.audioPlayer?.numberOfLoops = -1
+                self.audioPlayer?.play()
+                self.audioPlayer?.volume = 1.0
+            } else {
+                self.audioPlayer?.numberOfLoops = 0
+                self.audioPlayer?.stop()
+                self.audioPlayer?.volume = 0.0
+            }
+            
+            world.speed = 1
+            
+            self.runForestRun = true
+        }
+        
+        let wait = SKAction.wait(forDuration: 0.5)
+        world.run(SKAction.sequence([wait,runResetWorld,wait,runWorld]))
+    }
+    
+    // Find the Score
+    // And return 1 if we can't find it
+    func tallyPoints(name:String?) -> Int {
+        guard let name = name else {
+            return(0)
+        }
+        
+        if name.isEmpty {
+            return(0)
+        }
+        
+        let pts = 1
+        
+        if name == "❣️" && lives >= 0 && lives < 9 {
+            lives += 1
+            
+            if lives > maxlives {
+                lives = maxlives
+            }
+            
+            livesLabelNode.text = String(repeating: heroArray[settings.emoji], count: lives)
+                    
+            if settings.sound {
+                let fire: SKAction = SKAction.playSoundFileNamed("extralife.m4a", waitForCompletion: false)
+                self.run(fire)
+            }
+        }
+        
+        //gives our ship shields
+        if name == "🛡"  {
+            /* Power Ups */
+            🛡 = true
+            
+            if let l = livesLabel.text, !l.contains("🛡") {
+                livesLabel.text? += "🛡"
+                
+                hero.alpha = 0.75
+                
+                //MARK: aura particle emitter
+                if let aura = SKEmitterNode(fileNamed: "aura") {
+                    aura.alpha = 0.25
+                    aura.speed = 1
+                    aura.name = "aura"
+                    aura.setScale(0.5)
+                    hero.addChild(aura)
+                }
+            }
+            
+            if settings.sound {
+                let fire: SKAction = SKAction.playSoundFileNamed("doublelaser.m4a", waitForCompletion: false)
+                self.run(fire)
+            }
+        }
+        
+        //gives our ship double lasers
+        if name == "🔫" {
+            doublelaser = 1
+            
+            if let l = livesLabel.text, !l.contains("🔫") {
+                livesLabel.text! += "🔫"
+            }
+ 
+            if settings.sound {
+                let fire: SKAction = SKAction.playSoundFileNamed("doublelaser.m4a", waitForCompletion: false)
+                self.run(fire)
+            }
+        }
+        
+        //gives our ship superman lasers
+        if name == "💠" || name == "💎" {
+            💠 = true
+            
+            if let l = livesLabel.text, !l.contains("💠") {
+                livesLabel.text! += "💠"
+            }
+            
+            if settings.sound {
+                let fire: SKAction = SKAction.playSoundFileNamed("doublelaser.m4a", waitForCompletion: false)
+                self.run(fire)
+            }
+        }
+        
+        //gives our trident bombs
+        if name == "🔱" {
+            🔱 = true
+            
+            if let l = livesLabel.text, !l.contains("🔱") {
+                livesLabel.text? += ("🔱")
+            }
+            
+            if settings.sound {
+                let fire: SKAction = SKAction.playSoundFileNamed("doublelaser.m4a", waitForCompletion: false)
+                self.run(fire)
+            }
+        }
+        
+        if name == "🕹" && !settings.rapidfire  {
+            🕹 = true
+            doublelaser = 1
+            settings.rapidfire = true
+            if let l = livesLabel.text, !l.contains("🕹") {
+                livesLabel.text? += "🕹"
+            }
+            
+            if settings.sound {
+                let fire: SKAction = SKAction.playSoundFileNamed("doublelaser.m4a", waitForCompletion: false)
+                self.run(fire)
+            }
+        }
+        
+        /* guard did not stop from crashing, so using this instead */
+        if let score = (scoreDict[name]) {
+            return score
+        } else {
+            print("if let score found : missing score for: " + name)
+            return (pts)
         }
     }
-
-    private func pointerMove(_ p: CGPoint) {
-        if mode == .playing && stickActive { stickCurrent = p }
-    }
-
-    private func pointerUp(_ p: CGPoint) {
-        stickActive = false
-        touchFiring = false
-        heroVel.dx *= 0.4
-        heroVel.dy *= 0.4
-    }
-
-    // MARK: Gamepad
-
-    private func setupController() {
-        GCController.startWirelessControllerDiscovery()
-        pad = GCController.controllers().first?.extendedGamepad
-    }
-
-    private var prevPadA = false
-    private func pollController() {
-        // Acquire a controller lazily — the Web Gamepad API only surfaces a pad
-        // after the first input, so re-poll until one appears (no notifications).
-        if pad == nil { pad = GCController.controllers().first?.extendedGamepad }
-        guard let pad else { return }
-        let aDown = pad.buttonA.isPressed
-        if aDown && !prevPadA && (mode == .title || mode == .gameOver) {
-            handleConfirm()
+    
+    //MARK: UpdateScore
+    func updateScore(extraPoints:Int) {
+        
+        self.score = self.score + extraPoints
+        
+        if self.score >= self.highscore {
+            self.highscore = self.score
+            self.highScoreLabelNode.text = String(self.highscore)
         }
-        prevPadA = aDown
+        
+        self.scoreLabelNode.text = String(self.score)
+        
+        if world?.speed == 0 {
+            saveScores(level: self.level, highlevel: self.highlevel, score: self.score, hscore:self.highscore, lives: self.lives)
+        }
     }
+    
+    //MARK: Game Projectiles
+    
+    func laserbeak (superhero: (position:CGPoint, zRotation: CGFloat, velocity: CGVector), reverse: Bool) {
+        
+        guard let 🧵 = 💠 ? 🥾 + 🦸 : 🦸 else { return }
+        
+        👁 = SKSpriteNode(texture: SKTexture(imageNamed: 🧵))
+        
+        var 👨‍🔬 = SKPhysicsBody(rectangleOf: 👁.size)
+        
+        
+        //Monkey
+        if settings.emoji == 2 {
+            👁.physicsBody?.applyAngularImpulse(5)
+            // 🛥 ? (🍕 = 1) : (🍕 = -1)
+            
+            //let texture = SKTexture.init(image: self.transparentimage)
+            👁 = SKSpriteNode()
+            👨‍🔬 = SKPhysicsBody(circleOfRadius: 🍺)
+            let 🔫: SKLabelNode = SKLabelNode(fontNamed:emojifontname)
+            
+            🔫.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.center
+            🔫.verticalAlignmentMode = SKLabelVerticalAlignmentMode.center
+            🔫.text = 🍌
+            🔫.fontSize = 32
+            👁.addChild(🔫)
+        }
+        
+        💠 ? (👁.name = "💠") : (👁.name = "🚩")
+        
+        👁.isUserInteractionEnabled = false
+        👁.physicsBody = 👨‍🔬
+        👁.physicsBody?.mass = 0
+        👁.zPosition = -100
+        👁.physicsBody?.fieldBitMask = 0
+        👁.physicsBody?.isDynamic = true
+        👁.physicsBody?.affectedByGravity = false
+        👁.physicsBody?.allowsRotation = true
+        👁.physicsBody?.categoryBitMask = laserbeam
+        👁.physicsBody?.collisionBitMask = laserBorder
 
-    // MARK: Audio
+        let x = 3994 //calculated 2 + 8 + 16 + 128 + 256 + 512 + 1024 + 2048
+        👁.physicsBody?.contactTestBitMask = UInt32(x)
+        👁.physicsBody?.density = 0
+        👁.physicsBody?.fieldBitMask = 0
+        👁.physicsBody?.restitution = 0
+        👁.physicsBody?.applyImpulse(CGVector(dx: 100,dy: 0))
+        👁.speed = CGFloat(0.8)
+        👁.physicsBody?.usesPreciseCollisionDetection = false
+        let superheroPositionX = superhero.position.x
+        
+        if doublelaser == 1 && settings.emoji != 2 {
+            👁.position = (CGPoint(x:superheroPositionX, y:superhero.position.y - 5))
+        } else if doublelaser == 1 && settings.emoji == 2 {
+            👁.position = (CGPoint(x:superheroPositionX, y:superhero.position.y - 16))
+        } else {
+            👁.position = superhero.position
+        }
+        
+        let rotateLaser = superhero.zRotation * -3
+        let constantX = CGFloat(750)
+        let constantY = CGFloat(250)
+        let uno = CGFloat(1)
+        
+        let d = reverse ? (x : -uno, y : uno) : (x : uno, y : -uno)
+        
+        👁.physicsBody?.velocity = CGVector( dx: d.x * constantX + superhero.velocity.dx, dy: rotateLaser * d.y * constantY + superhero.velocity.dy )
+        
+        👁.zRotation = superhero.zRotation
+        
+        let laserDupe = 👁.copy() as! SKSpriteNode
+        addChild(laserDupe)
+        
+        if settings.emoji == 2 {
+            let decay = SKAction.wait(forDuration: TimeInterval(0.6 * Double(settings.mode)))
+            let spin = SKAction.rotate(byAngle: CGFloat.pi * 3.0 * 🍕, duration: 2)
+            let spin2 = SKAction.rotate(byAngle: CGFloat.pi * -3.0 * 🍕, duration: 2)
 
-    private func play(_ file: String) {
-        run(.playSoundFileNamed(file, waitForCompletion: false))
+            let remove = SKAction.removeFromParent()
+            laserDupe.run(SKAction.sequence([spin,decay,remove]))
+            👁.run(SKAction.sequence([spin2,decay,remove]))
+
+        } else {
+            let decay = SKAction.wait(forDuration: TimeInterval(0.6 * Double(settings.mode)))
+            let remove = SKAction.removeFromParent()
+            laserDupe.run(SKAction.sequence([decay,remove]))
+        }
+        
+        //MARK: Power Up that lasts the entire level!
+        if doublelaser == 1 {
+            let laser2 = 👁.copy()
+            (laser2 as! SKSpriteNode).position = (CGPoint(x:superheroPositionX, y:superhero.position.y + 5))
+            addChild(laser2 as! SKSpriteNode)
+        }
+        
+        if settings.sound {
+            let fire: SKAction = SKAction.playSoundFileNamed(🚨, waitForCompletion: false)
+            laserDupe.run(fire)
+        }
     }
-
-    // MARK: Factory helpers
-
-    private func makeEmoji(_ text: String, size: CGFloat, align: SKLabelHorizontalAlignmentMode = .center) -> SKLabelNode {
-        let n = SKLabelNode(fontNamed: kEmojiFont)
-        n.text = text
-        n.fontSize = size
-        n.horizontalAlignmentMode = align
-        n.verticalAlignmentMode = .center
-        return n
+    
+    func bombaway (superhero: (position:CGPoint, zRotation: CGFloat, velocity: CGVector), reverse: Bool ) {
+        
+        💣 = SKSpriteNode()
+        💣.position = (CGPoint(x:superhero.position.x, y:superhero.position.y - 10))
+        
+        //MARK: How to assign values in an Elvis Operator
+        
+        🔱 ? (💣.name = "🔱") : (💣.name = "💣")
+        
+        💣.isUserInteractionEnabled = false
+        💣.physicsBody = 🦞
+        💣.physicsBody?.affectedByGravity = true
+        💣.physicsBody?.isDynamic = true
+        💣.physicsBody?.affectedByGravity = true
+        💣.physicsBody?.allowsRotation = true
+        💣.physicsBody?.categoryBitMask = 64
+        💣.physicsBody?.collisionBitMask = 4
+        
+        let x = 2 + 8 + 16 + 128 + 256 + 512 + 1024 + 2048
+        💣.physicsBody?.contactTestBitMask = UInt32(x)
+        
+        💣.physicsBody?.applyImpulse(CGVector(dx: 0,dy: 50))
+        💣.physicsBody?.density = 0
+        💣.physicsBody?.fieldBitMask = 0
+        💣.physicsBody?.applyAngularImpulse(20)
+        💣.physicsBody?.restitution = 0.5
+        
+        let wait = 800
+        
+        if reverse {
+            💣.physicsBody?.velocity = CGVector( dx: superhero.velocity.dx / 4, dy: 350)
+        } else {
+            💣.physicsBody?.velocity = CGVector( dx: superhero.velocity.dx / 4, dy: -350)
+        }
+        
+        🧨.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.center
+        🧨.verticalAlignmentMode = SKLabelVerticalAlignmentMode.center
+        
+        🔱 ? (🧨.text = "🔱") : (🧨.text = "💩")
+        
+        🔱 && !reverse ? (🧨.yScale = -1) : ()
+        
+        🧨.fontSize = 32
+        💣.addChild(🧨)
+        💣.speed = 200
+        
+        let DaBomb = 💣.copy() as! SKSpriteNode
+        addChild(DaBomb)
+        
+        let decay = SKAction.wait(forDuration: TimeInterval(wait))
+        let remove = SKAction.removeFromParent()
+        DaBomb.run(SKAction.sequence([decay,remove]))
+        
+        if settings.sound {
+            let bombs: SKAction = SKAction.playSoundFileNamed(💥, waitForCompletion: false)
+            DaBomb.run(bombs)
+        }
     }
-
-    private func arcadeLabel(size: CGFloat, align: SKLabelHorizontalAlignmentMode) -> SKLabelNode {
-        let n = SKLabelNode(fontNamed: kArcadeFont)
-        n.fontSize = size
-        n.fontColor = .white
-        n.horizontalAlignmentMode = align
-        n.verticalAlignmentMode = .center
-        return n
+    
+    func firebomb(firebomb:SKSpriteNode) {
+        let fadeIn = SKAction.fadeAlpha(to: 0.5, duration:TimeInterval(0.3))
+        let myDecay = SKAction.wait(forDuration: 0.5)
+        let fadeOut = SKAction.fadeAlpha(to: 0.0001, duration:TimeInterval(0.6))
+        firebomb.run(SKAction.sequence([fadeIn,myDecay,fadeOut]))
     }
-
-    private func addOverlayText(_ text: String, size: CGFloat, y: CGFloat) {
-        let n = arcadeLabel(size: size, align: .center)
-        n.text = text
-        n.position = CGPoint(x: kSceneW / 2, y: y)
-        overlay.addChild(n)
-    }
-}
-
-// MARK: - Small math helpers (avoid Foundation surprises in the wasm subset)
-
-private func hit(_ a: CGPoint, _ ra: CGFloat, _ b: CGPoint, _ rb: CGFloat) -> Bool {
-    let dx = a.x - b.x, dy = a.y - b.y
-    let r = ra + rb
-    return dx * dx + dy * dy <= r * r
-}
-
-private func clampF(_ v: CGFloat, _ lo: CGFloat, _ hi: CGFloat) -> CGFloat { min(max(v, lo), hi) }
-private func absF(_ v: CGFloat) -> CGFloat { v < 0 ? -v : v }
-
-private func sqrtApprox(_ v: CGFloat) -> CGFloat { v <= 0 ? 0 : CGFloat(Double(v).squareRoot()) }
-
-// SuperBox64Kit's SpriteKit module vends sin/cos/hypot (CGPath.swift); wrap sin
-// so the call sites read cleanly and stay easy to swap if the subset changes.
-private func sinApprox(_ x: CGFloat) -> CGFloat { sin(x) }
-
-private func mix(_ a: SKColor, _ b: SKColor, _ t: CGFloat) -> SKColor {
-    SKColor(red: a.r + (b.r - a.r) * t,
-            green: a.g + (b.g - a.g) * t,
-            blue: a.b + (b.b - a.b) * t,
-            alpha: 1)
-}
+ }
+ 

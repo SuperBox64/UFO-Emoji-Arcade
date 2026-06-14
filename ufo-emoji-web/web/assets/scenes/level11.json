@@ -1,0 +1,2581 @@
+{
+  "anchorPoint" : [
+    0.5,
+    0.5
+  ],
+  "backgroundColor" : [
+    0,
+    0.47843137383460999,
+    1,
+    1
+  ],
+  "children" : [
+    {
+      "cells" : [
+        {
+          "column" : 5,
+          "name" : "stone",
+          "row" : 2,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 5,
+          "name" : "stone",
+          "row" : 5,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 5,
+          "name" : "stone",
+          "row" : 8,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 9,
+          "name" : "stone",
+          "row" : 1,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 9,
+          "name" : "stone",
+          "row" : 9,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 13,
+          "name" : "stone",
+          "row" : 2,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 13,
+          "name" : "stone",
+          "row" : 5,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 13,
+          "name" : "stone",
+          "row" : 8,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 18,
+          "name" : "stone",
+          "row" : 0,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 18,
+          "name" : "stone",
+          "row" : 1,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 19,
+          "name" : "stone",
+          "row" : 1,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 20,
+          "name" : "stone",
+          "row" : 0,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 20,
+          "name" : "stone",
+          "row" : 1,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 25,
+          "name" : "stone",
+          "row" : 2,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 25,
+          "name" : "stone",
+          "row" : 5,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 25,
+          "name" : "stone",
+          "row" : 8,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 29,
+          "name" : "stone",
+          "row" : 1,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 29,
+          "name" : "stone",
+          "row" : 9,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 33,
+          "name" : "stone",
+          "row" : 2,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 33,
+          "name" : "stone",
+          "row" : 5,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 33,
+          "name" : "stone",
+          "row" : 8,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 41,
+          "name" : "stone",
+          "row" : 3,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 42,
+          "name" : "stone",
+          "row" : 3,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 42,
+          "name" : "stone",
+          "row" : 4,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 42,
+          "name" : "stone",
+          "row" : 7,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 46,
+          "name" : "stone",
+          "row" : 1,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 46,
+          "name" : "stone",
+          "row" : 5,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 46,
+          "name" : "stone",
+          "row" : 9,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 50,
+          "name" : "stone",
+          "row" : 3,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 50,
+          "name" : "stone",
+          "row" : 7,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 58,
+          "name" : "stone",
+          "row" : 9,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 59,
+          "name" : "stone",
+          "row" : 1,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 59,
+          "name" : "stone",
+          "row" : 5,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 59,
+          "name" : "stone",
+          "row" : 9,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 59,
+          "name" : "stone",
+          "row" : 10,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 61,
+          "name" : "stone",
+          "row" : 3,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 61,
+          "name" : "stone",
+          "row" : 7,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 63,
+          "name" : "stone",
+          "row" : 5,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 66,
+          "name" : "stone",
+          "row" : 5,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 69,
+          "name" : "stone",
+          "row" : 2,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 69,
+          "name" : "stone",
+          "row" : 5,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 69,
+          "name" : "stone",
+          "row" : 8,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 75,
+          "name" : "stone",
+          "row" : 5,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 78,
+          "name" : "stone",
+          "row" : 2,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 78,
+          "name" : "stone",
+          "row" : 5,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 78,
+          "name" : "stone",
+          "row" : 8,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 86,
+          "name" : "stone",
+          "row" : 4,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 86,
+          "name" : "stone",
+          "row" : 6,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 87,
+          "name" : "stone",
+          "row" : 5,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 91,
+          "name" : "stone",
+          "row" : 5,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 94,
+          "name" : "stone",
+          "row" : 2,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 94,
+          "name" : "stone",
+          "row" : 5,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 94,
+          "name" : "stone",
+          "row" : 8,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 97,
+          "name" : "stone",
+          "row" : 5,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 102,
+          "name" : "stone",
+          "row" : 2,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 102,
+          "name" : "stone",
+          "row" : 8,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 122,
+          "name" : "stone",
+          "row" : 2,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 122,
+          "name" : "stone",
+          "row" : 8,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 126,
+          "name" : "stone",
+          "row" : 5,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 129,
+          "name" : "stone",
+          "row" : 2,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 129,
+          "name" : "stone",
+          "row" : 5,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 129,
+          "name" : "stone",
+          "row" : 8,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 132,
+          "name" : "stone",
+          "row" : 5,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 137,
+          "name" : "stone",
+          "row" : 5,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 138,
+          "name" : "stone",
+          "row" : 4,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 138,
+          "name" : "stone",
+          "row" : 6,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 146,
+          "name" : "stone",
+          "row" : 2,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 146,
+          "name" : "stone",
+          "row" : 5,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 146,
+          "name" : "stone",
+          "row" : 8,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 149,
+          "name" : "stone",
+          "row" : 5,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 155,
+          "name" : "stone",
+          "row" : 2,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 155,
+          "name" : "stone",
+          "row" : 5,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 155,
+          "name" : "stone",
+          "row" : 8,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 158,
+          "name" : "stone",
+          "row" : 5,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 161,
+          "name" : "stone",
+          "row" : 5,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 162,
+          "name" : "stone",
+          "row" : 3,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 162,
+          "name" : "stone",
+          "row" : 7,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 163,
+          "name" : "stone",
+          "row" : 9,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 163,
+          "name" : "stone",
+          "row" : 10,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 164,
+          "name" : "stone",
+          "row" : 1,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 164,
+          "name" : "stone",
+          "row" : 5,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 164,
+          "name" : "stone",
+          "row" : 9,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 174,
+          "name" : "stone",
+          "row" : 3,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 174,
+          "name" : "stone",
+          "row" : 7,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 178,
+          "name" : "stone",
+          "row" : 1,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 178,
+          "name" : "stone",
+          "row" : 5,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 178,
+          "name" : "stone",
+          "row" : 9,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 182,
+          "name" : "stone",
+          "row" : 3,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 182,
+          "name" : "stone",
+          "row" : 7,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 190,
+          "name" : "stone",
+          "row" : 2,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 190,
+          "name" : "stone",
+          "row" : 5,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 190,
+          "name" : "stone",
+          "row" : 8,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 194,
+          "name" : "stone",
+          "row" : 1,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 194,
+          "name" : "stone",
+          "row" : 9,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 197,
+          "name" : "stone",
+          "row" : 5,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 197,
+          "name" : "stone",
+          "row" : 6,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 198,
+          "name" : "stone",
+          "row" : 2,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 198,
+          "name" : "stone",
+          "row" : 5,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 198,
+          "name" : "stone",
+          "row" : 8,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 203,
+          "name" : "stone",
+          "row" : 0,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 203,
+          "name" : "stone",
+          "row" : 1,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 204,
+          "name" : "stone",
+          "row" : 1,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 205,
+          "name" : "stone",
+          "row" : 0,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 205,
+          "name" : "stone",
+          "row" : 1,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 210,
+          "name" : "stone",
+          "row" : 2,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 210,
+          "name" : "stone",
+          "row" : 5,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 210,
+          "name" : "stone",
+          "row" : 8,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 214,
+          "name" : "stone",
+          "row" : 1,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 214,
+          "name" : "stone",
+          "row" : 9,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 218,
+          "name" : "stone",
+          "row" : 2,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 218,
+          "name" : "stone",
+          "row" : 5,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        },
+        {
+          "column" : 218,
+          "name" : "stone",
+          "row" : 8,
+          "userData" : {
+            "isStone" : true,
+            "name" : "stone"
+          }
+        }
+      ],
+      "kind" : "SKTileMapNode",
+      "name" : "Rooms",
+      "numberOfColumns" : 225,
+      "numberOfRows" : 11,
+      "position" : [
+        0,
+        0
+      ],
+      "tileSet" : "land1",
+      "tileSize" : [
+        32,
+        32
+      ]
+    },
+    {
+      "cells" : [
+        {
+          "column" : 5,
+          "name" : "🎁📦🕯",
+          "row" : 3
+        },
+        {
+          "column" : 5,
+          "name" : "🎁📦🕯",
+          "row" : 6
+        },
+        {
+          "column" : 5,
+          "name" : "🎁📦🕯",
+          "row" : 9
+        },
+        {
+          "column" : 9,
+          "name" : "🎁📦🕯",
+          "row" : 2
+        },
+        {
+          "column" : 9,
+          "name" : "🎁📦🕯",
+          "row" : 10
+        },
+        {
+          "column" : 13,
+          "name" : "🎁📦🕯",
+          "row" : 3
+        },
+        {
+          "column" : 13,
+          "name" : "🎁📦🕯",
+          "row" : 6
+        },
+        {
+          "column" : 13,
+          "name" : "🎁📦🕯",
+          "row" : 9
+        },
+        {
+          "column" : 18,
+          "name" : "🔥❄️🔥",
+          "row" : 2
+        },
+        {
+          "column" : 19,
+          "name" : "🎁📦🛡",
+          "row" : 0
+        },
+        {
+          "column" : 19,
+          "name" : "🔥❄️🔥",
+          "row" : 2
+        },
+        {
+          "column" : 19,
+          "name" : "🎇🎇🎇",
+          "row" : 5
+        },
+        {
+          "column" : 20,
+          "name" : "🔥❄️🔥",
+          "row" : 2
+        },
+        {
+          "column" : 25,
+          "name" : "❌❌❗️",
+          "row" : 3
+        },
+        {
+          "column" : 25,
+          "name" : "❌⭕️❓",
+          "row" : 6
+        },
+        {
+          "column" : 25,
+          "name" : "❌❌❗️",
+          "row" : 9
+        },
+        {
+          "column" : 29,
+          "name" : "❌⭕️❓",
+          "row" : 2
+        },
+        {
+          "column" : 29,
+          "name" : "❌⭕️❓",
+          "row" : 10
+        },
+        {
+          "column" : 33,
+          "name" : "❌⭕️❓",
+          "row" : 3
+        },
+        {
+          "column" : 33,
+          "name" : "❌❌❗️",
+          "row" : 6
+        },
+        {
+          "column" : 33,
+          "name" : "❌❌❗️",
+          "row" : 9
+        },
+        {
+          "column" : 42,
+          "name" : "🐝🐍🦂",
+          "row" : 5
+        },
+        {
+          "column" : 42,
+          "name" : "🐝🐍🦂",
+          "row" : 8
+        },
+        {
+          "column" : 46,
+          "name" : "🐝🐍🦂",
+          "row" : 2
+        },
+        {
+          "column" : 46,
+          "name" : "🐝🐍🦂",
+          "row" : 6
+        },
+        {
+          "column" : 46,
+          "name" : "🐝🐍🦂",
+          "row" : 10
+        },
+        {
+          "column" : 50,
+          "name" : "🐝🐍🦂",
+          "row" : 4
+        },
+        {
+          "column" : 50,
+          "name" : "🐝🐍🦂",
+          "row" : 8
+        },
+        {
+          "column" : 58,
+          "name" : "❣️❣️❣️",
+          "row" : 10
+        },
+        {
+          "column" : 59,
+          "name" : "🎁📦⏳",
+          "row" : 2
+        },
+        {
+          "column" : 59,
+          "name" : "🎁📦⌛️",
+          "row" : 6
+        },
+        {
+          "column" : 61,
+          "name" : "🎁📦⌛️",
+          "row" : 4
+        },
+        {
+          "column" : 61,
+          "name" : "🎁📦⏳",
+          "row" : 8
+        },
+        {
+          "column" : 75,
+          "name" : "❌⭕️❓",
+          "row" : 6
+        },
+        {
+          "column" : 78,
+          "name" : "❌❌❗️",
+          "row" : 3
+        },
+        {
+          "column" : 78,
+          "name" : "❌⭕️❓",
+          "row" : 6
+        },
+        {
+          "column" : 78,
+          "name" : "❌❌❗️",
+          "row" : 9
+        },
+        {
+          "column" : 86,
+          "name" : "🔱🔱🔱",
+          "row" : 5
+        },
+        {
+          "column" : 91,
+          "name" : "🎁📦💰",
+          "row" : 6
+        },
+        {
+          "column" : 94,
+          "name" : "❌⭕️❓",
+          "row" : 3
+        },
+        {
+          "column" : 94,
+          "name" : "❌⭕️❓",
+          "row" : 9
+        },
+        {
+          "column" : 97,
+          "name" : "🎁📦💰",
+          "row" : 6
+        },
+        {
+          "column" : 102,
+          "name" : "🎁📦💰",
+          "row" : 3
+        },
+        {
+          "column" : 102,
+          "name" : "🎁📦💰",
+          "row" : 9
+        },
+        {
+          "column" : 122,
+          "name" : "🎁📦💰",
+          "row" : 3
+        },
+        {
+          "column" : 122,
+          "name" : "🎁📦💰",
+          "row" : 9
+        },
+        {
+          "column" : 126,
+          "name" : "🎁📦💰",
+          "row" : 6
+        },
+        {
+          "column" : 129,
+          "name" : "❌⭕️❓",
+          "row" : 3
+        },
+        {
+          "column" : 129,
+          "name" : "❌⭕️❓",
+          "row" : 9
+        },
+        {
+          "column" : 132,
+          "name" : "🎁📦💰",
+          "row" : 6
+        },
+        {
+          "column" : 138,
+          "name" : "💎💎💎",
+          "row" : 5
+        },
+        {
+          "column" : 146,
+          "name" : "❌❌❗️",
+          "row" : 3
+        },
+        {
+          "column" : 146,
+          "name" : "❌⭕️❓",
+          "row" : 6
+        },
+        {
+          "column" : 146,
+          "name" : "❌❌❗️",
+          "row" : 9
+        },
+        {
+          "column" : 149,
+          "name" : "❌⭕️❓",
+          "row" : 6
+        },
+        {
+          "column" : 161,
+          "name" : "🎁📦⏳",
+          "row" : 6
+        },
+        {
+          "column" : 162,
+          "name" : "🎁📦⌛️",
+          "row" : 4
+        },
+        {
+          "column" : 162,
+          "name" : "🎁📦⌛️",
+          "row" : 8
+        },
+        {
+          "column" : 164,
+          "name" : "🎁📦⏳",
+          "row" : 6
+        },
+        {
+          "column" : 164,
+          "name" : "🔫🔫🔫",
+          "row" : 10
+        },
+        {
+          "column" : 174,
+          "name" : "🐝🐍🦂",
+          "row" : 4
+        },
+        {
+          "column" : 174,
+          "name" : "🐝🐍🦂",
+          "row" : 8
+        },
+        {
+          "column" : 178,
+          "name" : "🐝🐍🦂",
+          "row" : 2
+        },
+        {
+          "column" : 178,
+          "name" : "🐝🐍🦂",
+          "row" : 6
+        },
+        {
+          "column" : 178,
+          "name" : "🐝🐍🦂",
+          "row" : 10
+        },
+        {
+          "column" : 182,
+          "name" : "🐝🐍🦂",
+          "row" : 4
+        },
+        {
+          "column" : 182,
+          "name" : "🐝🐍🦂",
+          "row" : 8
+        },
+        {
+          "column" : 190,
+          "name" : "❌❌❗️",
+          "row" : 3
+        },
+        {
+          "column" : 190,
+          "name" : "❌⭕️❓",
+          "row" : 6
+        },
+        {
+          "column" : 190,
+          "name" : "❌❌❗️",
+          "row" : 9
+        },
+        {
+          "column" : 194,
+          "name" : "❌⭕️❓",
+          "row" : 2
+        },
+        {
+          "column" : 194,
+          "name" : "❌⭕️❓",
+          "row" : 10
+        },
+        {
+          "column" : 197,
+          "name" : "❌⭕️❓",
+          "row" : 7
+        },
+        {
+          "column" : 198,
+          "name" : "❌❌❗️",
+          "row" : 3
+        },
+        {
+          "column" : 198,
+          "name" : "❣️❣️❣️",
+          "row" : 6
+        },
+        {
+          "column" : 198,
+          "name" : "❌❌❗️",
+          "row" : 9
+        },
+        {
+          "column" : 203,
+          "name" : "🔥❄️🔥",
+          "row" : 2
+        },
+        {
+          "column" : 204,
+          "name" : "🎁📦🛡",
+          "row" : 0
+        },
+        {
+          "column" : 204,
+          "name" : "🔥❄️🔥",
+          "row" : 2
+        },
+        {
+          "column" : 204,
+          "name" : "🎇🎇🎇",
+          "row" : 5
+        },
+        {
+          "column" : 205,
+          "name" : "🔥❄️🔥",
+          "row" : 2
+        },
+        {
+          "column" : 210,
+          "name" : "🎁📦🕯",
+          "row" : 3
+        },
+        {
+          "column" : 210,
+          "name" : "🎁📦🕯",
+          "row" : 6
+        },
+        {
+          "column" : 210,
+          "name" : "🎁📦🕯",
+          "row" : 9
+        },
+        {
+          "column" : 214,
+          "name" : "🎁📦🕯",
+          "row" : 2
+        },
+        {
+          "column" : 214,
+          "name" : "🎁📦🕯",
+          "row" : 10
+        },
+        {
+          "column" : 218,
+          "name" : "🎁📦🕯",
+          "row" : 3
+        },
+        {
+          "column" : 218,
+          "name" : "🎁📦🕯",
+          "row" : 6
+        },
+        {
+          "column" : 218,
+          "name" : "🎁📦🕯",
+          "row" : 9
+        }
+      ],
+      "kind" : "SKTileMapNode",
+      "name" : "Level",
+      "numberOfColumns" : 225,
+      "numberOfRows" : 11,
+      "position" : [
+        0,
+        0
+      ],
+      "tileSet" : "groupTileSet1",
+      "tileSize" : [
+        32,
+        32
+      ]
+    },
+    {
+      "cells" : [
+        {
+          "column" : 83,
+          "name" : "📈45",
+          "row" : 5
+        },
+        {
+          "column" : 84,
+          "name" : "📈21",
+          "row" : 5
+        },
+        {
+          "column" : 85,
+          "name" : "📈25",
+          "row" : 3
+        },
+        {
+          "column" : 86,
+          "name" : "📈22",
+          "row" : 7
+        },
+        {
+          "column" : 87,
+          "name" : "📈44",
+          "row" : 0
+        },
+        {
+          "column" : 87,
+          "name" : "📈24",
+          "row" : 2
+        },
+        {
+          "column" : 88,
+          "name" : "📈51",
+          "row" : 5
+        },
+        {
+          "column" : 89,
+          "name" : "📈23",
+          "row" : 5
+        },
+        {
+          "column" : 90,
+          "name" : "📈52",
+          "row" : 3
+        },
+        {
+          "column" : 90,
+          "name" : "📈31",
+          "row" : 5
+        },
+        {
+          "column" : 92,
+          "name" : "📈43",
+          "row" : 2
+        },
+        {
+          "column" : 94,
+          "name" : "📈32",
+          "row" : 10
+        },
+        {
+          "column" : 95,
+          "name" : "📈53",
+          "row" : 3
+        },
+        {
+          "column" : 95,
+          "name" : "📈15",
+          "row" : 5
+        },
+        {
+          "column" : 96,
+          "name" : "📈42",
+          "row" : 0
+        },
+        {
+          "column" : 97,
+          "name" : "📈14",
+          "row" : 3
+        },
+        {
+          "column" : 98,
+          "name" : "📈54",
+          "row" : 4
+        },
+        {
+          "column" : 98,
+          "name" : "📈33",
+          "row" : 7
+        },
+        {
+          "column" : 100,
+          "name" : "📈13",
+          "row" : 4
+        },
+        {
+          "column" : 100,
+          "name" : "📈11",
+          "row" : 8
+        },
+        {
+          "column" : 101,
+          "name" : "📈41",
+          "row" : 1
+        },
+        {
+          "column" : 102,
+          "name" : "📈34",
+          "row" : 4
+        },
+        {
+          "column" : 102,
+          "name" : "📈55",
+          "row" : 5
+        },
+        {
+          "column" : 103,
+          "name" : "📈12",
+          "row" : 6
+        },
+        {
+          "column" : 104,
+          "name" : "📈35",
+          "row" : 5
+        },
+        {
+          "column" : 121,
+          "name" : "📈31",
+          "row" : 2
+        },
+        {
+          "column" : 121,
+          "name" : "📈21",
+          "row" : 4
+        },
+        {
+          "column" : 121,
+          "name" : "📈15",
+          "row" : 5
+        },
+        {
+          "column" : 122,
+          "name" : "📈55",
+          "row" : 4
+        },
+        {
+          "column" : 123,
+          "name" : "📈53",
+          "row" : 5
+        },
+        {
+          "column" : 123,
+          "name" : "📈11",
+          "row" : 8
+        },
+        {
+          "column" : 124,
+          "name" : "📈35",
+          "row" : 8
+        },
+        {
+          "column" : 126,
+          "name" : "📈32",
+          "row" : 0
+        },
+        {
+          "column" : 126,
+          "name" : "📈54",
+          "row" : 8
+        },
+        {
+          "column" : 127,
+          "name" : "📈34",
+          "row" : 5
+        },
+        {
+          "column" : 129,
+          "name" : "📈22",
+          "row" : 0
+        },
+        {
+          "column" : 129,
+          "name" : "📈14",
+          "row" : 6
+        },
+        {
+          "column" : 129,
+          "name" : "📈52",
+          "row" : 7
+        },
+        {
+          "column" : 129,
+          "name" : "📈12",
+          "row" : 10
+        },
+        {
+          "column" : 131,
+          "name" : "📈33",
+          "row" : 2
+        },
+        {
+          "column" : 131,
+          "name" : "📈42",
+          "row" : 8
+        },
+        {
+          "column" : 134,
+          "name" : "📈43",
+          "row" : 5
+        },
+        {
+          "column" : 135,
+          "name" : "📈51",
+          "row" : 5
+        },
+        {
+          "column" : 135,
+          "name" : "📈13",
+          "row" : 8
+        },
+        {
+          "column" : 137,
+          "name" : "📈23",
+          "row" : 2
+        },
+        {
+          "column" : 138,
+          "name" : "📈44",
+          "row" : 2
+        },
+        {
+          "column" : 138,
+          "name" : "📈25",
+          "row" : 8
+        },
+        {
+          "column" : 140,
+          "name" : "📈45",
+          "row" : 4
+        },
+        {
+          "column" : 140,
+          "name" : "📈24",
+          "row" : 5
+        },
+        {
+          "column" : 140,
+          "name" : "📈41",
+          "row" : 6
+        }
+      ],
+      "kind" : "SKTileMapNode",
+      "name" : "m1",
+      "numberOfColumns" : 225,
+      "numberOfRows" : 11,
+      "position" : [
+        0,
+        0
+      ],
+      "tileSet" : "enemies",
+      "tileSize" : [
+        32,
+        32
+      ]
+    },
+    {
+      "cells" : [
+        {
+          "column" : 85,
+          "name" : "👾😠👾",
+          "row" : 5
+        },
+        {
+          "column" : 93,
+          "name" : "👾😡👿",
+          "row" : 2
+        },
+        {
+          "column" : 93,
+          "name" : "👾🤬😈",
+          "row" : 5
+        },
+        {
+          "column" : 93,
+          "name" : "👾🤯👻",
+          "row" : 8
+        },
+        {
+          "column" : 96,
+          "name" : "👾😨🧖‍♀️",
+          "row" : 5
+        },
+        {
+          "column" : 130,
+          "name" : "👾😡👿",
+          "row" : 3
+        },
+        {
+          "column" : 130,
+          "name" : "👾😠👾",
+          "row" : 7
+        },
+        {
+          "column" : 133,
+          "name" : "👾😨🧖‍♀️",
+          "row" : 5
+        },
+        {
+          "column" : 135,
+          "name" : "👾🤬😈",
+          "row" : 3
+        },
+        {
+          "column" : 135,
+          "name" : "👾🤯👻",
+          "row" : 7
+        }
+      ],
+      "kind" : "SKTileMapNode",
+      "name" : "b1",
+      "numberOfColumns" : 225,
+      "numberOfRows" : 11,
+      "position" : [
+        0,
+        0
+      ],
+      "tileSet" : "enemies",
+      "tileSize" : [
+        32,
+        32
+      ]
+    },
+    {
+      "cells" : [
+        {
+          "column" : 57,
+          "name" : "📈51",
+          "row" : 2
+        },
+        {
+          "column" : 57,
+          "name" : "📈41",
+          "row" : 5
+        },
+        {
+          "column" : 58,
+          "name" : "📈25",
+          "row" : 3
+        },
+        {
+          "column" : 58,
+          "name" : "📈15",
+          "row" : 7
+        },
+        {
+          "column" : 59,
+          "name" : "📈34",
+          "row" : 3
+        },
+        {
+          "column" : 61,
+          "name" : "📈24",
+          "row" : 5
+        },
+        {
+          "column" : 61,
+          "name" : "📈14",
+          "row" : 9
+        },
+        {
+          "column" : 63,
+          "name" : "📈35",
+          "row" : 0
+        },
+        {
+          "column" : 63,
+          "name" : "📈42",
+          "row" : 1
+        },
+        {
+          "column" : 64,
+          "name" : "📈13",
+          "row" : 6
+        },
+        {
+          "column" : 65,
+          "name" : "📈23",
+          "row" : 2
+        },
+        {
+          "column" : 65,
+          "name" : "📈33",
+          "row" : 10
+        },
+        {
+          "column" : 67,
+          "name" : "📈52",
+          "row" : 10
+        },
+        {
+          "column" : 68,
+          "name" : "📈43",
+          "row" : 6
+        },
+        {
+          "column" : 69,
+          "name" : "📈22",
+          "row" : 4
+        },
+        {
+          "column" : 70,
+          "name" : "📈12",
+          "row" : 7
+        },
+        {
+          "column" : 72,
+          "name" : "📈54",
+          "row" : 0
+        },
+        {
+          "column" : 73,
+          "name" : "📈44",
+          "row" : 8
+        },
+        {
+          "column" : 74,
+          "name" : "📈32",
+          "row" : 3
+        },
+        {
+          "column" : 75,
+          "name" : "📈53",
+          "row" : 3
+        },
+        {
+          "column" : 77,
+          "name" : "📈21",
+          "row" : 1
+        },
+        {
+          "column" : 77,
+          "name" : "📈31",
+          "row" : 5
+        },
+        {
+          "column" : 77,
+          "name" : "📈11",
+          "row" : 9
+        },
+        {
+          "column" : 78,
+          "name" : "📈55",
+          "row" : 3
+        },
+        {
+          "column" : 78,
+          "name" : "📈45",
+          "row" : 6
+        }
+      ],
+      "kind" : "SKTileMapNode",
+      "name" : "m2",
+      "numberOfColumns" : 225,
+      "numberOfRows" : 11,
+      "position" : [
+        0,
+        0
+      ],
+      "tileSet" : "enemies",
+      "tileSize" : [
+        32,
+        32
+      ]
+    },
+    {
+      "cells" : [
+        {
+          "column" : 58,
+          "name" : "👾😨🧖‍♀️",
+          "row" : 5
+        },
+        {
+          "column" : 68,
+          "name" : "👾😡👿",
+          "row" : 5
+        },
+        {
+          "column" : 76,
+          "name" : "👾😠👾",
+          "row" : 2
+        },
+        {
+          "column" : 76,
+          "name" : "👾🤯👻",
+          "row" : 5
+        },
+        {
+          "column" : 76,
+          "name" : "👾🤬😈",
+          "row" : 8
+        }
+      ],
+      "kind" : "SKTileMapNode",
+      "name" : "b2",
+      "numberOfColumns" : 225,
+      "numberOfRows" : 11,
+      "position" : [
+        0,
+        0
+      ],
+      "tileSet" : "enemies",
+      "tileSize" : [
+        32,
+        32
+      ]
+    },
+    {
+      "cells" : [
+        {
+          "column" : 147,
+          "name" : "📈35",
+          "row" : 2
+        },
+        {
+          "column" : 147,
+          "name" : "📈41",
+          "row" : 8
+        },
+        {
+          "column" : 150,
+          "name" : "📈34",
+          "row" : 0
+        },
+        {
+          "column" : 151,
+          "name" : "📈55",
+          "row" : 4
+        },
+        {
+          "column" : 151,
+          "name" : "📈25",
+          "row" : 5
+        },
+        {
+          "column" : 151,
+          "name" : "📈42",
+          "row" : 10
+        },
+        {
+          "column" : 153,
+          "name" : "📈33",
+          "row" : 2
+        },
+        {
+          "column" : 154,
+          "name" : "📈24",
+          "row" : 3
+        },
+        {
+          "column" : 154,
+          "name" : "📈23",
+          "row" : 6
+        },
+        {
+          "column" : 155,
+          "name" : "📈15",
+          "row" : 10
+        },
+        {
+          "column" : 156,
+          "name" : "📈32",
+          "row" : 0
+        },
+        {
+          "column" : 156,
+          "name" : "📈31",
+          "row" : 3
+        },
+        {
+          "column" : 156,
+          "name" : "📈13",
+          "row" : 5
+        },
+        {
+          "column" : 157,
+          "name" : "📈53",
+          "row" : 2
+        },
+        {
+          "column" : 157,
+          "name" : "📈54",
+          "row" : 4
+        },
+        {
+          "column" : 157,
+          "name" : "📈22",
+          "row" : 8
+        },
+        {
+          "column" : 158,
+          "name" : "📈12",
+          "row" : 2
+        },
+        {
+          "column" : 158,
+          "name" : "📈14",
+          "row" : 8
+        },
+        {
+          "column" : 159,
+          "name" : "📈43",
+          "row" : 10
+        },
+        {
+          "column" : 160,
+          "name" : "📈11",
+          "row" : 4
+        },
+        {
+          "column" : 160,
+          "name" : "📈21",
+          "row" : 5
+        },
+        {
+          "column" : 161,
+          "name" : "📈52",
+          "row" : 0
+        },
+        {
+          "column" : 163,
+          "name" : "📈45",
+          "row" : 3
+        },
+        {
+          "column" : 163,
+          "name" : "📈44",
+          "row" : 7
+        },
+        {
+          "column" : 165,
+          "name" : "📈51",
+          "row" : 1
+        }
+      ],
+      "kind" : "SKTileMapNode",
+      "name" : "m3",
+      "numberOfColumns" : 225,
+      "numberOfRows" : 11,
+      "position" : [
+        0,
+        0
+      ],
+      "tileSet" : "enemies",
+      "tileSize" : [
+        32,
+        32
+      ]
+    },
+    {
+      "cells" : [
+        {
+          "column" : 152,
+          "name" : "👾😨🧖‍♀️",
+          "row" : 5
+        },
+        {
+          "column" : 156,
+          "name" : "👾🤯👻",
+          "row" : 1
+        },
+        {
+          "column" : 156,
+          "name" : "👾😠👾",
+          "row" : 9
+        },
+        {
+          "column" : 157,
+          "name" : "👾😡👿",
+          "row" : 6
+        },
+        {
+          "column" : 165,
+          "name" : "👾🤬😈",
+          "row" : 2
+        }
+      ],
+      "kind" : "SKTileMapNode",
+      "name" : "b3",
+      "numberOfColumns" : 225,
+      "numberOfRows" : 11,
+      "position" : [
+        0,
+        0
+      ],
+      "tileSet" : "enemies",
+      "tileSize" : [
+        32,
+        32
+      ]
+    },
+    {
+      "cells" : [
+        {
+          "column" : 27,
+          "name" : "📈55",
+          "row" : 5
+        },
+        {
+          "column" : 31,
+          "name" : "📈44",
+          "row" : 4
+        },
+        {
+          "column" : 31,
+          "name" : "📈43",
+          "row" : 6
+        },
+        {
+          "column" : 32,
+          "name" : "📈21",
+          "row" : 2
+        },
+        {
+          "column" : 32,
+          "name" : "📈11",
+          "row" : 8
+        },
+        {
+          "column" : 32,
+          "name" : "📈54",
+          "row" : 10
+        },
+        {
+          "column" : 35,
+          "name" : "📈22",
+          "row" : 0
+        },
+        {
+          "column" : 35,
+          "name" : "📈53",
+          "row" : 10
+        },
+        {
+          "column" : 38,
+          "name" : "📈31",
+          "row" : 5
+        },
+        {
+          "column" : 41,
+          "name" : "📈12",
+          "row" : 2
+        },
+        {
+          "column" : 41,
+          "name" : "📈23",
+          "row" : 8
+        },
+        {
+          "column" : 43,
+          "name" : "📈45",
+          "row" : 1
+        },
+        {
+          "column" : 43,
+          "name" : "📈32",
+          "row" : 5
+        },
+        {
+          "column" : 45,
+          "name" : "📈13",
+          "row" : 2
+        },
+        {
+          "column" : 45,
+          "name" : "📈14",
+          "row" : 6
+        },
+        {
+          "column" : 46,
+          "name" : "📈42",
+          "row" : 10
+        },
+        {
+          "column" : 47,
+          "name" : "📈34",
+          "row" : 7
+        },
+        {
+          "column" : 47,
+          "name" : "📈24",
+          "row" : 8
+        },
+        {
+          "column" : 49,
+          "name" : "📈52",
+          "row" : 0
+        },
+        {
+          "column" : 49,
+          "name" : "📈33",
+          "row" : 10
+        },
+        {
+          "column" : 51,
+          "name" : "📈51",
+          "row" : 2
+        },
+        {
+          "column" : 51,
+          "name" : "📈25",
+          "row" : 4
+        },
+        {
+          "column" : 51,
+          "name" : "📈15",
+          "row" : 6
+        },
+        {
+          "column" : 51,
+          "name" : "📈41",
+          "row" : 8
+        },
+        {
+          "column" : 51,
+          "name" : "📈35",
+          "row" : 10
+        }
+      ],
+      "kind" : "SKTileMapNode",
+      "name" : "m4",
+      "numberOfColumns" : 225,
+      "numberOfRows" : 11,
+      "position" : [
+        0,
+        0
+      ],
+      "tileSet" : "enemies",
+      "tileSize" : [
+        32,
+        32
+      ]
+    },
+    {
+      "cells" : [
+        {
+          "column" : 32,
+          "name" : "👾😠👾",
+          "row" : 5
+        },
+        {
+          "column" : 41,
+          "name" : "👾🤯👻",
+          "row" : 7
+        },
+        {
+          "column" : 45,
+          "name" : "👾😨🧖‍♀️",
+          "row" : 1
+        },
+        {
+          "column" : 45,
+          "name" : "👾🤬😈",
+          "row" : 9
+        },
+        {
+          "column" : 49,
+          "name" : "👾😡👿",
+          "row" : 3
+        }
+      ],
+      "kind" : "SKTileMapNode",
+      "name" : "b4",
+      "numberOfColumns" : 225,
+      "numberOfRows" : 11,
+      "position" : [
+        0,
+        0
+      ],
+      "tileSet" : "enemies",
+      "tileSize" : [
+        32,
+        32
+      ]
+    },
+    {
+      "cells" : [
+        {
+          "column" : 173,
+          "name" : "📈35",
+          "row" : 6
+        },
+        {
+          "column" : 174,
+          "name" : "📈15",
+          "row" : 1
+        },
+        {
+          "column" : 174,
+          "name" : "📈45",
+          "row" : 2
+        },
+        {
+          "column" : 174,
+          "name" : "📈25",
+          "row" : 5
+        },
+        {
+          "column" : 175,
+          "name" : "📈31",
+          "row" : 3
+        },
+        {
+          "column" : 175,
+          "name" : "📈54",
+          "row" : 5
+        },
+        {
+          "column" : 175,
+          "name" : "📈11",
+          "row" : 8
+        },
+        {
+          "column" : 176,
+          "name" : "📈23",
+          "row" : 9
+        },
+        {
+          "column" : 178,
+          "name" : "📈44",
+          "row" : 4
+        },
+        {
+          "column" : 179,
+          "name" : "📈24",
+          "row" : 6
+        },
+        {
+          "column" : 180,
+          "name" : "📈32",
+          "row" : 1
+        },
+        {
+          "column" : 180,
+          "name" : "📈14",
+          "row" : 4
+        },
+        {
+          "column" : 180,
+          "name" : "📈34",
+          "row" : 9
+        },
+        {
+          "column" : 183,
+          "name" : "📈42",
+          "row" : 4
+        },
+        {
+          "column" : 183,
+          "name" : "📈12",
+          "row" : 6
+        },
+        {
+          "column" : 183,
+          "name" : "📈55",
+          "row" : 9
+        },
+        {
+          "column" : 184,
+          "name" : "📈53",
+          "row" : 1
+        },
+        {
+          "column" : 187,
+          "name" : "📈22",
+          "row" : 2
+        },
+        {
+          "column" : 187,
+          "name" : "📈52",
+          "row" : 7
+        },
+        {
+          "column" : 191,
+          "name" : "📈41",
+          "row" : 3
+        },
+        {
+          "column" : 191,
+          "name" : "📈13",
+          "row" : 8
+        },
+        {
+          "column" : 192,
+          "name" : "📈51",
+          "row" : 5
+        },
+        {
+          "column" : 193,
+          "name" : "📈33",
+          "row" : 9
+        },
+        {
+          "column" : 194,
+          "name" : "📈21",
+          "row" : 5
+        }
+      ],
+      "kind" : "SKTileMapNode",
+      "name" : "m5",
+      "numberOfColumns" : 225,
+      "numberOfRows" : 11,
+      "position" : [
+        0,
+        0
+      ],
+      "tileSet" : "enemies",
+      "tileSize" : [
+        32,
+        32
+      ]
+    },
+    {
+      "cells" : [
+        {
+          "column" : 181,
+          "name" : "📈43",
+          "row" : 5
+        },
+        {
+          "column" : 183,
+          "name" : "👾😨🧖‍♀️",
+          "row" : 3
+        },
+        {
+          "column" : 183,
+          "name" : "👾😡👿",
+          "row" : 7
+        },
+        {
+          "column" : 191,
+          "name" : "👾😠👾",
+          "row" : 2
+        },
+        {
+          "column" : 191,
+          "name" : "👾🤯👻",
+          "row" : 5
+        },
+        {
+          "column" : 192,
+          "name" : "👾🤬😈",
+          "row" : 8
+        }
+      ],
+      "kind" : "SKTileMapNode",
+      "name" : "b5",
+      "numberOfColumns" : 225,
+      "numberOfRows" : 11,
+      "position" : [
+        0,
+        0
+      ],
+      "tileSet" : "enemies",
+      "tileSize" : [
+        32,
+        32
+      ]
+    }
+  ],
+  "kind" : "SKScene",
+  "name" : "level",
+  "position" : [
+    0,
+    0
+  ],
+  "size" : [
+    626,
+    352
+  ]
+}

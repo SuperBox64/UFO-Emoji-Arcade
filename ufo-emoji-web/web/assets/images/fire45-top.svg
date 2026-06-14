@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" width="81.5" height="81.5" viewBox="0 0 81.5 81.5">
+<defs>
+<clipPath id="clip_1">
+<path transform="matrix(1,0,0,-1,0,81.5)" d="M0 80.999V0H81.003V30.999C81.003 58.613 58.617 80.999 31.002 80.999Z"/>
+</clipPath>
+<clipPath id="clip_2">
+<path transform="matrix(1,0,0,-1,0,81.5)" d="M0 0H81.5V81.5H0Z"/>
+</clipPath>
+<g id="mask_3_contents">
+<rect x="0" y="0" width="100%" height="100%" fill="white"/>
+<g>
+<clipPath id="clip_4">
+<path transform="matrix(1,0,0,-1,0,81.5)" d="M-32768-32768H32767V32767H-32768Z"/>
+</clipPath>
+<g clip-path="url(#clip_4)">
+<image x="0" y="0" width="82" height="82" xlink:href="data:image/png;base64,
+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"/>
+</g>
+</g>
+</g>
+<mask id="mask_3" mask-type="luminance">
+<use xlink:href="#mask_3_contents"/>
+</mask>
+<clipPath id="clip_5">
+<path transform="matrix(1,0,0,-1,0,81.5)" d="M0 0H81.5V81.5H0Z"/>
+</clipPath>
+<clipPath id="clip_6">
+<path transform="matrix(1,0,0,-1,0,81.5)" d="M0 0H80V80H0Z"/>
+</clipPath>
+<clipPath id="clip_7">
+<path transform="matrix(1,0,0,-1,0,81.5)" d="M0 0H79.9514V79.9504H0Z"/>
+</clipPath>
+</defs>
+<g>
+<g clip-path="url(#clip_1)">
+<g clip-path="url(#clip_2)">
+<g mask="url(#mask_3)">
+<image x="0" y="0" width="82" height="82" xlink:href="data:image/png;base64,
+iVBORw0KGgoAAAANSUhEUgAAAFIAAABSCAYAAADHLIObAAAACXBIWXMAAA7EAAAO
+xAGVKw4bAAAAyklEQVR4nO3QAQkAMAzAsPk3/ZkIHEajoHReiPkdcEUjkUYijUQa
+iTQSaSTSSKSRSCORRiKNRBqJNBJpJNJIpJFII5FGIo1EGok0Emkk0kikkUgjkUYi
+jUQaiTQSaSTSSKSRSCORRiKNRBqJNBJpJNJIpJFII5FGIo1EGok0Emkk0kikkUgj
+kUYijUQaiTQSaSTSSKSRSCORRiKNRBqJNBJpJNJIpJFII5FGIo1EGok0Emkk0kik
+kUgjkUYijUQaiTQSaSTSSKSRyALCO60JnZIoRAAAAABJRU5ErkJggg=="/>
+</g>
+</g>
+</g>
+<g clip-path="url(#clip_5)">
+<g opacity=".12">
+<g clip-path="url(#clip_6)">
+<g clip-path="url(#clip_7)">
+<path transform="matrix(1,0,0,-1,0,81.5)" d="M-.0002-.0012-.0012 79.9508 1.0118 79.9378C22.0308 79.6738 41.7618 71.3738 56.5678 56.5668 71.3748 41.7608 79.6748 22.0298 79.9378 1.0108L79.9508-.0012Z" fill="#ffffff"/>
+</g>
+</g>
+</g>
+</g>
+</g>
+</svg>

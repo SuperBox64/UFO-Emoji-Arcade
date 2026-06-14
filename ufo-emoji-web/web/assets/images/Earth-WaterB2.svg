@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" width="32" height="32" viewBox="0 0 32 32">
+<defs>
+<clipPath id="clip_1">
+<path transform="matrix(1,0,0,-1,0,32)" d="M0 0H32V32H0Z"/>
+</clipPath>
+</defs>
+<g clip-path="url(#clip_1)">
+<path transform="matrix(1,0,0,-1,0,32)" d="M0 32.0004 32 .0004V32.0004Z" fill="#318dff"/>
+</g>
+</svg>
