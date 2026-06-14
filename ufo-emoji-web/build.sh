@@ -123,12 +123,16 @@ build_assets() {
     for s in fire wah2 murrmurr boomFire1 boomFire2 Explosion1 extralife doublelaser; do
       [ -f "$GAME/GameSounds/${s}.m4a" ] && ffmpeg -y -i "$GAME/GameSounds/${s}.m4a" "$OUT/sfx/${s}.wav" >/dev/null 2>&1 || true
     done
-    # Background music: serve the ORIGINAL track unmodified. The earlier "weak
-    # music" was NOT the file — AVAudioPlayer.volume (0..1) was passed straight to
-    # snd_play (0..100), so it played at ~1%; that's fixed in the kit, so the
-    # original now plays at full level, matching iOS 1:1. No loudnorm/boost.
+    # Background music → WAV. The "weak music" was a kit volume bug (0..1 passed to
+    # a 0..100 API → ~1%), now fixed, so NO boost is needed. We decode the original
+    # to a plain 16-bit WAV (no loudnorm) because the browser's decodeAudioData is
+    # stricter than ffprobe and the raw source MP3 failed to decode (silent music);
+    # WAV always decodes. The game asks for "music1.mp3" but the loader resolves by
+    # basename, so music1.wav is found. Full level now, matching iOS 1:1.
     if [ -f "$GAME/GameMusic/music1.mp3" ]; then
-      cp "$GAME/GameMusic/music1.mp3" "$OUT/sfx/music1.mp3" 2>/dev/null || true
+      ffmpeg -y -i "$GAME/GameMusic/music1.mp3" -c:a pcm_s16le -ar 44100 "$OUT/sfx/music1.wav" >/dev/null 2>&1 \
+        && rm -f "$OUT/sfx/music1.mp3" 2>/dev/null \
+        || cp "$GAME/GameMusic/music1.mp3" "$OUT/sfx/music1.mp3" 2>/dev/null || true
     fi
   fi
 }
