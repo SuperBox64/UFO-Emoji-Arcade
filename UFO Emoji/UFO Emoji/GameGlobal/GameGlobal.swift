@@ -36,7 +36,7 @@ var gameDelegate : GameProtocol?
 
 let showsFPS        = false
 let showsNodeCount  = false
-let showsPhysics    = false
+let showsPhysics    = true
 let showsFields     = false
 let showsDrawCount  = false
 let showsQuadCount  = false
