@@ -166,6 +166,19 @@ print(f"  manifest: {len(m['fonts'])} fonts, {len(m['images'])} images, {len(m['
 PY
   cp "$WASMKIT/runtime.js" "$SCRIPT_DIR/web/runtime.js" 2>/dev/null || true
 
+  # GUARDRAIL: the Embedded build's runtime is the SAME runtime.js, just minified —
+  # NEVER a hand-maintained fork. It silently drifted ~334 lines once (froze before
+  # the emoji glyph cache landed) and tanked the embedded build to ~40fps. Regenerate
+  # both embedded copies from runtime.js on every build so they can't diverge again.
+  cp "$WASMKIT/runtime.js" "$WASMKIT/runtime-embedded.js" 2>/dev/null || true
+  if npx --yes terser "$WASMKIT/runtime.js" -c -m -o "$SCRIPT_DIR/web/runtime-embedded-min.js" 2>/dev/null; then
+    cp "$SCRIPT_DIR/web/runtime-embedded-min.js" "$WASMKIT/runtime-embedded-min.js" 2>/dev/null || true
+    echo "  runtime-embedded-min.js regenerated from runtime.js ($(wc -c < "$SCRIPT_DIR/web/runtime-embedded-min.js" | tr -d ' ') bytes)"
+  else
+    echo "  ⚠️  terser unavailable — using unminified runtime.js as the embedded runtime"
+    cp "$WASMKIT/runtime.js" "$SCRIPT_DIR/web/runtime-embedded-min.js" 2>/dev/null || true
+  fi
+
   # Cache-bust: stamp a fresh build token into index.html so the browser never
   # serves a stale runtime.js / .wasm / asset after a rebuild (the recurring
   # "I fixed it but the page looks the same" trap). Appends ?v=<token> to the
