@@ -99,8 +99,16 @@ strip_game() {
           -e 's/\] as! String/]?.stringValue ?? ""/g' \
           -e 's/\] as? String/]?.stringValue/g' \
           -e 's/\] as? UInt32/]?.uint32Value/g' \
-          -e 's/\] as? Double/]?.doubleValue/g'
+          -e 's/\] as? Double/]?.doubleValue/g' \
+    | sed -e 's/gameDelegate : GameProtocol?/gameDelegate : GameViewController?/' \
+          -e 's/delegate: FlightYokeProtocol!/delegate: GameScene!/'
 }
+# De-existentialize the two delegate vars to their single concrete conformers
+# (gameDelegate -> GameViewController, FlightYoke.delegate -> GameScene). Embedded
+# Swift dispatches `existential?.method()` through a protocol witness table; under
+# -wmo + --gc-sections that witness can be stripped, so the indirect call traps at
+# runtime ("Out of bounds call_indirect", e.g. at game-over via gd?.runGameMenu()).
+# Concrete-typed vars dispatch directly. The protocols still exist for conformance.
 mkdir -p "$B/src/game"; for f in "$GAMESRC"/*.swift; do strip_game "$f" > "$B/src/game/$(basename "$f")"; done
 "$SWIFTC" "${EMB[@]}" -module-name UFOEmoji -c "$B/src/game"/*.swift -o "$B/mod/game.o"
 
@@ -117,7 +125,10 @@ done
 echo "→ link (Swift + KitABI shim + Box2D v3 + embedded stdlib + WASI libc), --gc-sections"
 SHIM="$ROOT/ufo-emoji-web/.build/wasm32-unknown-wasip1/release/KitABI.build/shim.c.o"
 [ -f "$SHIM" ] || { echo "ERROR: KitABI shim.c.o not found — run ufo-emoji-web/build.sh release first"; exit 1; }
-"$WASMLD" --no-entry --gc-sections --export=boot --export=frame --export=_initialize --export=memory --allow-undefined \
+# EMB_NOGC=1 omits --gc-sections (diagnostic: rules out the linker stripping a
+# function reached only by an indirect call, which would trap as call_indirect).
+GCSECT="--gc-sections"; [ -n "${EMB_NOGC:-}" ] && GCSECT=""
+"$WASMLD" --no-entry $GCSECT --export=boot --export=frame --export=_initialize --export=memory --allow-undefined \
   -L "$SYSLIB" -o "$B/ufoemoji-embedded.wasm" \
   "$B"/mod/*.o "$SHIM" "$B"/box2d/*.o "$B/stubs.o" "$UNI" -lc -lm
 
