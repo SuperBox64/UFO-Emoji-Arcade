@@ -387,7 +387,7 @@
         hero.addChild(heroEmoji)
         
         if settings.emoji == 2 {
-            emojiAnimation(emojis:["🙈","🙊","🙉","🐵"])
+            self.emojiAnimation(emojis:["🙈","🙊","🙉","🐵"])
         }
         
         canape = drawSpriteII (
@@ -1755,7 +1755,7 @@
             self.tractor = gamestartup.tractor
             
             if settings.emoji == 2 {
-                emojiAnimation(emojis:["🙈","🙊","🙉","🐵"])
+                self.emojiAnimation(emojis:["🙈","🙊","🙉","🐵"])
             }
             
             self.bombsbutton  =  gamestartup.bombsbutton
