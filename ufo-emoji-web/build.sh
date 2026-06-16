@@ -157,13 +157,19 @@ def rel(sub, exts):
     d = os.path.join(A, sub)
     return sorted(f"{sub}/{f}" for f in os.listdir(d) if f.endswith(exts)) if os.path.isdir(d) else []
 m = {
+  # Fixed logical render size — MUST match web/index.html + embedded.html WASMWEB.
+  # The WasmCart native host reads these (host-main.swift) to scale the scene to the
+  # window; without them it falls back to LOGICAL_W/H=1920x1080 and the scene renders
+  # tiny in the top-left corner. The web runtime takes them from WASMWEB instead.
+  "logicalWidth":  626,
+  "logicalHeight": 352,
   "fonts":  rel("fonts",  (".ttf", ".otf")),
   "images": rel("images", (".svg", ".png")),
   "sounds": rel("sfx",    (".wav", ".ogg", ".mp3")),
   "texts":  rel("scenes", (".json",)) + rel("particles", (".json",)),
 }
 json.dump(m, open(man, "w"))
-print(f"  manifest: {len(m['fonts'])} fonts, {len(m['images'])} images, {len(m['sounds'])} sounds, {len(m['texts'])} texts")
+print(f"  manifest: {m['logicalWidth']}x{m['logicalHeight']}, {len(m['fonts'])} fonts, {len(m['images'])} images, {len(m['sounds'])} sounds, {len(m['texts'])} texts")
 PY
   cp "$WASMKIT/runtime.js" "$SCRIPT_DIR/web/runtime.js" 2>/dev/null || true
 
@@ -211,7 +217,11 @@ CONFIG_ARGS=(-c debug)
 [ "$1" = "release" ] && CONFIG_ARGS=(-c release -Xswiftc -Osize -Xlinker -s -Xswiftc -Xfrontend -Xswiftc -disable-reflection-metadata)
 
 echo "→ swift build (toolchain=$SWIFT_TOOLCHAIN sdk=$WASM_SDK)"
-TOOLCHAINS="$SWIFT_TOOLCHAIN" xcrun --toolchain swift swift build --swift-sdk "$WASM_SDK" "${CONFIG_ARGS[@]}"
+# `xcrun --toolchain swift` resolves to whatever dev-snapshot is installed (6.5), which
+# can't import the 6.3.2 wasm SDK's stdlib modules. Use the 6.3.2 RELEASE swift directly.
+SWIFT632="${SWIFT632:-$HOME/Library/Developer/Toolchains/swift-6.3.2-RELEASE.xctoolchain/usr/bin/swift}"
+[ -x "$SWIFT632" ] || SWIFT632="$(TOOLCHAINS="$SWIFT_TOOLCHAIN" xcrun --toolchain swift -f swift)"
+"$SWIFT632" build --swift-sdk "$WASM_SDK" "${CONFIG_ARGS[@]}"
 
 if [ "$1" = "release" ]; then
   REL=".build/wasm32-unknown-wasip1/release/UFOEmoji.wasm"
