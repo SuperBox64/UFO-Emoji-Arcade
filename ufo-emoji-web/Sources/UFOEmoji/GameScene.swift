@@ -623,7 +623,14 @@
     
     //MARK: Function Update
     override func update(_ currentTime: TimeInterval) {
-        
+
+        // Drive the flight yoke from the kit's single per-frame call. The yoke
+        // no longer owns a private CADisplayLink: the kit ticks scene.update(_:)
+        // ONLY for the currently presented scene, so input sampling stops the
+        // instant presentScene swaps to GameOver/LevelUp — no orphaned timer
+        // ticking into a torn-down scene (the "Out of bounds call_indirect").
+        FlightYoke?.update()
+
         guard
             let hero = hero,
             let pos = hero.position as CGPoint?
@@ -671,9 +678,19 @@
         movingObjectI()
     }
     
+    // The kit calls willMove(from:) on the OUTGOING scene inside presentScene
+    // BEFORE swapping (SuperBox64Kit SKView.presentScene). Detach the yoke here
+    // so it can never pilot a torn-down scene even if a transition path other
+    // than removeGUI() fires. Belt-and-suspenders with update()'s optional-chain
+    // and the removal of the yoke's private CADisplayLink.
+    override func willMove(from view: SKView) {
+        FlightYoke?.shutdown()
+        super.willMove(from: view)
+    }
+
     override func didMove(to view: SKView) {
         super.didMove(to: view)
-        
+
         FlightYoke = GTFlightYoke()
         FlightYoke.startup()
         world = childNode(withName: "world")
@@ -1713,17 +1730,10 @@
             addChild(explosion)
             
             explosion.run(SKAction.sequence([
-                SKAction.scale(to: -1.5, duration: 0.5),
-            ]))
-            
-            explosion.run(SKAction.sequence([
                 SKAction.scale(to: 0.5, duration: 0.5),
                 SKAction.fadeAlpha(to: 0, duration: 0.5),
                 SKAction.wait(forDuration: 1.5),
-                SKAction.run { [weak explosion ] in
-                    guard let explosion = explosion else { return }
-                    explosion.removeFromParent()
-                }
+                SKAction.removeFromParent()
             ]))
         }
     }

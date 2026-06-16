@@ -1,7 +1,7 @@
 //
 //  GTFlightYoke ]|[ the Ultimate Precision Touch Screen Gaming Flight Stick
 //
-//  by GoodTime aka Todd Bruss (c) 2015 - 2026
+//  by GoodTime aka Todd Bruss (c) 2016 - 2026
 //
 
 import SpriteKit
@@ -18,7 +18,6 @@ class GTFlightYoke: SKNode {
     }
     
     private var velocity = CGVector.zero
-    private var runtimeLoop: CADisplayLink?
     private let ease : TimeInterval = 0.04
     private let anchor = CGPoint.zero
     private var thumbNode = SKSpriteNode()
@@ -68,16 +67,22 @@ class GTFlightYoke: SKNode {
         get { return (thumbNode.size.width / two) }
     }
     
+    // The yoke is driven once per frame by the OWNING scene's update(_:)
+    // (GameScene.update -> FlightYoke.update()), NOT by a private CADisplayLink.
+    // This is deliberate: a per-object CADisplayLink keeps ticking into a
+    // torn-down scene after presentScene swaps scenes (and under Embedded's
+    // strong-strip it forms a scene<->yoke retain cycle that never deinits),
+    // producing "Out of bounds call_indirect". The kit calls scene.update(_:)
+    // ONLY for the currently presented scene, so driving from there stops the
+    // instant the scene is no longer active.
     weak var delegate: FlightYokeProtocol! {
         didSet {
             velocity = CGVector.zero
             recenter()
-            runtimeLoop = CADisplayLink(target: self, selector: #selector(update))
-            runtimeLoop?.add(to: RunLoop.current, forMode: RunLoop.Mode.common)
         }
     }
-    
-    @objc func update() {
+
+    func update() {
         
         delegate?.FlightYokePilot(velocity: velocity, zRotation: CGFloat( velocity.dx / multiplier * dx ))
         
@@ -120,8 +125,11 @@ class GTFlightYoke: SKNode {
     }
 	
     func shutdown() {
-        guard let runtime = runtimeLoop else { return }
-        runtime.invalidate()
+        // No private run loop anymore. Detach so any further update() call
+        // (e.g. a stray frame mid-teardown) is a no-op: update() guards on
+        // `delegate?` so a nil delegate pilots nothing.
+        velocity = CGVector.zero
+        delegate = nil
     }
     
     init(thumbImage: UIImage?, bgImage: UIImage?) {

@@ -80,7 +80,11 @@ class StartUp: SKScene {
             self.addChild(label3)
         }
 
-        DispatchQueue.main.async { [weak self] in
+        // Linger on the matchup intro before starting the level (the original
+        // plain `async` fired next tick → the scene was set up and replaced in the
+        // same frame → a 1-frame flash). LevelUp uses asyncAfter(2.0); match that
+        // intent so the StartUp screen actually shows like the level-up screen.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { [weak self] in
             self?.gd?.runGameLevel()
         }
     }

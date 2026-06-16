@@ -1,1 +1,92 @@
-{"emissionAngle": 1.6821657419204712, "emissionAngleRange": 0.3499999940395355, "kind": "SKEmitterNode", "numParticlesToEmit": 0, "particleAlpha": 8.800000190734863, "particleAlphaRange": 3.200000047683716, "particleAlphaSpeed": 3.549999952316284, "particleBirthRate": 312.24688720703125, "particleBlendMode": 5, "particleColor": [0.3048642575740814, 0.13019143044948578, 0.023160237818956375, 1], "particleColorAlphaRange": 0, "particleColorAlphaSpeed": 0, "particleColorBlendFactor": 10, "particleColorBlendFactorRange": 0, "particleColorBlendFactorSpeed": 0, "particleColorBlueRange": 0, "particleColorBlueSpeed": 0, "particleColorGreenRange": 0, "particleColorGreenSpeed": 0, "particleColorRedRange": 0, "particleColorRedSpeed": 0, "particleColorSequence": {"times": [0, 0.3356655538082123, 0.7669600248336792, 1], "values": [[1, 0.6110770089, 0.2451450893, 1], [1, 0.5, 0.326562328, 1], [1, 0.5373604911, 0.2662109375, 1], [1, 0.5373604894, 0.2662109435, 1]]}, "particleLifetime": 2, "particleLifetimeRange": 1, "particlePosition": [0, 0], "particlePositionRange": [64, 0], "particleRotation": 0.13962633907794952, "particleRotationRange": 0, "particleRotationSpeed": 0, "particleScale": 0.5, "particleScaleRange": 0.4000000059604645, "particleScaleSpeed": -0.5, "particleSize": [32, 32], "particleSpeed": 166.10000610351562, "particleSpeedRange": 75, "particleTexture": "\ud83d\udc7e\ud83d\ude38\ud83d\udd25", "particleZPosition": 0, "position": [0, 0], "xAcceleration": 5, "yAcceleration": 0}
+{
+  "emissionAngle": 1.6821657419204712,
+  "emissionAngleRange": 0.3499999940395355,
+  "kind": "SKEmitterNode",
+  "numParticlesToEmit": 0,
+  "particleAlpha": 8.800000190734863,
+  "particleAlphaRange": 3.200000047683716,
+  "particleAlphaSpeed": 3.549999952316284,
+  "particleBirthRate": 312.24688720703125,
+  "particleBlendMode": 5,
+  "particleColor": [
+    0.3048642575740814,
+    0.13019143044948578,
+    0.023160237818956375,
+    1
+  ],
+  "particleColorAlphaRange": 0,
+  "particleColorAlphaSpeed": 0,
+  "particleColorBlendFactor": 10,
+  "particleColorBlendFactorRange": 0,
+  "particleColorBlendFactorSpeed": 0,
+  "particleColorBlueRange": 0,
+  "particleColorBlueSpeed": 0,
+  "particleColorGreenRange": 0,
+  "particleColorGreenSpeed": 0,
+  "particleColorRedRange": 0,
+  "particleColorRedSpeed": 0,
+  "particleColorSequence": {
+    "times": [
+      0,
+      0.3356655538082123,
+      0.7669600248336792,
+      1
+    ],
+    "values": [
+      [
+        1,
+        0.6110770089,
+        0.2451450893,
+        1
+      ],
+      [
+        1,
+        0.5,
+        0.326562328,
+        1
+      ],
+      [
+        1,
+        0.5373604911,
+        0.2662109375,
+        1
+      ],
+      [
+        1,
+        0.5373604894,
+        0.2662109435,
+        1
+      ]
+    ]
+  },
+  "particleLifetime": 2,
+  "particleLifetimeRange": 1,
+  "particlePosition": [
+    0,
+    0
+  ],
+  "particlePositionRange": [
+    64,
+    0
+  ],
+  "particleRotation": 0.13962633907794952,
+  "particleRotationRange": 0,
+  "particleRotationSpeed": 0,
+  "particleScale": 0.5,
+  "particleScaleRange": 0.4000000059604645,
+  "particleScaleSpeed": -0.5,
+  "particleSize": [
+    32,
+    32
+  ],
+  "particleSpeed": 166.10000610351562,
+  "particleSpeedRange": 75,
+  "particleTexture": "👾😸🔥",
+  "particleZPosition": 0,
+  "position": [
+    0,
+    0
+  ],
+  "xAcceleration": 5,
+  "yAcceleration": 0
+}

@@ -31,10 +31,13 @@ WASM_SDK="${WASM_SDK:-swift-6.3.2-RELEASE_wasm}"
 #     relies on ObjC dynamic dispatch for `touch.location(in:)`. `touches` is a
 #     Set<UITouch>, so dropping the explicit `: AnyObject` binds `touch` to
 #     UITouch and `.location(in:)` resolves statically.
-#   * GTFlightYoke.swift: `@objc func update()` + `CADisplayLink(target:selector:
-#     #selector(update))` require the ObjC runtime. We strip `@objc` and rewrite
-#     the display-link construction to the kit's portable closure form
-#     `CADisplayLink(every:)`, which drives update() each frame via KitRunLoop.
+#   * GTFlightYoke.swift: now a plain symlink. It used to need an `@objc`/
+#     CADisplayLink rewrite, but the yoke no longer owns a private display link
+#     at all — GameScene.update(_:) drives FlightYoke.update() each frame (the
+#     kit ticks scene.update only for the PRESENTED scene, so input sampling
+#     stops the instant presentScene swaps; no orphaned per-object timer ticks
+#     a torn-down scene -> no "Out of bounds call_indirect"). Nothing in the
+#     file requires the ObjC runtime anymore, so no transform is needed.
 #   * AppDelegate.swift: its @UIApplicationMain entry point conflicts with our
 #     boot() reactor entry, and nothing references the type — so it is EXCLUDED.
 #     main.swift calls loadSettings() in its place.
@@ -49,6 +52,7 @@ sync_sources() {
     "GameGlobal/GameGlobal.swift"
     "GameTransitions/StartUp.swift" "GameTransitions/LevelUp.swift" "GameTransitions/GameOver.swift"
     "GameViewController/GameViewController.swift"
+    "GTFlightYoke/GTFlightYoke.swift"
   )
   mkdir -p "$SRC"
   # Clear out any prior transformed copies so a re-sync can't leave a stale file
@@ -61,9 +65,6 @@ sync_sources() {
       "$base/GameScene/GameScene.swift" > "$SRC/GameScene.swift"
   sed 's/for touch: AnyObject in/for touch in/g' \
       "$base/GameMenu/GameMenu.swift" > "$SRC/GameMenu.swift"
-  sed -e 's/@objc func update/func update/g' \
-      -e 's/CADisplayLink(target: self, selector: #selector(update))/CADisplayLink(every: { [weak self] in self?.update() })/g' \
-      "$base/GTFlightYoke/GTFlightYoke.swift" > "$SRC/GTFlightYoke.swift"
 }
 
 # ---- 2. asset pipeline -----------------------------------------------------

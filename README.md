@@ -127,6 +127,39 @@ From humble beginnings in **WWDC 2015** to continuous updates for **iOS 18**, UF
 
 — **Todd Bruss**  
 
+---
+
+## 🌐 Now Playable in the Browser — Embedded Swift → WebAssembly
+
+UFO Emoji also runs in any modern browser, compiled from the **same 100% Swift source** to
+WebAssembly — no Emscripten, no engine rewrite, no loading screens or watermarks. It is powered by:
+
+- **[SuperBox64Kit](https://github.com/SuperBox64/SuperBox64Kit)** — a SpriteKit reimplementation for Embedded Swift; the game keeps every `import SpriteKit` unchanged.
+- **[WasmKit](https://github.com/SuperBox64/WasmKit)** — the Canvas2D + Web Audio + Web Gamepad runtime that loads and drives the wasm.
+
+The embedded wasm is **~685 KB** (≈257 KB gzipped) versus the ~14 MB full-Swift-stdlib baseline.
+The web/embedded build lives in [`ufo-emoji-web/`](ufo-emoji-web), alongside the native Xcode app:
+
+```sh
+# build the embedded wasm (raw, no wasm-opt; EMB_NOGC avoids a linker-strip OOB)
+EMB_NOGC=1 EMB_BUILD_DIR=/tmp/ufoemb bash docs/embedded/build-embedded-game.sh
+cp /tmp/ufoemb/ufoemoji-embedded.wasm ufo-emoji-web/web/ufoemoji-embedded.wasm
+
+# serve over HTTP and open the embedded build
+python3 -m http.server 8000 --directory ufo-emoji-web/web
+# → http://localhost:8000/embedded.html   (index.html is the full, non-embedded build)
+```
+
+The runtime is a **single source of truth**: the canonical `runtime.js` is hand-rolled in
+[`../WasmKit`](https://github.com/SuperBox64/WasmKit); the web copies (`runtime.js` and the
+minified `runtime-embedded-min.js`) are copied/minified from it — never hand-forked.
+
+Input works through the on-screen **flight yoke + diamond fire buttons**, the **keyboard**, and the
+**Web Gamepad API**. The same cartridge also plays in the native
+**[WasmCart](https://github.com/SuperBox64/WasmCart)** console (Embedded Swift + SDL3 + wasmtime).
+
+---
+
 # 🚀 **UFO Emoji Gallery**
 
  <img src="https://github.com/user-attachments/assets/14022404-570a-43ce-9550-056e72689bac" style="width:333px; height:auto; border-radius:25px;">
