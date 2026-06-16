@@ -1720,10 +1720,7 @@
                 SKAction.scale(to: 0.5, duration: 0.5),
                 SKAction.fadeAlpha(to: 0, duration: 0.5),
                 SKAction.wait(forDuration: 1.5),
-                SKAction.run { [weak explosion ] in
-                    guard let explosion = explosion else { return }
-                    explosion.removeFromParent()
-                }
+                SKAction.removeFromParent()
             ]))
         }
     }
