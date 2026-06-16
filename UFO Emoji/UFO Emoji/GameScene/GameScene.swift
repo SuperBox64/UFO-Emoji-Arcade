@@ -621,6 +621,61 @@
         return (bombsbutton,firebutton,hero,canape,tractor,bombsbutton2,firebutton2)
     }
     
+    // MARK: Keyboard controls (by joystick side; also drives the on-screen HUD)
+    // settings.stick == true  => joystick on the LEFT  -> WASD = move, arrows = fire
+    // settings.stick == false => joystick on the RIGHT -> arrows = move, WASD = fire
+    // When the keyboard moves/fires, the on-screen yoke thumb (via stickMoved) and the
+    // fire buttons (via firebomb) animate too — the "remote control". Gamepad d-pad/stick
+    // already synthesize the same arrow keys, so this path covers keyboard AND gamepad.
+    // (skKeyIsDown/SKKey come from SuperBox64Kit and exist only in the Embedded/wasm
+    // build; the native iOS app stays touch + gamepad, so the body is Embedded-only.)
+    #if hasFeature(Embedded)
+    private var kbDriving = false
+    private var kbPrevFireUp = false, kbPrevFireDown = false, kbPrevFireLeft = false, kbPrevFireRight = false
+    #endif
+
+    private func pollKeyboardInput() {
+        #if hasFeature(Embedded)
+        let joystickLeft = settings.stick
+        let mUp: Bool; let mDown: Bool; let mLeft: Bool; let mRight: Bool
+        let fUp: Bool; let fDown: Bool; let fLeft: Bool; let fRight: Bool
+        if joystickLeft {   // WASD moves, arrows fire
+            mUp = skKeyIsDown(SKKey.w);  mDown = skKeyIsDown(SKKey.s);    mLeft = skKeyIsDown(SKKey.a);    mRight = skKeyIsDown(SKKey.d)
+            fUp = skKeyIsDown(SKKey.up); fDown = skKeyIsDown(SKKey.down); fLeft = skKeyIsDown(SKKey.left); fRight = skKeyIsDown(SKKey.right)
+        } else {            // arrows move, WASD fires
+            mUp = skKeyIsDown(SKKey.up); mDown = skKeyIsDown(SKKey.down); mLeft = skKeyIsDown(SKKey.left); mRight = skKeyIsDown(SKKey.right)
+            fUp = skKeyIsDown(SKKey.w);  fDown = skKeyIsDown(SKKey.s);    fLeft = skKeyIsDown(SKKey.a);    fRight = skKeyIsDown(SKKey.d)
+        }
+
+        // Movement -> drive the flight yoke (stickMoved sets velocity AND moves the thumb).
+        if mUp || mDown || mLeft || mRight {
+            let reach: CGFloat = 1000   // stickMoved clamps to the thumb radius -> full deflection
+            let x: CGFloat = (mRight ? reach : 0) + (mLeft ? -reach : 0)
+            let y: CGFloat = (mUp ? reach : 0) + (mDown ? -reach : 0)
+            FlightYoke?.stickMoved(location: CGPoint(x: x, y: y))
+            kbDriving = true
+        } else if kbDriving {
+            FlightYoke?.stickMoved(location: .zero)   // released -> recenter once (don't fight touch input)
+            kbDriving = false
+        }
+
+        // Fire -> 4-way, edge-triggered so one key press = one shot (matches a button tap).
+        if let hero = hero,
+           let heroVelocity = hero.physicsBody?.velocity,
+           let heroRotation = hero.zRotation as CGFloat?,
+           let heroPosition = hero.position as CGPoint?,
+           let firebutton = self.firebutton, let firebutton2 = self.firebutton2,
+           let bombsbutton = self.bombsbutton, let bombsbutton2 = self.bombsbutton2 {
+            let superhero = (heroPosition, heroRotation, heroVelocity)
+            if fRight && !kbPrevFireRight { laserbeak(superhero: superhero, reverse: false); firebomb(firebomb: firebutton) }
+            if fLeft  && !kbPrevFireLeft  { laserbeak(superhero: superhero, reverse: true);  firebomb(firebomb: firebutton2) }
+            if fDown  && !kbPrevFireDown  { bombaway(superhero: superhero, reverse: false);  firebomb(firebomb: bombsbutton) }
+            if fUp    && !kbPrevFireUp    { bombaway(superhero: superhero, reverse: true);   firebomb(firebomb: bombsbutton2) }
+        }
+        kbPrevFireUp = fUp; kbPrevFireDown = fDown; kbPrevFireLeft = fLeft; kbPrevFireRight = fRight
+        #endif
+    }
+
     //MARK: Function Update
     override func update(_ currentTime: TimeInterval) {
 
@@ -630,6 +685,7 @@
         // instant presentScene swaps to GameOver/LevelUp — no orphaned timer
         // ticking into a torn-down scene (the "Out of bounds call_indirect").
         FlightYoke?.update()
+        pollKeyboardInput()
 
         guard
             let hero = hero,
