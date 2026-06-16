@@ -34,11 +34,11 @@ var KingQueenGlobalDie = 100
 var emojifontname = "Apple Color Emoji" //"Toddmoji" //"Segoe UI Emoji" //"EmojiOneColor"//     "Apple Color Emoji" //"Segoe UI Emoji"
 var gameDelegate : GameProtocol?
 
-let showsFPS        = true
+let showsFPS        = false
 let showsNodeCount  = false
 let showsPhysics    = false
 let showsFields     = false
-let showsDrawCount  = true
+let showsDrawCount  = false
 let showsQuadCount  = false
 
 func loadScores() -> (level: Int, highlevel: Int, score: Int, hscore: Int, lives: Int) {
