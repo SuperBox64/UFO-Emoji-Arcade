@@ -627,15 +627,14 @@
     // When the keyboard moves/fires, the on-screen yoke thumb (via stickMoved) and the
     // fire buttons (via firebomb) animate too — the "remote control". Gamepad d-pad/stick
     // already synthesize the same arrow keys, so this path covers keyboard AND gamepad.
-    // (skKeyIsDown/SKKey come from SuperBox64Kit and exist only in the Embedded/wasm
-    // build; the native iOS app stays touch + gamepad, so the body is Embedded-only.)
-    #if hasFeature(Embedded)
+    // skKeyIsDown/SKKey come from SuperBox64Kit on BOTH wasm builds (web wasip1 AND
+    // Embedded); the native Apple app gets a no-op shim (see AppDelegate.swift), so this
+    // is ONE unconditional path on every target. (It used to be gated on
+    // hasFeature(Embedded), which silently dropped keyboard from the web/wasip1 build.)
     private var kbDriving = false
     private var kbPrevFireUp = false, kbPrevFireDown = false, kbPrevFireLeft = false, kbPrevFireRight = false
-    #endif
 
     private func pollKeyboardInput() {
-        #if hasFeature(Embedded)
         let joystickLeft = settings.stick
         let mUp: Bool; let mDown: Bool; let mLeft: Bool; let mRight: Bool
         let fUp: Bool; let fDown: Bool; let fLeft: Bool; let fRight: Bool
@@ -673,7 +672,6 @@
             if fUp    && !kbPrevFireUp    { bombaway(superhero: superhero, reverse: true);   firebomb(firebomb: bombsbutton2) }
         }
         kbPrevFireUp = fUp; kbPrevFireDown = fDown; kbPrevFireLeft = fLeft; kbPrevFireRight = fRight
-        #endif
     }
 
     //MARK: Function Update
