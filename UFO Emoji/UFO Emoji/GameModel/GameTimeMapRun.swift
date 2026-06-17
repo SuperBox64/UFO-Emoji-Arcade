@@ -85,6 +85,22 @@ class GameTileMapRun {
         TileMapParent.addChild(TileNode)
         
         if NewItem == "🐍" || NewItem == "🐟" || NewItem == "🦀" || NewItem == "🛸" || e == "⛵️" || e == "🛥" || e == "🚤" || e == "🕷"  {
+            // Opt into offscreen action culling for pure oscillators only. The
+            // meteor spawn-in branch below (switch Emoji case 🤯/🚁/🐝/🛸) drives
+            // those tiles across-screen via moveTo+fade+remove, so never cull
+            // THOSE — their actions must run while offscreen so they fly in. A
+            // tile that is both an oscillator AND a meteor (Emoji is a meteor
+            // type) keeps running. The frozen repeatForever resumes with no
+            // phase jump when the tile scrolls back into view.
+            // cullActionsWhenOffscreen is a SuperBox64Kit-only property (the
+            // wasm SpriteKit reimplementation), so gate it to the wasm build.
+            // Native iOS uses Apple's SpriteKit, which has no such flag and
+            // doesn't need it (native culling is fast enough there).
+            #if arch(wasm32)
+            if Emoji != "🤯" && Emoji != "🚁" && Emoji != "🐝" && Emoji != "🛸" {
+                TileNode.cullActionsWhenOffscreen = true
+            }
+            #endif
             let r2 = Int(arc4random_uniform(1))
             let divider = Double(20.0)
             let mov = r2 > 0 ? 1 : -1

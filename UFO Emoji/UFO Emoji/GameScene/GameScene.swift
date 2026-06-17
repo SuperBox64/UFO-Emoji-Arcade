@@ -131,7 +131,15 @@
     private let 🍌 : String! = "🍌"
     private let 🦸 : String! = "laserbeam"
     private let 🥾 : String! = "super"
-    
+    // Cached laser textures — resolved once per mode and reused every shot
+    // instead of allocating a fresh SKTexture (and re-running the img_by_name
+    // dict lookup) on each laserbeak. The GPU handle is already name-cached in
+    // the runtime (imageByName returns the same handle per name); this only
+    // saves the per-shot Swift SKTexture alloc, matching SKSpriteNode.copy()'s
+    // texture-ref sharing.
+    private var laserTex: SKTexture?
+    private var superLaserTex: SKTexture?
+
     //we can swap these out if we use other emoji ships: 0 through 6
     
     deinit {
@@ -1987,8 +1995,17 @@
     func laserbeak (superhero: (position:CGPoint, zRotation: CGFloat, velocity: CGVector), reverse: Bool) {
         
         guard let 🧵 = 💠 ? 🥾 + 🦸 : 🦸 else { return }
-        
-        👁 = SKSpriteNode(texture: SKTexture(imageNamed: 🧵))
+
+        // Reuse the cached laser texture for this mode instead of allocating a
+        // fresh SKTexture per shot. The monkey branch below overwrites 👁, so
+        // the cache is populated once per mode and reused harmlessly afterward.
+        if 💠 {
+            if superLaserTex == nil { superLaserTex = SKTexture(imageNamed: 🧵) }
+            👁 = SKSpriteNode(texture: superLaserTex)
+        } else {
+            if laserTex == nil { laserTex = SKTexture(imageNamed: 🧵) }
+            👁 = SKSpriteNode(texture: laserTex)
+        }
         
         var 👨‍🔬 = SKPhysicsBody(rectangleOf: 👁.size)
         
@@ -2110,7 +2127,12 @@
         💣.physicsBody?.applyAngularImpulse(20)
         💣.physicsBody?.restitution = 0.5
         
-        let wait = 800
+        // Bomb self-reap timeout. wait(forDuration:) takes SECONDS; 800 (Int)
+        // was a forgotten ms→s conversion — 800s means missed bombs bounce off
+        // bombBounds (category 4, no contactTest) and linger ~13 min. 8.0s lets
+        // the bomb finish its arc and reaps it, matching the 0.3-2.0s waits used
+        // elsewhere in this file.
+        let wait: TimeInterval = 8.0
         
         if reverse {
             💣.physicsBody?.velocity = CGVector( dx: superhero.velocity.dx / 4, dy: 350)
