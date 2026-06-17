@@ -50,6 +50,9 @@ EMB=(-enable-experimental-feature Embedded -wmo -Osize -parse-as-library
      -Xcc -fmodule-map-file="$FW/Sources/CBox2D/include/module.modulemap"
      -Xcc -isystem -Xcc "$SYSINC"
      -I "$FW/Sources/KitABI/include" -I "$FW/Sources/CBox2D/include" -I "$B/mod")
+# BENCHMARK_LEVEL1=1 builds a benchmark cart whose boot skips GameMenu and goes
+# straight to gameplay level 1 (main.swift #if). Harmless on framework modules.
+[ -n "${BENCHMARK_LEVEL1:-}" ] && EMB+=(-D BENCHMARK_LEVEL1)
 
 build_mod() {            # module name (deps already in $B/mod)
   local m="$1"; mkdir -p "$B/src/$m"
@@ -132,8 +135,14 @@ GCSECT="--gc-sections"; [ -n "${EMB_NOGC:-}" ] && GCSECT=""
   -L "$SYSLIB" -o "$B/ufoemoji-embedded.wasm" \
   "$B"/mod/*.o "$SHIM" "$B"/box2d/*.o "$B/stubs.o" "$UNI" -lc -lm
 
+# INTERPRETER NOTE: -Oz (size), NOT -O3. WAMR interprets the .wasm op-by-op, so
+# the per-frame cost scales with the DYNAMIC instruction count. -O3 inlines and
+# unrolls -> more instructions to dispatch -> SLOWER under the interpreter (it
+# raised "rest" from ~21ms to ~31ms). -Oz keeps the op count minimal. (For the
+# .aot path, wasm2aot/wamrc re-optimizes natively, so the wasm opt level there
+# is moot — keep -Oz for the interpreted-cart speed.)
 wasm-opt -Oz --enable-bulk-memory --enable-nontrapping-float-to-int --enable-sign-ext \
-  --enable-mutable-globals --enable-multivalue "$B/ufoemoji-embedded.wasm" -o "$B/ufoemoji-embedded-oz.wasm"
+  --enable-mutable-globals --enable-multivalue --enable-simd "$B/ufoemoji-embedded.wasm" -o "$B/ufoemoji-embedded-oz.wasm"
 
 # Publish next to the normal web payload so CI (and the website deploy) can grab it.
 OUT="$ROOT/ufo-emoji-web/web/ufoemoji-embedded.wasm"

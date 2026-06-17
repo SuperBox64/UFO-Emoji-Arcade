@@ -2127,12 +2127,14 @@
         💣.physicsBody?.applyAngularImpulse(20)
         💣.physicsBody?.restitution = 0.5
         
-        // Bomb self-reap timeout. wait(forDuration:) takes SECONDS; 800 (Int)
-        // was a forgotten ms→s conversion — 800s means missed bombs bounce off
-        // bombBounds (category 4, no contactTest) and linger ~13 min. 8.0s lets
-        // the bomb finish its arc and reaps it, matching the 0.3-2.0s waits used
-        // elsewhere in this file.
-        let wait: TimeInterval = 8.0
+        // Bomb self-reap timeout. NOTE: DaBomb is a copy of 💣, which has
+        // .speed = 200 (set below before the copy). SKNode.speed is an
+        // action-time multiplier that propagates to the node + its children, so
+        // wait(forDuration:) is DIVIDED by 200 — 800 here is NOT 800 seconds,
+        // it's 800/200 ≈ 4 real seconds, enough for the bomb to finish its arc
+        // before it's reaped. (A literal 8 reaps the bomb in 8/200 = 0.04s, so
+        // it vanishes the instant it's fired — looks like "the bombs don't leave".)
+        let wait: TimeInterval = 800
         
         if reverse {
             💣.physicsBody?.velocity = CGVector( dx: superhero.velocity.dx / 4, dy: 350)

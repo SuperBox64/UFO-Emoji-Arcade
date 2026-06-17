@@ -25,7 +25,17 @@ private func bootBody() {
     c.view = v
     gView = v
     gvc = c
+#if BENCHMARK_LEVEL1
+    // Benchmark build: skip GameMenu and boot straight into gameplay level 1
+    // (settings.level defaults to 1, clamped >=1 in loadSettings), so "rest"
+    // measures real game-logic compute instead of the near-idle menu. We
+    // replicate only viewDidLoad()'s non-menu setup (gameDelegate) then jump to
+    // the level scene via runGameLevel() → gameLevel() → GameScene → level1.
+    gameDelegate = c
+    c.runGameLevel()
+#else
     c.viewDidLoad()        // → gameDelegate = self; saveSettings(); gameMenu()
+#endif
 }
 
 // Single-threaded wasm, fully nonisolated stack — call directly.
