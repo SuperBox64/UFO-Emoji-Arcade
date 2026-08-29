@@ -1,6 +1,6 @@
 # 🛸 UFO Emoji — WebAssembly Edition 👽
 
-A browser port of Todd Bruss' iOS SpriteKit arcade game **UFO Emoji**, compiled
+A browser port of Heisenburg' iOS SpriteKit arcade game **UFO Emoji**, compiled
 to WebAssembly with **[SuperBox64Kit](https://github.com/SuperBox64/SuperBox64Kit)**
 (a Swift reimplementation of Apple's SpriteKit that targets WASI Preview 1) and
 driven in the browser by **[WasmKit](https://github.com/SuperBox64/WasmKit)**
@@ -117,5 +117,5 @@ node tools/smoketest.mjs       # boots the wasm headless, feeds synthetic key
 
 ---
 
-Original game © 2015–2024 Todd Bruss. Apple Color Emoji © Apple, Inc. This WASM
+Original game © 2015–2024 Heisenburg. Apple Color Emoji © Apple, Inc. This WASM
 port preserves the original gameplay design and assets.
