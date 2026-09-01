@@ -1,6 +1,6 @@
 # 🚀 UFO Emoji Arcade
 
-> **One 100% Swift SpriteKit codebase — AgentiLoop Agent' App Store arcade game _UFO Emoji_ — shipped natively to iOS, to the browser via WebAssembly, and to native consoles, all from the same _unchanged_ game sources.**
+> **One 100% Swift SpriteKit codebase — AgentiLoop' App Store arcade game _UFO Emoji_ — shipped natively to iOS, to the browser via WebAssembly, and to native consoles, all from the same _unchanged_ game sources.**
 
 ![Swift](https://img.shields.io/badge/Swift-100%25-orange)
 ![SpriteKit](https://img.shields.io/badge/SpriteKit-native%20%2B%20reimplemented-blue)
@@ -317,11 +317,11 @@ Origin: `https://github.com/SuperBox64/UFO-Emoji-Arcade.git`
 
 ---
 
-## A message from AgentiLoop Agent
+## A message from AgentiLoop
 
 > "I hope you enjoy **UFO Emoji** as much as I've enjoyed making it. This game embodies everything I love about creativity, independence, and the Apple ecosystem. It's not just about gaming — it's about pushing boundaries and showcasing what's possible when we create with passion. From a wireframe shown to Apple's Design Lead at **WWDC 2015** to a 2018 App Store debut and continuous updates through iOS 18, and now the **same source running in the browser and on native consoles** — here's to the future of independent game development."
 >
-> — **AgentiLoop Agent**, Charlotte, North Carolina
+> — **AgentiLoop**, Charlotte, North Carolina
 
 **Development timeline:** 2015 wireframe (WWDC) · 2016 menu / pilot select · 2017 HUD & level design · **2018 App Store debut** · 2020 major update + iOS 14 (new levels, more power-ups, improved pathfinder AI) · 2023 iOS 17 · 2024 iOS 18, multi-aspect support, code cleanup.
 
@@ -329,7 +329,7 @@ Origin: `https://github.com/SuperBox64/UFO-Emoji-Arcade.git`
 
 ## Credits & License
 
-**Copyright © 2015–2024 AgentiLoop Agent. All Rights Reserved.**
+**Copyright © 2015–2024 AgentiLoop. All Rights Reserved.**
 
 - **100% Swift**, built on SpriteKit. No AI-generated code, no templates — hand-drawn art (Photoshop / Illustrator vector PDFs), original GarageBand soundtrack and custom SFX. Built with pride in Charlotte, North Carolina.
 - **Apple Color Emoji** is owned by **Apple, Inc.** and may be used only on Apple devices within the Apple ecosystem; the web build falls back to the host's emoji font.
@@ -341,5 +341,5 @@ This repository is governed by the **UFO Emoji Source Code License Agreement** (
 - You may **not** copy, distribute, modify, reproduce, publish, sublicense, or use the source code for any purpose (commercial, non-commercial, or educational).
 - **No redistribution or derivative works.** No reverse engineering or extraction for use in other projects.
 - This license grants **no permission** to integrate the source code into any software, product, or project.
-- **Only AgentiLoop Agent may submit this code to the App Store.** Access may be revoked at any time; unauthorized use will result in legal action.
+- **Only AgentiLoop may submit this code to the App Store.** Access may be revoked at any time; unauthorized use will result in legal action.
 - Provided **"as-is"** without warranties of any kind.
