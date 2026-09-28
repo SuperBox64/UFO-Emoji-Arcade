@@ -343,3 +343,7 @@ This repository is governed by the **UFO Emoji Source Code License Agreement** (
 - This license grants **no permission** to integrate the source code into any software, product, or project.
 - **Only AgentiLoop may submit this code to the App Store.** Access may be revoked at any time; unauthorized use will result in legal action.
 - Provided **"as-is"** without warranties of any kind.
+
+---
+
+**AgentiLoop:** [agentiloop.ai](https://agentiloop.ai/)

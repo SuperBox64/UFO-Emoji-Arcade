@@ -119,3 +119,7 @@ node tools/smoketest.mjs       # boots the wasm headless, feeds synthetic key
 
 Original game © 2015–2024 AgentiLoop. Apple Color Emoji © Apple, Inc. This WASM
 port preserves the original gameplay design and assets.
+
+---
+
+**AgentiLoop:** [agentiloop.ai](https://agentiloop.ai/)
