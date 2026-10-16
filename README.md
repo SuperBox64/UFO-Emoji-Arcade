@@ -1,5 +1,8 @@
 # 🚀 UFO Emoji Arcade
 
+🤖 **Built by the makers of [Agent!](https://github.com/AgentiLoop/Agent)**, an autonomous macOS agent.
+
+
 > **One 100% Swift SpriteKit codebase — AgentiLoop' App Store arcade game _UFO Emoji_ — shipped natively to iOS, to the browser via WebAssembly, and to native consoles, all from the same _unchanged_ game sources.**
 
 ![Swift](https://img.shields.io/badge/Swift-100%25-orange)
